@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layoutMagement}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>oh-nong!</title>
+</head>
+
+<th:block layout:fragment="css">
+</th:block>
+<th:block layout:fragment="script">
+</th:block>
+<body class="nav-md">
+	<div layout:fragment="contentMagement">
+		<style type="text/css">
+ul, li {
+	list-style: none;
+	padding: 0;
+	margin: 0
+}
+
+#wrap {
+	width: 811px;
+	height: 1130px;
+	margin: 0 auto;
+	border: 1px solid #dfdfdf;
+}
+
+.main {
+	border: 2px solid #333333;
+	border-radius: 4px;
+	padding: 10px;
+	margin: 10px;
+	height: 1085px
+}
+
+.main h1 {
+	text-align: center;
+	font-family: 'pretendard';
+	color: #333333
+}
+
+.section1 {
+	text-align: center;
+	border-bottom: 2px solid #c4c4c4;
+	margin: 0 40px;
+}
+
+.section1 ul {
+	text-align: center;
+	background: url(bootstrap_main/assets/img/portfolio/section_bg.jpg)
+		no-repeat center 35px;
+	margin: 30px auto;
+}
+
+.section1 p {
+	font-weight: bold;
+	color: #e74d3e
+}
+
+.section1 li {
+	display: inline-block;
+	width: 120px;
+	font-weight: bold;
+	line-height: 24px
+}
+
+</style>
+		<div class="right_col" role="main" style="min-height: 1000px;">
+
+			<div class="row" id="wrap" style="height: 580px;">
+				<div class="main" style="height: 550px;">
+					<div class="section1">
+						<h1 style="font-weight: 600">경영모의계산</h1>
+						<ul>
+							<li><img src="bootstrap_main/assets/img/portfolio/icon1.jpg"><br><span style="color: #e74d3e">경영분석방식</span></li>
+							<li><img src="bootstrap_main/assets/img/portfolio/icon2.jpg"><br>농업목표 설정</li>
+							<li><img src="bootstrap_main/assets/img/portfolio/icon3.jpg"><br>분석결과 리포트</li>
+
+						</ul>
+						<h4 style="color:black">
+							<span style="color: #e74d3e;font-weight: 600;">경영분석방식</span> 선택하기
+						</h4>
+					</div>
+					<div onClick="location.href ='calculation01'" style="border: 2px solid black; margin:10px; width:350px; height:274px; display: inline-block; text-align: center; background-color:white; cursor:pointer;" >
+						<img src="bootstrap_main/assets/img/portfolio/test1.PNG">
+					</div>
+					<div onClick="location.href ='calculation02'" style="border: 2px solid black; margin:10px; width:350px; height:274px; display: inline-block; text-align: center; background-color:white; cursor:pointer;"  >
+						<img src="bootstrap_main/assets/img/portfolio/test2.PNG">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

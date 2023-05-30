@@ -1,0 +1,701 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+ <title> oh-nong!</title>
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<style>
+
+tr{
+ 
+ height:70px;
+ margin:30px;
+ font-size: 15px;
+}
+
+
+
+.pageInfo_area{
+	 text-align: center;
+	 width: 50%;
+}
+.pagination2{
+    list-style: none;
+    display: inline-block;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.pagination2 li {
+    display: inline;
+    text-align: center;
+}
+/*숫자*/ 
+.pagination2 a {
+    float: left;
+    display: block;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 5px 12px;
+    color: #96a0ad;
+    line-height: 1.5;
+}
+.pagefirst{
+    margin-right: 15px;
+}
+.pagelast{
+    margin-left: 15px;
+}
+.pagefirst:hover, .pagelast:hover, .arrowright:hover, .arrowleft:hover, .model .num:hover{
+    color:#2e9cdf;
+}
+.pagination2 .move.active{
+    cursor: default;
+    color: #ffffff;
+}
+.pagination2 .move:active{
+    outline: none;
+}
+.model .num {
+    margin-left: 3px;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    -moz-border-radius: 100%;
+    -webkit-border-redius:100%;
+    border-radius: 100%;
+}
+.model .num.active, .model .num:active{
+    background-color: #2e9cdf;
+    cursor: pointer;
+}
+.arrowleft{
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10ox solid blue;
+}
+
+ a.active {
+ 	cursor:default;
+ 	color:#ffffff; 	
+ }
+
+  
+  .search_area{
+    text-align:center;
+  }
+  .search_area input{
+    height: 30px;
+    width: 250px;
+  }
+  .search_area button{
+    height: 30px;
+    width: 100px;
+  }
+   .search_area select{
+  	height: 30px;
+    width:150px;
+  }
+ .move:link {color: #2e9cdf; text-decoration: none; }
+ .move:visited {color:purple;,text-decoration: overline;}
+ .move:hover {color:#bbb;,text-decoration: underline;}
+ 
+ textarea:focus{
+ 	 outline: none;
+ }
+ 
+#replyTr{
+background-color: #F5F5F5;
+}
+ 
+ #adminTr{
+ 
+ background-color: #F5F5F5;
+ 
+ }
+ 
+ .modal_label {
+	padding: 2px 0px 2px 0px;
+	background-color: skyblue;
+	width: 80px;
+	border-top: 2px solid black;
+	border-bottom: 2px solid black;
+	text-align: center;
+	color: black;
+	margin-top: 10px;
+	opacity: 0.7;
+	font-weight: bolder;
+}
+
+
+button{
+background-color: #1ABB9C;
+}
+
+*{
+font-weight: bold;
+}
+</style>
+</head>
+ 
+ 
+ <body >
+  <div layout:fragment="contentMagement" style="border:1px solid #d3d3d3; background-color: #F5F5F5; ">
+    <table>
+    <thead style="margin: 0 auto; width: 100%;">
+		<tr style="text-align:center; font-size: 17px;" >
+			<th style="width: 5%"></th>
+			<th style="width: 5%">댓글[[${replyCount}]]개</th>
+			<th style="width: 50%">내용</th>
+			<th style="width: 20%">작성일</th>
+			<th style="width: 20%"></th>
+		</tr>
+	</thead>
+	<tbody>
+
+		
+		<!-- 댓글등록  -->
+		<div sec:authorize="hasAnyRole('ROLE_FAMER','ROLE_MEMBER')" th:if="${rvo.boardCategory != 'B'}">
+		<tr>
+			<td style="width: 5%"></td>
+			<td style="text-align:center;">
+				<span th:if="${session.login != null}"th:text="${session.login?.userId}"></span> 
+				<br/>
+			</td>
+			<td class="project_progress">
+				<textarea th:if="${session.login != null}" id="replyTextarea" class="boardtx" placeholder="댓글을 작성하세요"
+					style="height: 100%; width: 800px; margin-left:100px; display: block;" spellcheck="false"></textarea>
+				<p id="test_cnt" style="display:inline-block; float:right;">(0 /500)</p>
+		    </td>
+			<td  style="width:200px; text-align:center;">
+				<span id="current_date"></span>
+			</td>
+			<td>
+				<!-- 댓글버튼 -->
+				<button th:if="${session.login != null}" id="replySubmit" class="btn btn-primary"  style="background-color: #1ABB9C; border:none;">
+					<i class="fa fa-pencil"></i>등록
+				</button>
+			</td>
+		</tr>
+		</div>
+		
+		<!-- 관리자의 댓글등록. -->
+		<div sec:authorize="hasRole('ROLE_ADMIN')">
+		<tr>
+			<td style="width: 5%"></td>
+			<td style="text-align:center;">
+				<span th:if="${session.login != null}"th:text="${session.login?.userId}"></span> 
+				<br/>
+			</td>
+			<td class="project_progress">
+				<textarea id="replyTextarea" class="boardtx" placeholder="댓글을 작성하세요"
+					style="height: 100%; width: 800px; margin-left:100px; display: block;" spellcheck="false"></textarea>
+				<p id="test_cnt" style="display:inline-block; float:right;">(0 /500)</p>
+		    </td>		    
+			<td style="width:200px; text-align:center;">
+				<span id="current_date"></span>
+			</td>
+			
+			<td>
+				<!-- 댓글버튼 -->
+				<button id="replySubmit2" class="btn btn-primary" style="background-color: #1ABB9C; border:none;">
+					<i class="fa fa-pencil"></i>등록
+				</button>
+			</td>	
+		</tr> 		    
+		</div>
+		
+		<!-- 댓글목록 -->
+		 <tr id="adminTr" th:each="adminInfo : ${adminReply}" >
+			<td style="width: 5%">
+			</td>
+			<td style="width: 220px; text-align:center;">
+				<span th:text="'👩‍🌾'+${adminInfo.userId}"></span> <br />
+		    </td>
+			<td style="height: 70%; width: 800px; margin-left:70px"  class="project_progress">
+			 	<textarea class="boardtx" style="display: block; height: 100%; width: 800px; margin-left:100px; background-color:#F5F5F5; border: none;" spellcheck="false" readonly>[[${adminInfo.replyboardContent}]]</textarea>
+			</td>
+			<td style="width:100px; text-align:center;">
+				<span th:text="${#dates.format(adminInfo.replyboardRegdate, 'yyyy-MM-dd')}"></span>
+			</td>
+			
+			<!-- 여기부터모달td -->
+			<td>
+			
+				<!-- 댓글수정버튼 -->
+				<!-- 로그인 + 작성자 -->
+				<button th:if="${session.login !=null} AND (${session.login?.userId} == ${adminInfo.userId})" type="button" class="btn btn-info btn-xs"
+					data-toggle="modal"
+					th:attr="data-target=${'.bs-example-modal-lg'+adminInfo.replyboardBno}" style="background-color: #1ABB9C; border:none;">
+					<i class="fa fa-pencil"></i>수정
+				</button>  
+				<!-- 비로그인 or 작성자아님 -->
+				<button th:if="${session.login==null} OR (${session.login?.userId} != ${adminInfo.userId})" style="display:none;" >
+					<i class="fa fa-pencil"></i>
+				</button>
+								
+				
+				<!-- 댓글 수정 모달창 -->
+				<div id="myModal"
+					th:attr="class=${'modal fade bs-example-modal-lg'+adminInfo.replyboardBno}"
+					tabindex="-1" role="dialog" aria-hidden="true">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+
+							<div class="modal-header" style="background-color: #2A3F54;">
+								<h4 id="myModalLabel" style="color:white; margin-left:10px; font-size: 20px;">📌 댓글 수정</h4>
+								<!--input으로 replyBno 받아오기... -->
+								<input type="hidden" id="replyBno"
+									th:value="${adminInfo.replyboardBno}" />
+
+								<button type="button" class="close" data-dismiss="modal">
+									<span aria-hidden="true" style="color:white">×</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<label style="margin-left:10px; font-weight: bold; font-size: 18px;">🙍 나의 댓글</label>
+								<br>
+								<div class="col-md-9 col-sm-9 ">
+									<textarea style="height:150px; width:750px; background-color: #F5F5F5; font-weight: bold;" spellcheck="false">[[${adminInfo.replyboardContent}]]</textarea>
+								</div>
+							</div>
+							<div class="modal-footer" style="background-color: #2A3F54;">
+								<button type="button" class="btn btn-secondary"
+									data-dismiss="modal"  style="background-color:#6675ff; font-weight: bold; width:80px; border:none">취소</button>
+								<button id="replySubmitBtn" style="background-color:#5208ff;font-weight: bold; width:80px; border:none;"
+									th:onclick="replyUpdate(event, [[${adminInfo.replyboardBno}]])"
+									type="button" class="btn btn-primary" >저장</button>
+							</div>
+
+						</div>
+					</div>
+				</div> 
+				
+				<!--삭제확인 modal button-->
+				<button th:if="${session.login !=null} AND (${session.login?.userId} == ${adminInfo.userId})" type="button" class="btn btn-danger btn-xs"
+					data-toggle="modal" data-target=".bs-example-modal-sm" style="background-color:grey; border:none;">
+					<i class="fa fa-trash-o"></i>삭제
+				</button>
+				<button th:unless="${session.login !=null} AND (${session.login?.userId} == ${adminInfo.userId})" style="display:none;">
+				</button>  
+				
+				<!--모달창-->
+				<div class="modal fade bs-example-modal-sm" tabindex="-1"
+					role="dialog" aria-hidden="true">
+					<div class="modal-dialog modal-sm">
+						<div class="modal-content">
+
+							<div class="modal-header"  style="background-color: #2A3F54;">
+								<h4 class="modal-title" id="myModalLabel2"></h4>
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close"  style="color:white;">
+									<span aria-hidden="true">×</span>
+								</button>
+							</div>
+							<div class="modal-body" style="background-color:white;">
+								<h4 style="color:black;">댓글을 삭제 하시겠습니까?</h4>
+							</div>
+							<div class="modal-footer" style="background-color: #2A3F54;">
+								<button type="button" class="btn btn-secondary" style="background-color:#6675ff;font-weight: bold; width:80px; border:none;" 
+									data-dismiss="modal">취소</button>
+								<button type="button" class="btn btn-primary" style="background-color:#5208ff;font-weight: bold; width:80px; border:none;"
+										th:onclick="deleteReply([[${adminInfo.replyboardBno}]])" >삭제</button>
+							</div>
+							</div>
+						</div>
+					</div> <!--modal-->
+
+				</td>
+			<!-- 모달td끝 -->		
+		</tr>
+		
+		
+		<tr id="replyTr" th:each="replyInfo : ${replyList}" style="border:1px solid #EEEEEE;">
+			<td style="width: 5%">
+			</td>
+			<td style="text-align:center;">
+				<span  style="width: 100px; text-align:center;" th:text="${replyInfo.userId}"></span><br/>
+		    </td>
+			<td style="height: 70%; width: 800px; margin-left:70px" class="project_progress">
+				<textarea class="boardtx" style="display: block; height: 70px; width: 800px; margin-left:100px;  border: none; " spellcheck="false" readonly>[[${replyInfo.replyboardContent}]]</textarea>
+			</td>
+			<td style="width:100px; text-align:center;">
+				<span th:text="${#dates.format(replyInfo.replyboardRegdate, 'yyyy-MM-dd')}"></span>
+			</td>
+			<td>
+			
+				<!-- 댓글수정버튼 -->
+				<!-- 로그인 + 작성자 -->
+				<button th:if="${session.login !=null} AND (${session.login?.userId} == ${replyInfo.userId})" type="button" class="btn btn-info btn-xs"
+					data-toggle="modal" style="background-color: #1ABB9C; border:none;"
+					th:attr="data-target=${'.bs-example-modal-lg'+replyInfo.replyboardBno}" >
+					<i class="fa fa-pencil"></i>수정
+				</button>  
+				<!-- 비로그인 or 작성자아님 -->
+				<button th:if="${session.login==null} OR (${session.login?.userId} != ${replyInfo.userId})" style="display:none;" >
+					<i class="fa fa-pencil"></i>
+				</button>
+								
+				
+				<!-- 댓글 수정 모달창 -->
+				<div id="myModal"
+					th:attr="class=${'modal fade bs-example-modal-lg'+replyInfo.replyboardBno}"
+					tabindex="-1" role="dialog" aria-hidden="true">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+
+							<div class="modal-header" style="background-color: #2A3F54;">
+								<h4  id="myModalLabel" style="color:white; margin-left:10px; font-size: 20px;">📌 댓글 수정</h4>
+																			<!--input으로 replyBno 받아오기... -->
+								<input type="hidden" id="replyBno"
+									th:value="${replyInfo.replyboardBno}" />
+
+								<button type="button" class="close" data-dismiss="modal">
+									<span aria-hidden="true" style="color:white">×</span>
+								</button>
+							</div>
+							<div class="modal-body">
+							
+								<label style="margin-left:10px; font-weight: bold; font-size: 18px;">🙍 나의 댓글</label>
+								<br>
+								<div class="col-md-9 col-sm-9 ">
+									<textarea style="height:150px; width:750px; background-color: #F5F5F5; font-weight: bold;" spellcheck="false">[[${replyInfo.replyboardContent}]]</textarea>
+								</div>
+							</div>
+							<div class="modal-footer" style="background-color: #2A3F54;">
+								<button type="button" class="btn btn-secondary"data-dismiss="modal" style="background-color:#6675ff; font-weight: bold; width:80px; border:none">취 소</button>
+								<button id="replySubmitBtn"
+									th:onclick="replyUpdate(event, [[${replyInfo.replyboardBno}]], [[${'bs-example-modal-lg'+replyInfo.replyboardBno}]])"
+									type="button" class="btn btn-primary" style="background-color:#5208ff;font-weight: bold; width:80px; border:none;">저 장</button>
+							</div>
+
+						</div>
+					</div>
+				</div> 
+				
+				<!--삭제확인 modal button-->
+				<button th:if="${session.login !=null} AND (${session.login?.userId} == ${replyInfo.userId})" type="button" class="btn btn-danger btn-xs"
+					data-toggle="modal" data-target=".bs-example-modal-sm" style="background-color:grey; border:none;">
+					<i class="fa fa-trash-o"></i>삭제
+				</button>
+				<button th:unless="${session.login !=null} AND (${session.login?.userId} == ${replyInfo.userId})" style="display:none;">
+				</button>  
+				
+				<!--모달창-->
+				<div class="modal fade bs-example-modal-sm" tabindex="-1"
+					role="dialog" aria-hidden="true">
+					<div class="modal-dialog modal-sm">
+						<div class="modal-content">
+
+							<div class="modal-header" style="background-color: #2A3F54;">
+								
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close" style="color:white;">
+									<span aria-hidden="true">×</span>
+								</button>
+							</div>
+							<div class="modal-body"  style="background-color:white;">
+								<h4 style="color:black;">댓글을 삭제 하시겠습니까?</h4>
+							</div>
+							<div class="modal-footer" style="background-color: #2A3F54;">
+								<button type="button" class="btn btn-secondary"
+									data-dismiss="modal"  style="background-color:#6675ff;font-weight: bold; width:80px; border:none;" >취소</button>
+								<button type="button" class="btn btn-primary" style="background-color:#5208ff;font-weight: bold; width:80px; border:none;"
+										th:onclick="deleteReply([[${replyInfo.replyboardBno}]])">삭제</button>
+							</div>
+							</div>
+						</div>
+					</div> <!--modal-->
+
+				</td>
+			</tr>
+
+		</tbody>
+	</table>
+	     <!-- 페이징 -->
+	     
+             	<ul class="pagination2 model" th:each="page:${pageMaker}" style="margin-left:50px;" >
+					<th:block
+						th:with="start = ${page.startPage}, end = ${page.endPage} ">
+						<!-- 처음-->
+						<li class="pageInfo_btn"><a class="pagefirst" 
+							th:href="|javascript:replyload(${page.startPage-1})|" 
+							th:text="'<<'"></a></li>
+						<!-- 이전 -->
+						<li class="pageInfo_btn" th:if="${page.prev}"><a
+							class="allowleft"
+							th:href="|javascript:replyload(${page.realEnd})|"
+							th:text="'<'"></a></li>
+						<!-- 숫자 -->
+						<li class="pageInfo_btn"
+							th:with="start = ${page.startPage}, end = ${page.endPage} "
+							th:each="pageButton : ${#numbers.sequence(start, end)}">
+							<a class="num"
+							th:href="|javascript:replyload(${pageButton})|"
+							th:text=${pageButton}
+							th:classappend="${pageMaker.criteria.pageNum == pageButton ? 'active':'' }"></a>
+						</li>
+						<!-- 다음 -->
+						<li class="pageInfo_btn" th:if="${page.next}"><a
+							class="arrowright"
+							th:href="|javascript:replyload(${page.endPage+1})|"
+							th:text="'>'"></a></li>
+						<!-- 끝 -->
+						<li class="pageInfo_btn"><a class="pagelast"
+							th:href="|javascript:replyload(${page.realEnd})|"
+							th:text="'>>'"> <span>끝</span></a></li>
+					</th:block>
+				</ul>
+				
+                 <!-- 페이징 -->                
+            
+	<script>
+	
+	$(document).ready(function() {
+		
+		$("#replyTextarea").on('keyup', function() {
+	        $('#test_cnt').html("("+$(this).val().length+" / 500)");
+	 
+	        if($(this).val().length > 500) {
+	            $(this).val($(this).val().substring(0, 500));
+	            $('#test_cnt').html("(500 / 500)");
+	        }
+	    });
+		
+		//textarea scroll대신 
+		 $('.boardtx').on( 'keyup', function (e){
+			    $(this).css('height', 'auto');
+			    $(this).height(this.scrollHeight);
+			  });
+		 
+			  $('.boardtx').keyup();
+			 	
+	});
+	
+								
+		//댓글 수정하기
+	var replyUpdate = function(e , replyboardBno, modalNo){
+						
+			 	e.preventDefault();			
+			
+			    let replyText = $(window.event.target).closest('.modal-content').find('textarea').val();	
+			    
+				if( $(window.event.target).closest('.modal-content').find('textarea').val().length == 0){
+					Swal.fire({
+		                icon: 'warning',
+		                title: '댓글 내용을 입력해주세요.'
+		            });
+					return false;
+				}
+				
+				$.ajax({
+						url: "/ohnong/replyUpdate.do",
+						data:{
+							"replyboardContent": replyText,
+							"replyboardBno": replyboardBno											
+					},
+					type:"post",
+					
+					success:function(result){
+							//console.log(result);			
+						//$('#myModal').hide();
+										
+						
+						//$('.'+modalNo).modal('hide');
+						$('#myModal').modal('hide');
+						//$(window.event.target).closest('.modal-content').find('textarea').val('');
+						setTimeout(()=> replyload(1) , 800);
+						
+														
+					},
+					error:function(reject){
+					
+						Swal.fire({
+			                icon: 'warning',
+			                title: '댓글등록에 실패했습니다.운영자에게 문의해주세요.'
+			            });
+					}
+					
+				})//ajax끝
+					
+		}
+			
+			
+		
+	 //댓글삭제
+	 var deleteReply = function(replyboardBno){
+		
+		 $.ajax({
+			 url: "/ohnong/deleteReply",
+			 data:{
+				 "replyboardBno" : replyboardBno
+			 },
+			 type:"post",
+			 success:function(result){
+				 
+				 if(result == 1){
+					
+					 Swal.fire({
+			                icon: 'success',
+			                title: '삭제되었습니다.'
+			          });
+					 
+					$('.bs-example-modal-sm').modal('hide');
+					
+					setTimeout(()=> replyload(1) , 600);
+				 	
+				   }
+									 					 
+			 },
+			 error:function(){
+				 Swal.fire({
+		                icon: 'fail',
+		                title: '실패했습니다. 운영자에게 문의 바랍니다.'
+		          });
+				 
+				 replyload(1);
+			 }
+		 })
+		 	 
+	 }//댓글삭제 끝
+			
+		 //댓글입력창의 날짜.
+			date = new Date();
+
+			year = date.getFullYear();
+			month = date.getMonth() + 1;
+			day = date.getDate();
+
+			if(month<10){
+				if(day<10){
+					$("#current_date").html(year + "-0" + month + "-0" + day);
+				}else{
+					$("#current_date").html(year + "-0" + month + "-" + day);
+				}
+			}else{
+				if(day<10){
+					$("#current_date").html(year + "-" + month + "-0" + day);
+				}else{
+					$("#current_date").html(year + "-" + month + "-" + day);
+				}			
+			}
+			
+			
+			
+			//////////////
+			//댓글입력
+	      ///////////댓글등록
+			$('#replySubmit').on("click", function() {
+				
+				let replyboardContent = $("#replyTextarea").val();
+				
+				if( $("#replyTextarea").val().length == 0){
+					 Swal.fire({
+			                icon: 'warning',
+			                title: '댓글 내용을 입력해주세요'
+			          });
+					return false;
+				}
+				
+				if( $("#replyTextarea").val().length > 999){
+					 Swal.fire({
+			                icon: 'info',
+			                title: "댓글은 1000자 이하로 입력 할 수 있습니다."
+			          });
+					return false;
+				}
+				$.ajax({
+					url : "/ohnong/replySubmit.do",
+					data : {
+						"replyboardContent" : replyboardContent,
+						"boardBno" : '[[${param.boardBno}]]',
+						"userId" : '[[${session.login?.userId}]]'
+					
+					},
+					type :"post",
+					success : function(result) {
+						if (result == "success") {
+								
+							$('#replyContent').val('');
+							
+							replyload(1);//댓글 등록시 댓글 등록창 초기화
+																			
+						} 
+					},
+					error : function() {
+						
+						Swal.fire({
+			                icon: 'error',
+			                title: '실패했습니다. 운영자에게 문의 바랍니다.'
+			          });
+					}
+				})
+			})//댓글등록ajax 끝
+			
+			
+			   ///////////관리자의 댓글등록
+			$('#replySubmit2').on("click", function() {
+				
+				let replyboardContent = $("#replyTextarea").val();
+				
+				console.log(this, replyboardContent);
+				
+				if( $("#replyTextarea").val().length == 0){
+					Swal.fire({
+		                icon: 'warning',
+		                title: '댓글 내용을 입력해주세요'
+		          });
+					return false;
+				}
+				
+				if( $("#replyTextarea").val().length > 999){
+					
+					Swal.fire({
+		                icon: 'info',
+		                title: "댓글은 1000자 이하로 입력 할 수 있습니다."
+		          });
+					return false;
+				}
+				
+				
+				//var userId = 유저Id.... 
+				
+				$.ajax({
+					url : "/ohnong/replyAdminSubmit.do",
+					data : {
+						"replyboardContent" : replyboardContent,
+						"boardBno" : '[[${param.boardBno}]]',
+						"userId" : '[[${session.login?.userId}]]'
+					
+					},
+					type :"post",
+					success : function(result) {
+						if (result == "success") {
+								
+							$('#replyContent').val('');
+							
+							replyload(1);//댓글 등록시 댓글 등록창 초기화
+																			
+						} 
+					},
+					error : function() {
+						Swal.fire({
+			                icon: 'error',
+			                title:'실패했습니다'
+			          });
+						
+					}
+				})
+			})//댓글등록ajax 끝
+			
+			
+			
+</script>
+								
+</div>
+</body> 
+
+</html>	

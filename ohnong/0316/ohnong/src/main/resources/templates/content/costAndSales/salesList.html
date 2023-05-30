@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layoutMagement}">
+<head>
+<meta charset="UTF-8">
+<title>oh-nong!</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<style>
+
+.pageInfo_area{
+    text-align: center;
+    width: 50%;
+}
+.pagination2{
+    list-style: none;
+    display: inline-block;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.pagination2 li {
+    display: inline;
+    text-align: center;
+}
+/*숫자*/ 
+.pagination2 a {
+    float: left;
+    display: block;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 5px 12px;
+    color: #96a0ad;
+    line-height: 1.5;
+}
+.pagefirst{
+    margin-right: 15px;
+}
+.pagelast{
+    margin-left: 15px;
+}
+.pagefirst:hover, .pagelast:hover, .arrowright:hover, .arrowleft:hover, .model .num:hover{
+    color:#2e9cdf;
+}
+.pagination2 .move.active{
+    cursor: default;
+    color: #ffffff;
+}
+.pagination2 .move:active{
+    outline: none;
+}
+.model .num {
+    margin-left: 3px;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    -moz-border-radius: 100%;
+    -webkit-border-redius:100%;
+    border-radius: 100%;
+}
+.model .num.active, .model .num:active{
+    background-color: #2e9cdf;
+    cursor: pointer;
+}
+.arrowleft{
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10ox solid blue;
+}
+
+ a.active {
+ 	cursor:default;
+ 	color:#ffffff; 	
+ }
+
+  
+  .search_area{
+    text-align:center;
+  }
+  .search_area input{
+    height: 30px;
+    width: 250px;
+  }
+  .search_area button{
+    height: 30px;
+    width: 100px;
+  }
+   .search_area select{
+  	height: 30px;
+    width:150px;
+  }
+ .move:link {color: #2e9cdf; text-decoration: none; }
+ .move:visited {color:purple;,text-decoration: overline;}
+ .move:hover {color:#bbb;,text-decoration: underline;}
+ 
+</style>
+</head>
+</th:block>
+<th:block layout:fragment="script">
+</th:block>
+<div layout:fragment="contentMagement">
+	<style type="text/css">
+	/* Chrome, Safari, Edge, Opera */
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+	  -webkit-appearance: none;
+	  margin: 0;
+	}
+	
+	/* Firefox  */
+	input[type='number'] {
+	  -moz-appearance: textfield;
+	}
+	td {
+		font-weight: bold;
+	}
+	</style>
+	<!-- page content -->
+	<div class="right_col" role="main">
+		<div class="">
+			<div class="col-md-12 col-sm-12  ">
+				<!-- 검색기능 -->
+				<div class="x_panel" style="width:1410px;height:100%;">
+					<div class="x_title">
+						<h4 style="color:black;font-weight: bold;">📃 매출내역</h4>
+						<div class="clearfix"></div>
+					</div>
+					<div class="clearfix"></div>
+					<!--  
+						<div style="display: inline-block">
+							<p>농가이름
+							<input type="text" id="farmName" th:value="농가1" readonly>
+							</p>
+						</div>
+						<div style="display: inline-block">
+							<p>등록자
+							<input type="text" id="userName" th:value="user1" readonly>
+							</p>
+						</div>
+					-->
+					<div>
+						<form id="SearchForm" th:action="@{/salesList}" method="get">
+							<div style="display: inline-block">  
+								<p><span style="font-weight: bold; color:black; font-size: 16px; margin-right: 10px;">등록기간</span>
+						    	<input name="startDate" type="date" id="startDate" style="border-radius: 4px; border: 1px solid black;height: 25px;padding: 0 10px;">
+							    <span style="font-weight: bold; color:black; font-size: 16px; margin-right: 10px;">&nbsp&nbspㅡ&nbsp&nbsp</span>
+							    <input name="endDate" type="date" id="endDate" style="border-radius: 4px; border: 1px solid black;height: 25px;padding: 0 10px;">
+								<button id="searchSubmit" type="submit" class="btn btn-secondary btn-sm" style="border: none; font-weight: bold; color:white; background: #2A3F54; height: 25px; padding:0 15px; margin-left: 25px;">조회</button>
+						  		<button id="searchReset" th:onclick="resetData()" type="reset" class="btn btn-secondary btn-sm" style="border: none; font-weight: bold; color:white; background: #2A3F54; height: 25px; padding:0 15px; margin-left: 5px;">초기화</button>
+						  		</p>
+						    </div>
+						</form>
+					</div>
+					
+					<!-- 테이블 -->
+					<div class="x_title">
+						<h5 style="color:black;font-weight: bold;">💸 유형별 매출정보&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp💸 상세 매출정보</h5>
+						<div class="clearfix"></div>
+					</div>
+
+					<div style="width:300px;float:left;">
+						<div class="table-responsive#">
+							<table class="table table-striped jambo_table bulk_action" style="table-layout:fixed;">
+								<thead>
+									<tr class="headings">
+										<th width="120" class="column-title">매출유형</th>
+										<th width="150" style="color:red;" class="column-title">총 매출액</th>
+										<th class="bulk-actions" colspan="7"><a class="antoo"
+											style="color: #fff; font-weight: 500;">Bulk Actions ( <span
+												class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+										</th>
+									</tr>
+								</thead>
+
+								<tbody>
+									<tr class="even pointer" th:each="salesInfo : ${totalSalesList }" th:onclick="viewTable([[${salesInfo.middleCatagori}]],1)">
+										<td style="vertical-align:middle" th:text="${salesInfo.middleCatagori}"/>
+										<td style="vertical-align:middle" class="totalCash" th:text="|${#numbers.formatInteger(salesInfo.total, 0, 'COMMA')}원|"/>
+									</tr>
+									<tr>
+										<td style="background-color:#2A3F54;color:white;">총 누적금액</td>
+										<td style="vertical-align:middle;background-color:#2A3F54;color:white;" id="totalCash"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div style="width:500px;float:left;" id="viewTable">
+						<table class="table table-striped jambo_table bulk_action" style="table-layout:fixed;width:500px">
+							<thead>
+								<tr class="headings">
+									<th width="90"><input type="checkbox" id="check-all" class="flat"></th>
+									<th width="150" class="column-title">출고날짜</th>
+									<th width="150" class="column-title">분류</th>
+									<th width="200" class="column-title">품명</th>
+									<th width="150" class="column-title">출고량</th>
+									<th width="100" class="column-title">단위</th>
+									<th width="125" class="column-title">단가</th>
+									<th width="125" class="column-title">총금액</th>
+									<th class="bulk-actions" colspan="7"><a class="antoo"
+										style="color: #fff; font-weight: 500;">Bulk Actions ( <span
+											class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+									</th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /page content -->
+	<script>
+		$(document).ready(function(){
+			
+			fetch("/ohnong/getSales")
+			.then(resolve => resolve.json())
+			.then(result => {
+				console.log(result);
+				if(result.middleCatagori == null){
+					
+				} else {
+					viewTable(result.middleCatagori, 1);
+				}
+			})
+			.catch(reject => {
+				console.log(reject);
+			})
+			
+			//검색
+	        //검색후 값 유지
+			$('#startDate').val('[[${param.startDate}]]');
+			$('#endDate').val('[[${param.endDate}]]');
+			
+	        let SearchForm = $("#SearchForm");
+		    $("#SearchForm button").on("click", function(e){
+				let startDate = $("#startDate").val();
+				let endDate = $("#endDate").val();
+				
+				//날짜 둘다 입력 체크 + 시작일 > 종료일인경우 체크
+				var stDt = $('#startDate').val();
+			    var edDt = $('#endDate').val();
+			    
+			    if(stDt == '' && edDt != ''){
+			    	const Toast = Swal.mixin({
+	                    toast: true,
+	                    position: 'center-center',
+	                    showConfirmButton: false,
+	                    timer: 500,
+	                    timerProgressBar: true,
+	                    didOpen: (toast) => {
+	                      toast.addEventListener('mouseenter', Swal.stopTimer)
+	                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+	                    }
+	                  })
+
+	                  Toast.fire({
+	                    icon: 'warning',
+	                    title: '시작일과 종료일을 입력하세요.'
+	                  })
+			     	return false;
+			    } 
+			    
+			    if (stDt != '' && edDt == ''){
+			    	const Toast = Swal.mixin({
+	                    toast: true,
+	                    position: 'center-center',
+	                    showConfirmButton: false,
+	                    timer: 500,
+	                    timerProgressBar: true,
+	                    didOpen: (toast) => {
+	                      toast.addEventListener('mouseenter', Swal.stopTimer)
+	                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+	                    }
+	                  })
+
+	                  Toast.fire({
+	                    icon: 'warning',
+	                    title: '시작일과 종료일을 입력하세요.'
+	                  })
+				    return false;
+			    } 
+		    	
+			    if( Number(stDt.replace(/-/gi,"")) > Number(edDt.replace(/-/gi,"")) ){
+			     	const Toast = Swal.mixin({
+	                    toast: true,
+	                    position: 'center-center',
+	                    showConfirmButton: false,
+	                    timer: 500,
+	                    timerProgressBar: true,
+	                    didOpen: (toast) => {
+	                      toast.addEventListener('mouseenter', Swal.stopTimer)
+	                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+	                    }
+	                  })
+
+	                  Toast.fire({
+	                    icon: 'warning',
+	                    title: '시작일이 종료일보다 클 수 없습니다.'
+	                  })
+			     	return false;
+			    }
+				
+				actionForm.find("input[name='startDate']").val(startDate);
+				actionForm.find("input[name='endDate']").val(endDate);
+				e.preventDefault();
+				actionForm.submit();
+			 	var tbody = document.querySelector('#tbodyH');
+				// 높이 변경
+				tbody.style.height = '100px';
+		    })
+			
+		  	//총 누적금액
+		   	var totalSum = 0;
+	        var total = 0;
+	        
+	    	$('.totalCash').each(function(index,item){
+	    		console.log(index);
+	    		console.log(item);
+	    		let sum = (item.innerText).replaceAll(',','');
+	    		sum = Number(sum.replaceAll('원',''));
+	    		total = total + sum;
+	    		totalSum = total.toLocaleString('ko-KR') + "원";
+	    	});
+	    	
+	    	$("#totalCash").text(totalSum);
+		});
+		
+		function resetData(){
+			$("#startDate").val("");
+			$("#endDate").val("");
+			document.getElementById('searchSubmit').click();
+		}
+		
+		var middle = '';
+		function viewTable(middleCategori, pageNum){
+			console.log(middle);
+			console.log(middleCategori);
+			console.log(pageNum);
+			let startDate = '[[${param.startDate}]]';
+			let endDate = '[[${param.endDate}]]';
+			if(!pageNum){
+				pageNum = 1;
+				console.log(pageNum);
+			}
+			
+			if(!startDate && !endDate){
+				fetch("/ohnong/salesListWithPaging/" + middleCategori + "/" + pageNum)
+				.then(resolve => resolve.json())
+				.then(result => {
+					console.log(result);
+					
+					$("#viewTable").empty();		
+					let table = '';
+					table += `<div><table class="table table-striped jambo_table bulk_action" style="table-layout:fixed;">`;
+					table += `<thead>
+								<tr class="headings">
+									<th width="120" class="column-title">출고날짜</th>
+									<th width="150" class="column-title">거래처명</th>
+									<th width="120" class="column-title">분류</th>
+									<th width="150" class="column-title">품명</th>
+									<th width="130" class="column-title">출고량</th>
+									<th width="110" class="column-title">단위</th>
+									<th width="150" class="column-title">단가</th>
+									<th width="150" class="column-title">총금액</th>
+									<th class="bulk-actions" colspan="7"><a class="antoo"
+										style="color: #fff; font-weight: 500;">Bulk Actions ( <span
+											class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+									</th>
+								</tr>
+							</thead>`;
+					table += `<tbody id='tbodyH'style="height:350px; width:1090px;overflow-y:auto;overflow-x: hidden; display:block;">`;
+					for(let i=0; i< result.length ; i++){
+						let formAmount = result[i].amount;
+						let formPrice = result[i].unitPrice;
+						formTotal = formAmount * formPrice;
+						formTotal = formTotal.toLocaleString('ko-KR') + "원";
+						formAmount = formAmount.toLocaleString('ko-KR');
+						formPrice = formPrice.toLocaleString('ko-KR') + "원";
+						table += `<tr class="even pointer">
+										<td style="width:120px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">` + result[i].thisDay + `</td>
+										<td style="width:150px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">` + result[i].customer + `</td>
+										<td style="width:120px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">` + result[i].middleCatagori + `</td>
+										<td style="width:150px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">` + result[i].name + `</td>
+										<td style="width:130px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">` + formAmount + `</td>
+										<td style="width:110px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">` + "EA" + `</td>
+										<td style="width:150px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">` + formPrice + `</td>
+										<td style="width:150px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">` + formTotal + `</td>
+									</tr>`;
+					}
+					table += `</tbody></table></div>`;
+					$("#viewTable").append(table);
+					
+					
+					fetch("/ohnong/TotalCount/" + middleCategori + "/" + pageNum)
+					.then(resolve => resolve.json())
+					.then(result => {
+						console.log(result);
+						
+						var currentPage = result.cri.pageNum;
+						var startPage = result.startPage;
+						var endPage = result.endPage;
+						var prev = result.startPage!= 1;
+						var next = result.readEnd > result.endPage;
+						
+						let paging = '';
+						
+						$("#viewPaging").empty();	
+						
+						paging += `<div class="pageInfo_area" style="width:100%; text-align: center;margin-left:300px;"><ul class="pagination2 model">`;
+				        if(prev){
+				        	result.startPage=result.startPage - 1;
+				          	paging += "<li class='pageInfo_btn'><a class='allowleft num ' href='javascript:void(0);' onclick='viewTable(" + 'middle' + ',' + result.startPage +")'>이전 </a></li>";
+				        }
+				        middle = middleCategori;
+				        for(var i = startPage; i <= endPage; i++){
+							var active = currentPage == i ? "active":"";
+							paging += "<li class='pageInfo_btn  '><a class='num "+active+"' href='javascript:void(0);' onclick='viewTable(" + 'middle' + ',' + i +")'>"+i+"</a></li>"
+						}
+				        if(next){
+				        	result.endPage=result.endPage + 1;
+				        	paging += "<li class='pageInfo_btn'><a class='arrowright num ' href='javascript:void(0);' onclick='viewTable(" + 'middle' + ',' + result.endPage +")'>다음 </a></li>";
+				        }
+				        paging += `</ul></div>`;
+				        
+				        $("#viewTable").append(paging);
+					})
+					.catch(reject => {
+						console.log(reject);
+					})
+					
+				})
+				.catch(reject => {
+					console.log(reject);
+				})
+					
+			} else{
+				fetch("/ohnong/salesListWithPagingDate/" + middleCategori + "/" + startDate + "/" + endDate + "/" + pageNum)
+				.then(resolve => resolve.json())
+				.then(result => {
+					console.log(result);
+					
+					$("#viewTable").empty();		
+					let table = '';
+					table += `<div><table class="table table-striped jambo_table bulk_action" style="table-layout:fixed;">`;
+					table += `<thead>
+								<tr class="headings">
+									<th width="120" class="column-title">출고날짜</th>
+									<th width="150" class="column-title">거래처명</th>
+									<th width="120" class="column-title">분류</th>
+									<th width="150" class="column-title">품명</th>
+									<th width="130" class="column-title">출고량</th>
+									<th width="110" class="column-title">단위</th>
+									<th width="150" class="column-title">단가</th>
+									<th width="150" class="column-title">총금액</th>
+									<th class="bulk-actions" colspan="7"><a class="antoo"
+										style="color: #fff; font-weight: 500;">Bulk Actions ( <span
+											class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+									</th>
+								</tr>
+							</thead>`;
+					table += `<tbody id='tbodyH'style="height:350px; width:1090px;overflow-y:auto;overflow-x: hidden; display:block;">`;
+					for(let i=0; i< result.length ; i++){
+						let formAmount = result[i].amount;
+						let formPrice = result[i].unitPrice;
+						formTotal = formAmount * formPrice;
+						formTotal = formTotal.toLocaleString('ko-KR') + "원";
+						formAmount = formAmount.toLocaleString('ko-KR');
+						formPrice = formPrice.toLocaleString('ko-KR') + "원";
+						table += `<tr class="even pointer">
+										<td style="width:120px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">` + result[i].thisDay + `</td>
+										<td style="width:150px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">` + result[i].customer + `</td>
+										<td style="width:120px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">` + result[i].middleCatagori + `</td>
+										<td style="width:150px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">` + result[i].name + `</td>
+										<td style="width:130px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">` + formAmount + `</td>
+										<td style="width:110px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">` + "EA" + `</td>
+										<td style="width:150px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">` + formPrice + `</td>
+										<td style="width:150px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">` + formTotal + `</td>
+									</tr>`;
+					}
+					table += `</tbody></table></div>`;
+					$("#viewTable").append(table);
+					
+					
+					fetch("/ohnong/TotalCountDate/" + middleCategori + "/" + startDate + "/" + endDate + "/" + pageNum)
+					.then(resolve => resolve.json())
+					.then(result => {
+						console.log(result);
+						
+						var currentPage = result.cri.pageNum;
+						var startPage = result.startPage;
+						var endPage = result.endPage;
+						var prev = result.startPage!= 1;
+						var next = result.readEnd > result.endPage;
+						console.log(next)
+						
+						let paging = '';
+						
+						$("#viewPaging").empty();	
+						
+						paging += `<div class="pageInfo_area" style="width:100%; text-align: center;margin-left:300px;"><ul class="pagination2 model">`;
+				        if(prev){
+				        	result.startPage = result.startPage - 1;
+				          paging += "<li class='pageInfo_btn'><a class='allowleft num ' href='javascript:void(0);' onclick='viewTable(" + 'middle' + ',' + result.startPage +")'>이전 </a></li>";
+				        }
+				        middle = middleCategori;
+				        for(var i = startPage; i <= endPage; i++){
+							var active = currentPage == i ? "active":"";
+							paging += "<li class='pageInfo_btn  '><a class='num "+active+"' href='javascript:void(0);' onclick='viewTable(" + 'middle' + ',' + i +")'>"+i+"</a></li>"
+						}
+				        if(next){
+				        	result.endPage = result.endPage + 1;
+				        	paging += "<li class='pageInfo_btn'><a class='arrowright num ' href='javascript:void(0);' onclick='viewTable(" + 'middle' + ',' + result.endPage +")'>다음 </a></li>";
+				        }
+				        paging += `</ul></div>`;
+				        
+				        $("#viewTable").append(paging);
+					})
+					.catch(reject => {
+						console.log(reject);
+					})
+				})
+				.catch(reject => {
+					console.log(reject);
+				})
+			}
+		}
+	</script>
+</div>
+
+
+

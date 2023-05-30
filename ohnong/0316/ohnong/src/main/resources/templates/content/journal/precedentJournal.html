@@ -1,0 +1,652 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layoutMagement}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>oh-nong!</title>
+</head>
+
+<th:block layout:fragment="css">
+</th:block>
+<th:block layout:fragment="script">
+</th:block>
+<body class="nav-md">
+	<div layout:fragment="contentMagement">
+		<style>
+.dateHead div {
+   background: #f7f7f7;
+   color: black;
+   text-align: center;
+   border-radius: 5px;
+   font-weight: bold;
+}
+
+.grid {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	grid-gap: 5px;
+}
+
+.grid div {
+	padding: .6rem;
+	font-size: .9rem;
+	cursor: pointer;
+}
+
+.dateBoard div {
+	color: #222;
+	font-weight: bold;
+	min-height: 6rem;
+	padding: 0px;
+	border-radius: 5px;
+	border: 1px solid #eee;
+}
+
+.noColor {
+	background: #eee;
+}
+
+.header {
+	display: flex;
+	justify-content: space-between;
+	padding: 1rem 2rem;
+}
+
+/* 좌우 버튼 */
+.btn {
+	display: block;
+	width: 20px;
+	height: 20px;
+	border: 3px solid #000;
+	border-width: 3px 3px 0 0;
+	cursor: pointer;
+}
+
+.prevDay {
+	transform: rotate(-135deg);
+}
+
+.nextDay {
+	transform: rotate(45deg);
+}
+
+/* ---- */
+@import
+	url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css")
+	;
+
+* {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	box-sizing: border-box;
+	font-family: Pretendard;
+}
+
+.rap {
+	max-width: 820px;
+	padding: 0 1.4rem;
+	margin-top: 1.4rem;
+}
+
+.dateHead {
+	margin: .4rem 0;
+}
+
+tr, td, th {
+	border: 1px solid black;
+	text-align: center;
+	color: black;
+	padding: 3px 15px 3px 15px;
+	font-weight: bold;
+}
+
+
+
+.modBtn {
+	background-color: #aefcfb;
+	margin-top: 5px;
+	padding: 0px 5px 0px 5px;
+	border-radius: 3px;
+	opacity: 0.7;
+	font-weight: bolder;
+	border: 1px solide black;
+}
+
+.delBtn {
+	background-color: #909df0;
+	margin-top: 5px;
+	padding: 0px 5px 0px 5px;
+	border-radius: 3px;
+	opacity: 0.7;
+	font-weight: bolder;
+	border: 1px solide black;
+}
+
+#planInfo {
+	background-color: #e4fac3;
+	border-radius: 3px;
+	font-weight: bolder;
+}
+
+#planAdd {
+	background-color: #b7fab6;
+	border-radius: 3px;
+	font-weight: bolder;
+}
+
+#imgBtn {
+	border-radius: 3px;
+	font-weight: bolder;
+}
+
+#planAddBtn {
+	background-color: #b7fab6;
+	border-radius: 3px;
+	font-weight: bolder;
+}
+
+.filebox {
+	display: inline-block;
+	margin: 10px;
+}
+
+.filebox label {
+	display: inline-block;
+	padding: 6px 8px;
+	margin-left: 496px;
+	color: #999;
+	font-size: inherit;
+	line-height: normal;
+	border-radius: .25em;
+	cursor: pointer;
+	color: black;
+	background-color: #e4fac3;
+	border: 1px solid #683d8b;
+	font-weight: bolder;
+}
+
+.filebox input[type="file"] {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	border: 0;
+}
+
+.filebox .upload-name {
+	display: inline-block;
+	padding: 0.3em 0.4em;
+	font-size: inherit;
+	font-family: inherit;
+	line-height: normal;
+	vertical-align: middle;
+	background-color: #f5f5f5;
+}
+</style>
+
+		<div class="right_col" role="main" style="min-height: 1000px;">
+			<div style="display: inline-block;">
+				<div
+					style="border: 1px solid black; margin-top: 100px; width: 700px; height: 850px; border-radius: 15px; margin-left: 100px;">
+					<div
+                  style="text-align: center; background: linear-gradient(to right top, #cafcd6,#035c2f ); color :black;border-radius: 15px 15px 0 0; border-bottom: 1px solid #b6f09c;">
+                  <h5 style="margin: 0px; padding: 18px;">
+                     <strong>오농 Calendar</strong>
+                  </h5>
+               </div>
+					<div class='rap'>
+						<div class="header">
+							<div class="btn prevDay"></div>
+							<h3 class='dateTitle' style="font-weight: bold; color:black; margin-top:-6px;"></h3>
+							<div class="btn nextDay"></div>
+						</div>
+
+						<div class="grid dateHead">
+							<div>일</div>
+							<div>월</div>
+							<div>화</div>
+							<div>수</div>
+							<div>목</div>
+							<div>금</div>
+							<div>토</div>
+						</div>
+
+						<div class="grid dateBoard"></div>
+					</div>
+				</div>
+				<div>
+
+					<div id="planListInfo"
+						style="width: 700px; height: 250px; border: 1px solid black; margin-top: 20px; border-radius: 15px; margin-left: 100px; display: none;">
+						<div
+							style="text-align: center; color: black; background: linear-gradient(to right top, #cafcd6,#035c2f ); border-radius: 15px 15px 0 0; border-bottom: 1px solid #b6f09c; height: 17%">
+							<h5 style="margin: 0px; padding: 10px;">
+								<strong>월간 계획</strong>
+							</h5>
+						</div>
+						<div id="planList"
+							style="width: 100%; height: 80%; overflow: auto"></div>
+						<div></div>
+					</div>
+				</div>
+
+			</div>
+
+
+			<div id="planStart"
+				style="display: inline-block; vertical-align: top; border: 1px solid black; width: 700px; height: 680px; margin-top: 100px; border-radius: 15px; margin-left: 30px;">
+				<div id="planHead"
+					style="text-align: center; color: black; background: linear-gradient(to right top, #cafcd6,#035c2f ); border-radius: 15px 15px 0 0; height: 9%;">
+					<h5 style="margin-top: 0px; padding-top: 20px;">
+						<strong>선례일지 조회하기 </strong>
+					</h5>
+				</div>
+				<div id="planBody" style="height: 82%">
+					<img src="bootstrap_main/assets/img/portfolio/캘린더1.gif"
+						style="width: 100%; height: 100%;">
+				</div>
+				<div
+					style="text-align: center; color: black; background: linear-gradient(to right top, #cafcd6,#035c2f ); border-radius: 0 0 15px 15px; height: 9%;">
+				</div>
+				<div
+					style="width: 700px; height: 150px; border: 1px solid black; margin-top: 20px; border-radius: 15px;">
+					<div
+						style="text-align: center; color: black; background: linear-gradient(to right top, #cafcd6,#035c2f ); border-radius: 15px 15px 0 0; border-bottom: 1px solid #b6f09c;">
+						<h5 style="margin-top: 0px; padding-top: 10px;">
+							<strong> 선례 LIST </strong>
+						</h5>
+					</div>
+					<div>
+						<input type="text" value="작물 ✔&nbsp" style="width: 100px; height: 30px; margin-left: 30px; text-align: center; border: none; background: transparent; font-size: 17px; font-weight: bolder;">
+						<select class="cropName" id="cropSelect" name="language"style="width: 130px; height: 30px; margin-top: 30px; margin-right:30px;  text-align: center; font-size: 15px; font-weight: bolder;">
+							<option>------</option>
+						</select>
+						<input type="text" value="농장주&nbsp"style="width: 100px; height: 30px; text-align: center; border: none; background: transparent; font-size: 17px; font-weight: bolder;">
+						<select id ="cropMaster" style="width: 130px; height: 30px; margin-top: 30px;  text-align: center; font-size: 15px; font-weight: bolder;">
+						</select>
+						<button id="planInfo"style="margin-left: 50px; padding: 5px 20px 5px 20px;">조 회</button>
+						
+					</div>
+				</div>
+			</div>
+			
+		</div>
+
+<script>
+	$(document).ready(function() {
+		
+	for(var i = 0; i < 12; i++ ){
+		$(".prevDay").click();
+	}
+	
+	// DB에 등록된 작물 리스트 종류 중복제거하고 불러옴
+	$.ajax({
+		url : "/ohnong/precedentCropList",
+		type : 'get',
+		success : function(result){
+			console.log(result)	
+			result.forEach(function(index){
+				$('.cropName').append($('<option>',{
+					text : index.name
+				}))
+			})
+		},
+		error : function(status, error) {
+			console.log(status);
+			console.log(error);
+		}
+	})
+	
+	
+});
+		// 품목을 선택하면 품목에 관한 장인들의 리스트를 불러오는 함수
+		$("#cropSelect").change(function(){
+			console.log($(this).val())
+			var cropName = $(this).val();
+			$('#cropMaster').empty();
+			$.ajax({
+				url : "/ohnong/CropMaster",
+				type : 'GET',
+				data : {"cropName" : cropName},
+				success : function(result){
+					console.log(result)	
+					result.forEach(function(index){
+						$('#cropMaster').append($('<option>',{
+							text : index.masterName
+						}))
+					})
+				},
+				error : function(status, error) {
+					console.log(status);
+					console.log(error);
+				}
+			})
+			
+		});
+		
+		//품목과 해당 품목의 농부의 일지를 조회하는 함수
+		$("#planInfo").click(function(){
+			
+			//색상 및 글 초기화 시켜주는 부분
+			document.getElementById("planListInfo").style.display = 'block';
+			$('.info').each(function(index){
+				document.getElementsByClassName('days')[index].style.backgroundColor= '#F7F7F7';
+				var indexNum = index+1;
+				$('#'+indexNum).text("　");
+			})
+			
+			//선택된 농부의 값을 들고온다.
+			var cropMaster = $('#cropMaster').find(":selected").text(); 
+			console.log(cropMaster)
+			
+			$.ajax({
+				type : 'get',
+				url : "/ohnong/CropMasterPlan",
+				data : {"cropMaster": cropMaster},
+				success : function(result){
+					$("#planList").empty()
+					var table = "<table style='border: 1px solid black;margin:auto; margin-top:20px;'>";
+					table += '<tr><th style="display:none">번호</th><th>품목</th><th>작물 계획</th><th>시작일</th><th>종료일</th><th>색상</th><th> 장-인 </th></tr>'
+					for (i=0; i< result.length; i++){
+						
+						// 랜덤으로 배경색을 그려주는 함수
+						function getRandomColor() {
+							  var hex = (Math.floor(Math.random() * 0xFFFFFF) + 1).toString(16);
+							  while(hex.length < 6) {
+							    hex = '0' + hex;
+							  }
+							  // 검정색 흰색 회색 값이 들어갈경우 재귀함수를 사용해서 다시 리턴시켜줌
+							  var black = '000000';
+							  var white = 'FFFFFF';
+							  var gray = '808080';
+							  if(hex === black || hex === white || hex === gray) {
+							    return getRandomColor();
+							  }
+							  return '#' + hex;
+							}
+							
+							//변수에 랜덤으로 받아온 배경색을 받아와서 저장해준다
+							//for문을 돌면서 함수가 실행되서 값이 계속 변경됨
+							var myRandomColor = getRandomColor();
+						
+						table += '<tr><td style="display:none">'+result[i].planNo+'</td><td>'+result[i].cropName+'</td><td>'+result[i].monthPlan+'</td><td>'+result[i].startDate+'</td><td>'+result[i].endDate+
+						'</td><td style="background-color: '+myRandomColor+'; opacity:0.4;"></td><td>'+result[i].masterName+'</td></tr>';
+						
+						var startDay = result[i].startDate;
+						var endDay = result[i].endDate;
+						startDay = parseInt(startDay.slice(-2,startDay.length))
+						endDay = parseInt(endDay.slice(-2,endDay.length))
+						
+						var reDate = result[i].startDate
+						reDate = reDate.substr(5,2)
+						var dateTitle = ($(".dateTitle").text());
+						dateTitle = dateTitle.substr(5,2);
+						
+						
+						$('.info').each(function(){
+							var i = startDay
+							var x = endDay
+							
+							if (i == $(this).data("day") && i <= x && reDate == dateTitle ){
+								document.getElementsByClassName('days')[i-1].style.backgroundColor = myRandomColor;
+							    startDay++;
+							}
+
+						});
+					}
+					table += "</table>"
+					
+					$("#planList").append(table);
+				},
+				error : function(status, error) {
+					console.log(status);
+					console.log(error);
+				}
+				
+			});
+			
+			
+			$.ajax({
+				type : 'get',
+				url : "/ohnong/CropMasterPlanList",
+				data : {"cropMaster": cropMaster},
+				success : function(result){
+					result.forEach(function(index){
+						var dateDay = index.planDate
+						dateDay = dateDay.slice(-2);
+						
+						if (dateDay.charAt(0) == "0"){
+							dateDay = dateDay.slice(1);	
+						}
+						var ReplanDate = index.planDate
+						ReplanDate = ReplanDate.substr(5,2);
+						
+						var RedateTitle = ($(".dateTitle").text());
+						RedateTitle = RedateTitle.substr(5,2);
+						
+						$('.info').each(function(x){
+							var testPlanDate = ReplanDate;
+							var testDatetitle = RedateTitle;
+							if(parseInt(dateDay) == x && testPlanDate == testDatetitle ){
+								$('#'+x).text("📖diary");
+								
+							}
+								
+						})
+					})
+					
+				},error : function(status, error) {
+					console.log(status);
+					console.log(error);
+				}
+				
+			});
+			
+		});
+		//달력 그려줌
+		const makeCalendar = (date) => {
+			  var currentYear = new Date(date).getFullYear(); 	//년도 
+			  var currentMonth = (new Date(date).getMonth() + 1);	//월
+			  if(currentMonth < 10){
+				 var MonthResult = "0"+currentMonth
+			  }
+			  else{
+				  var MonthResult = currentMonth;  
+			  }
+			  
+			  // 첫날의 요일 구하기 - 초기 시작위치를 위해서
+			  const firstDay = new Date(date.setDate(1)).getDay();
+			  //console.log(firstDay)
+			  // 마지막 날짜 구하기 
+			  const lastDay = new Date(currentYear, currentMonth, 0).getDate();
+			  //console.log(lastDay)
+			  
+			  const limitDay = firstDay + lastDay;
+			  const nextDay = Math.ceil(limitDay / 7) * 7;
+
+			  let htmlDummy = '';
+
+			  for (let i = 0; i < firstDay; i++) {
+			    htmlDummy += `<div class="noColor"></div>`;
+			  }
+
+			  for (let i = 1; i <= lastDay; i++) {    
+			    htmlDummy += `<div><b class ="info"  data-day='${i}' onclick='dateInfo(${i})'>&nbsp${i}</b><p id ='${i}' onclick='listInfo(${i})'> </p><p class = "days" style="width:100%; opacity:0.4; margin-top:15px;">&nbsp</p></div>`;
+			    
+			  }
+		
+			  for (let i = limitDay; i < nextDay; i++) {
+			    htmlDummy += `<div class="noColor"></div>`;
+			  }
+
+			  document.querySelector(`.dateBoard`).innerHTML = htmlDummy;
+			  document.querySelector(`.dateTitle`).innerText = `${currentYear}년${MonthResult}월`;
+			  
+			}
+	
+			
+			const date = new Date();
+			
+			makeCalendar(date);
+
+			// 이전달 이동
+			document.querySelector(`.prevDay`).onclick = () => {
+			makeCalendar(new Date(date.setMonth(date.getMonth() - 1)));
+				var cropMaster = $('#cropMaster').find(":selected").text();
+				if(cropMaster !=""){
+					$("#planInfo").click();
+				} 
+				
+			}
+
+			// 다음달 이동
+			document.querySelector(`.nextDay`).onclick = () => {
+			makeCalendar(new Date(date.setMonth(date.getMonth() + 1)));
+				$("#planInfo").click();
+			}
+			
+			function listInfo(val){
+				var dateResult = document.querySelector(`.dateTitle`).innerText;
+				var yearDate = dateResult.substring(0,4);
+				var monthDate = dateResult.substring(5,7);
+				var day = yearDate+"-"+monthDate+"-"+val
+				var cropMaster = $('#cropMaster').find(":selected").text(); 
+				
+				if(val < 10){
+					day = yearDate+"-"+monthDate+"-0"+val	
+				}
+				
+				$.ajax({
+					type : 'POST',
+					url : "/ohnong/CropMasterListInfo",
+					data : {"cropMaster": cropMaster,"planDate": day },
+					success : function(result){
+						var imagePath = result[0].imgName;
+						console.log(result)
+						$('#planHead').empty();
+						$('#planBody').empty();
+						
+						var h5 = "<h5 style='margin-top:0px; padding-top:20px;'><strong> 📖 DIARY 📖 </strong></h5>"
+						$("#planHead").append(h5);
+						
+						var planContent = `	
+							<form name="myPlanInfo" method="POST" enctype="multipart/form-data" onsubmit="return false">
+								<br>
+								<div id="Body_2" style="height:82%">
+									<div style=" width: 98%; height: 70%; margin : 0 auto;">
+									<div style=" width: 96%; height: 10%; margin: 10px 0 0 20px;display: flex; align-items: center; ">
+									
+									<b style="margin:0 10px 0 0; color:black;">🍎 선택 작물</b>
+									<input type = "text" id ="name_2" name="name" style="width:160px; height: 25px; margin-right:26px;border:0 solid black;font-weight: bold; background: transparent;">
+									
+									<b style="margin-right: 10px; color:black; ">📃 제 목</b>
+									<input id="journalTitle_2" type ="text" name="journalTitle" value="일지제목" style="width:316px; height: 25px;font-weight: bold;border:0 solid black; background: transparent;">
+									<input id="planDate_2" name="planDate" type ="hidden">
+									
+								</div>
+										<div style=" width: 40%; height: 86%; margin: 10px 0 0 10px; float: left;">
+											<div style="border: 1px solid black; width: 94%; height: 84%; margin: 10px 0 0 10px;">
+												<img id="fileName_2" src="" style="width:100%;height:257px;">
+											</div>
+											
+										</div>
+										<div style=" width: 56%; height: 86%; margin: 10px 0 0 10px;float: left;">
+											
+											<div style=" width: 96%; height: 257px; margin: 10px 0 0 10px;">
+												<textarea id ="journalCon_2" name = "journalCon" style="width:100%; height:100%;border:0 solid black;font-weight: bold; background: transparent;">일지내용</textarea>
+											</div>
+										</div>	
+									</div>
+									<div class="filebox" style=" width: 98%; height: 24%; margin: 0 auto; ">
+										<div style="width: 47%; height: 20%; margin: 0 0 0 20px; "><b style="margin:0 10px 0 0; color:black;font-size:18px"> 날씨 History 🌅</b></div>
+										<div style="border: 1px solid black; width: 22.7%; height: 100%; margin: 10px 0 0 20px; float: left;text-align: center;">
+											<img id="fileName_2" src="bootstrap_main/assets/img/portfolio/맑음.gif" style="width:50%;height:60%;;margin-top:5px;">
+											<p id="weather_2" style="font-weight:bold;color:black;margin-top:5px;">날씨</p>
+											<input type="hidden" id="weatherResutl" name="weather">
+										</div>
+										<div style="border: 1px solid black; width: 22.7%; height: 100%; margin: 10px 0 0 10px; float: left;text-align: center;">
+											<img src="bootstrap_main/assets/img/portfolio/기온2.png" style="width:50%;height:60%;margin-top:5px;;">
+											<p id="temperatures_2"  style="font-weight:bold;color:black;margin-top:5px;">기온</p>
+											<input type="hidden" name="temperatures" id="temperaturesResutl">
+										</div>
+										<div style="border: 1px solid black; width: 22.7%; height: 100%; margin: 10px 0 0 10px; float: left;text-align: center;">
+											<img src="bootstrap_main/assets/img/portfolio/풍속2.png" style="width:50%;height:60%;;margin-top:5px;">
+											<p id="wind_2" style="font-weight:bold;color:black;margin-top:5px;">풍속</p>
+											<input type="hidden"name ="wind" id="windResutl">
+										</div>
+										<div style="border: 1px solid black; width: 22.7%; height: 100%; margin: 10px 0 0 10px; float: left;text-align: center;">
+											<img src="bootstrap_main/assets/img/portfolio/강수2.png" style="width:50%;height:60%;;margin-top:5px;">
+											<p id="precipitation_2"  style="font-weight:bold;color:black;margin-top:5px;">강수확률</p>
+											<input type="hidden" name="precipitation" id="precipitationResutl">
+											<input type="hidden" name="userId" id="userIdResult_2">
+											<input type="hidden" name ="filePath" id="filePathResult">
+										</div>
+										<button id="planAddBtn"style ="margin-left:590px; margin-top:20px;padding:5px 20px 5px 20px;" onclick="javascript:closeBtn();"> 나가기</button>
+									</div>
+								</div>
+							</div>
+						</form>`;
+				
+					$("#planBody").append(planContent);
+					
+					$("#name_2").val(result[0].name)							//작물이름
+					$("#journalTitle_2").val(result[0].precedenjouranlTitle)			//플랜제목
+					$("#planDate_2").val(result[0].planDate)					//등록날짜
+					$("#journalCon_2").val(result[0].precedenjouranlCon)				//플랜내용
+					$("#weather_2").text(result[0].weather)						//하늘상태
+					$("#temperatures_2").text(result[0].temperatures)			//기온
+					$("#wind_2").text(result[0].wind)							//풍속
+					$("#precipitation_2").text(result[0].precipitation)			//강수확률
+					
+					$('#fileName_2').attr('src', '/ohnong/home/ubuntu/etc/' + imagePath);
+					
+					},error : function(status, error) {
+						console.log(status);
+						console.log(error);
+					}
+					
+				});
+				
+			}
+		
+		function closeBtn(){
+			console.log("클릭");
+			$('#planHead').empty();
+			$('#planBody').empty();
+			
+			var head = "<h5 style='margin-top:0px; padding-top:20px;'><strong> 선례일지 조회하기 </strong></h5>"
+			$("#planHead").append(head);
+			var body ='<img src="bootstrap_main/assets/img/portfolio/캘린더1.gif" style="width: 100%; height: 100%;">'
+			$("#planBody").append(body);
+		}
+		var planAdd = [];
+
+		var arrWeather = [];
+		let today = new Date();
+
+		let year = today.getFullYear().toString(); // 년도
+		
+		let month = today.getMonth() + 1; // 월
+		if (month < 10) {
+			month.toString();
+			var months = '0' + month;
+		}
+		
+
+		let date_2 = today.getDate().toString(); // 날짜
+		console.log(typeof(date));
+		
+		if(date_2.length == 1){
+			date_2 = '0'+date_2;
+		}
+		
+		</script>
+	</div>
+
+</body>
+</html>

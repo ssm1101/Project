@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"> 
+<style>
+
+</style>
+</head>
+
+  <header th:fragment="headerMagementFragment">
+      <!-- top navigation -->
+        <div class="top_nav">
+          <div class="nav_menu">
+              <div class="nav toggle">
+                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+              </div>
+              <nav class="nav navbar-nav">
+              <ul class=" navbar-right">
+                <li class="nav-item dropdown open">
+                  <a href="javascript:;" class="user-profile " aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false" >
+				  	🔽
+				  </a>
+                  <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item"  th:href="@{'/memberInfo?userId='+ ${session.login?.userId}}"> 내 프로필</a>
+                    <a class="dropdown-item"  th:href="@{/logout}"><i class="fa fa-sign-out pull-right"></i> 로그아웃</a>
+                  </div>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        <!-- /top navigation -->
+        
+  </header>
+  
+  <script>
+  
+  </script>
+</html>

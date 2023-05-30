@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layoutMagement}">
+
+<head>
+ <title> oh-nong!</title>
+ 
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.css" />
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/editor/2.0.0/toastui-editor.min.css" />
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/editor/latest/toastui-editor-viewer.min.css" />
+<!-- TOAST UI Editor CDN(JS) -->
+<script
+	src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<!-- TOAST UI Editor CDN(CSS) -->
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+<script src="https://uicdn.toast.com/editor/latest/i18n/ko-kr.min.js"></script>
+<link rel="stylesheet" th:href="@{/css/default.css}" />
+<link rel="stylesheet" th:href="@{/css/content.css}" />
+<link rel="stylesheet" th:href="@{/css/button.css}" />
+<style>
+#deleteBtn:hover {
+	color: red;
+}
+
+#mainb {
+	height: 550px;
+	overflow: auto;
+}
+
+#mainb::-webkit-scrollbar {
+	width: 5px; /*스크롤바의 너비*/
+}
+
+#mainb::-webkit-scrollbar-thumb {
+	background-color: grey; /*스크롤바의 색상*/
+}
+
+#mainb::-webkit-scrollbar-track {
+	background-color: beige; /*스크롤바 트랙 색상*/
+}
+
+.m_head {
+	height: 15%;
+	padding: 10px;
+	display: flex;
+	justify-content: space-between;
+	background-color: #2A3F54;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	color: white;
+}
+
+.m_body {
+	height: 70%;
+	padding: 20px;
+	background-color: #F4F4F4;
+}
+
+.m_footer {
+	height: 15%;
+	padding: 10px;
+	background-color: #2A3F54;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+	display: flex;
+	justify-content: end;
+}
+
+.modal_title {
+	font-size: 18px;
+	color: gray;
+	font-weight: 500;
+}
+
+.modal_label {
+	padding: 2px 0px 2px 0px;
+	background-color: skyblue;
+	width: 80px;
+	border-top: 2px solid black;
+	border-bottom: 2px solid black;
+	text-align: center;
+	color: black;
+	margin-top: 10px;
+	font-weight: bolder;
+}
+
+.alertTitle {
+	font-weight: bold;
+	font-size: 20px;
+}
+
+.alertMessage {
+	font-weight: bold;
+	font-size: 20px;
+}
+</style>
+
+
+</head>
+
+<body class="nav-md">
+	<div layout:fragment="contentMagement">
+		<!-- page content -->
+		<div class="right_col" role="main">
+			<div class="">
+				<!-- 전체 내용 -->
+				<div class="page-title">
+					<!-- 제목 -->
+					<div class="title_left">
+						<h3>Oh! Nong</h3>
+					</div>
+				</div>
+				<div class="row" style="display: block;">
+					<div class="col-md-12 ">
+						<div class="x_panel">
+							<div class="x_title">
+								<!-- 제목 -->
+								<h2 class="green">
+									글 번호 : <span th:text="${board.boardBno}"></span>
+									<span th:if="${board.exist == 5}">(세번 이상 신고받아 블라인드처리된 글입니다. 다른 유저에게 보이지 않습니다. 복구를 원하시면 1:1 문의를 남겨주세요) </span>		
+								</h2>
+								
+								<ul class="nav navbar-right panel_toolbox">
+									<li><a class="collapse-link"><i
+											class="fa fa-chevron-up"></i></a></li>
+									<li class="dropdown"><a href="#" class="dropdown-toggle"
+										data-toggle="dropdown" role="button" aria-expanded="false"><i
+											class="fa fa-wrench"></i></a>
+										<div class="dropdown-menu">
+											<a class="dropdown-item" href="#">공지사항</a> <a
+												class="dropdown-item" href="#">오농식</a> <a
+												class="dropdown-item" href="#">오시는길</a>
+										</div></li>
+								</ul>
+								<div class="clearfix"></div>
+							</div>
+							<div class="x_content">
+								<table class="tb tb_row" style="border: 1px solid black;">
+									<colgroup>
+										<col style="width: 15%;" />
+										<col style="width: 35%;" />
+										<col style="width: 15%;" />
+										<col style="width: 35%;" />
+									</colgroup>
+
+									<tbody>
+										<tr>
+											<th>제목</th>
+											<td><span 
+												th:text="${board.boardTitle}"></span></td>
+											<th scope="row">조회수</th>
+											<td><span 
+												th:text="${board.boardHitcount}"></span></td>
+										</tr>
+										<tr>
+											<th scope="row">등록일</th>
+											<td><span 
+												th:text="${#dates.format(board.boardRegdate, 'yyyy-MM-dd')}"></span>
+												<span 
+												th:if="${board.boardRegdate != board.boardUploaddate}" th:text="'/ 수정날짜 : '+${#dates.format(board.boardUploaddate, 'yyyy-MM-dd')}"></span></td>
+											<th scope="row">카테고리</th>
+											<td><span th:switch="${board.boardCategory}"> <span
+													th:case="A">노하우&팁</span> <span th:case="B">1:1문의</span> <span
+													th:case="C">전문인에게 물어보세요</span> <span th:case="D">잡담</span>
+											</span></td>
+										</tr>
+										<tr>
+											<th>작성자</th>
+											<td colspan="3"><span 
+												th:text="${board.userId}"></span></td>
+										</tr>
+										<tr>
+											<th>내용</th>
+											<td colspan="4" style="height: 500px;">
+												<div id="viewer" style="height: 500px;"></div> <textarea
+													spellcheck="false" id="viewers"
+													style="display: none; height: 800px">[[${board.boardContent}]]</textarea>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<!-- 내용 -->
+								<!--                 추천버튼            -->
+								<div
+									style="display: flex; justify-content: center; margin: 25px">
+
+									<!--로그인 + 자신의 글인 경우. -->
+									<a
+										th:if="${session.login != null} AND (${session.login?.userId}==${board.userId})"
+										class="btn btn-app" th:onclick="myBoard()" id="likeButton">
+										<span style="width: 25px; height: 25px; font-size: 13px;"
+										class="badge bg-blue" id="likeCount">[[${board.boardLike}]]
+									</span> <i class="fa fa-heart-o"></i>추천
+									</a>
+									<!-- 로그인 + 자신의 글이 아닌 경우 -->
+									<a
+										th:if="${session.login != null} AND (${session.login?.userId} !=${board.userId})"
+										class="btn btn-app" th:onclick="updateLike()" id="likeButton">
+										<span style="width: 25px; height: 25px; font-size: 13px;"
+										class="badge bg-blue" id="likeCount">[[${board.boardLike}]]
+									</span> <i class="fa fa-heart-o"></i>추천
+									</a>
+									<!-- 로그인 안한 유저 -->
+									<a th:if="${session.login == null}" class="btn btn-app"
+										th:onclick="notUser()" id="likeButton"> <span
+										style="width: 25px; height: 25px; font-size: 13px;"
+										class="badge bg-blue" id="likeCount">[[${board.boardLike}]]
+									</span> <i class="fa fa-heart-o"></i>추천
+									</a>
+
+									<!--                  목록으로            -->
+									<a  th:if="${#strings.trim(#httpServletRequest.getParameter('col')) == 'A'}" 
+										th:href="@{/community(pageNum=${criteria_1.pageNum},amount=10,type=${criteria_1.type},keyword=${criteria_1.keyword},category=${criteria_1.category})}"
+										class="btn btn-app"> <i class="fa fa-repeat"></i> 목록으로
+									</a>
+									
+									<a th:if="${#strings.trim(#httpServletRequest.getParameter('col')) == 'B'}" 
+										th:href="@{/mywrite(pageNum=${criteria_1.pageNum},amount=10,type=${criteria_1.type},category=${criteria_1.category})}"
+										class="btn btn-app"> <i class="fa fa-repeat"></i> 목록으로
+									</a>
+									<a th:if="${#strings.trim(#httpServletRequest.getParameter('col')) == 'C'}" 
+										th:href="@{/myreply(pageNum=${criteria_1.pageNum},amount=10,type=${criteria_1.type},category=${criteria_1.category})}"
+										class="btn btn-app"> <i class="fa fa-repeat"></i> 목록으로
+									</a>
+									<a th:if="${#strings.trim(#httpServletRequest.getParameter('col')) == 'E'}" 
+										th:href="@{/communityPro(pageNum=${criteria_1.pageNum},amount=10,type=${criteria_1.type})}"
+										class="btn btn-app"> <i class="fa fa-repeat"></i> 목록으로
+									</a>
+									<a th:if="${#strings.trim(#httpServletRequest.getParameter('col')) == 'F'}" 
+										th:href="@{/reportList(pageNum=${criteria_1.pageNum},amount=10)}"
+										class="btn btn-app"> <i class="fa fa-repeat"></i> 목록으로
+									</a>
+									<a th:if="${#strings.trim(#httpServletRequest.getParameter('col')) == 'D'}" 
+										th:href="@{/boardLike(pageNum=${criteria_1.pageNum},amount=10,type=${criteria_1.type},category=${criteria_1.category})}"
+										class="btn btn-app"> <i class="fa fa-repeat"></i> 목록으로
+									</a>
+									
+										
+									<!--   글 수정페이지로 가는버튼  -->
+									<!-- 자신의 글인 경우 -->
+									<a
+										th:if="${session.login != null} AND (${session.login?.userId} == ${board.userId})"
+										th:href="@{/communityUpdate(boardBno=${board.boardBno}, pageNum=${criteria_1.pageNum},amount=10,type=${criteria_1.type},keyword=${criteria_1.keyword},category=${criteria_1.category},userId=${session.login?.userId})}"
+										class="btn btn-app"> <i class="fa fa-edit"></i> 수정하기
+									</a>
+									<!-- 자신의 글이 아닌 경우... -->
+									<span
+										th:unless="${session.login != null} AND (${session.login?.userId} eq ${board.userId})"
+										style="display: none;"> </span>
+									<!-- 신고하기 버튼 -->
+
+									<a th:if="${session.login != null} AND (${session.login?.userId} !=${board.userId})"
+										class="btn btn-app" id="report-btn"> <span
+										class="badge bg-red"></span> <i class="fa fa-bullhorn"></i>신고하기
+									</a>
+									<!-- 삭제버튼 -->
+									<a
+										th:if="${session.login != null} AND (${session.login?.userId} == ${board.userId})"
+										class="btn btn-app" th:onclick="deleteBoard()" id="deleteBtn">
+										<span class="glyphicon glyphicon-trash"> </span><i></i>삭제
+									</a>
+								</div>
+								<div style="display: flex; align-items: center; justify-content: center;">
+								  <h2 th:if="${board.boardCategory =='C'}">📢전문인에게 물어보세요 카테고리는 추천수가 10이 넘으면 운영자의 전문인 자문 답변을 받을 수 있습니다</h2>
+								</div>
+								<div style="display: flex; align-items: center; justify-content: center;">
+								  <h2 th:if="${board.boardCategory =='B'}">📢1:1문의는 관리자만 댓글을 달 수 있습니다</h2>
+								</div>
+
+								<!-- 신고하기 모달창 -->
+								<div class="modal" id="report-modal">
+									<div class="modal_body">
+
+										<div class="m_head">
+											<h2 style="color: white;">🚨 신고하기</h2>
+											<span class="close" style="color: white;">X</span>
+										</div>
+										<form>
+											<div class="m_body">
+												<label class="modal_label" for="report-input"
+													style="margin-right: 15px; background-color: #2A3F54; color: white">신고
+													유형</label> <label><input type="radio" name="report-type"
+													value="스팸"> 스팸</label> <label><input type="radio"
+													name="report-type" value="욕설"> 욕설</label> <label><input
+													type="radio" name="report-type" value="음란물">음란물</label> <br>
+												<textarea class="input_box" id="report-input" name="report"
+													spellcheck="false"></textarea>
+											</div>
+											<div class="m_footer">
+												<input class="modal_btn save"
+													style="width: 80px; height: 30px; padding: 5px; float: left; border-radius: 3px; font-weight: bold;"
+													type="submit" value="제 출">
+											</div>
+										</form>
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+						<!-- 댓글 html-->
+						<div id="replyHtml"></div>
+						<!-- 댓글 -->
+					</div>
+
+
+<script>
+
+var boardBno2 = "[[${board.boardBno}]]";
+
+//댓글list불러오는 함수.
+function replyload(p){
+	
+	$('#replyHtml').load("/ohnong/communityReply?boardBno="+boardBno2+"&pageNum="+p);
+	
+}
+
+	///로딩 되자마자 replyHTML부르기
+	$(function(){
+		
+		replyload(1);
+		
+		likeBeforeCheck();
+		
+	})
+	
+	//자기 글 추천 눌렀을때 알람
+	function myBoard(){
+	    Swal.fire({
+	        icon: 'warning',
+	        text: '자신의 글은 추천 할 수 없습니다.'
+	      });
+	}
+	
+	//비회원이 추천 눌렀을때 알람
+	function notUser(){
+	
+		 Swal.fire({
+		        icon: 'warning',
+		        text: '로그인 한 회원만 추천 할 수 있습니다.'
+		      });
+		
+	}
+	
+	//추천 한 글인지 체크 후 미리 하트처리
+	let likeBeforeCheck= function(){
+		
+		 let likeNum='[[${like}]]';
+		 
+		 if(likeNum == 1){
+			 $('#likeButton').attr('style','color:red');
+		 }	
+		
+	}
+	
+		var reportdiv = $('#report-modal');
+		reportdiv.css("position", "absolute");
+		reportdiv.css("top", Math.max(0, 4 *(($(window).height() - reportdiv.outerHeight()) / 2) + $(window).scrollTop()) + "px");
+		reportdiv.css("left", Math.max(0, 2 * (($(window).width() - reportdiv.outerWidth()) ) + $(window).scrollLeft()) + "px");
+		reportdiv.css("width","400px");
+		reportdiv.css("text-align","center");
+		reportdiv.css("color","black");
+		
+		$('.close').css("text-align","right");
+		
+	  // 신고하기 버튼 클릭 이벤트
+	  $('#report-btn').on('click', function() {
+	    $('#report-modal').css('display', 'block');
+	  });
+
+	  // 모달창 닫기 버튼 클릭 이벤트
+	  $('.close').on('click', function() {
+	    $('#report-modal').css('display', 'none');
+	    $('#report-input').val('');
+	  });
+
+	  // 모달창 외부 클릭 시 모달창 닫기
+	  $(window).on('click', function(event) {
+	    if (event.target == $('#report-modal')[0]) {
+	      $('#report-modal').css('display', 'none');
+	      $('#report-input').val('');
+	    }
+	  });
+
+	  
+	  
+	  
+	  // 신고하기 폼 제출 이벤트
+	  $('#report-modal form').on('submit', function(event) {
+	    
+		  event.preventDefault(); // 기본 이벤트 동작 중지
+
+	    var reportType = $('input[name="report-type"]:checked').val(); // 선택된 신고 유형
+	    var reportContent = $('#report-input').val(); // 입력된 신고 내용
+	    
+	    
+	    if($('input[name="report-type"]').is(':checked') == false){
+	  
+	       Swal.fire({
+		      icon: 'warning',
+		      text: "신고 유형을 선택해주세요",
+		    });
+	        return false;
+	    }
+	    
+	    if($('#report-input').val().length == 0){
+	    	 Swal.fire({
+			      icon: 'warning',
+			      text: "신고 내용을 입력해주세요",
+			    });
+	    	return false;
+	    }
+	    
+		 $.ajax({
+			 
+			 url: "/ohnong/reportWrite",
+			 data:{
+				 "boardBno" : boardBno2,
+				 "reportType": reportType,
+				 "reportContent":reportContent,
+				 "userId": '[[${session.login?.userId}]]'
+			 },
+			 type:"post",
+			 success:function(result){
+               
+				 Swal.fire({
+	                icon: 'success',          
+	                title: '🚨신고 처리 결과🚨\n\n 신고 유형 : '+reportType ,     
+	                text: '\n '+'"' + reportContent+'"' +" "+'\n 내용으로 신고접수 완료되었습니다.'
+	            });
+	            
+	            
+	
+	            // 모달창 닫기
+	            $('#report-modal').css('display', 'none');
+	
+	            $('#report-input').val('');  
+					
+				 							 					 
+			 },
+			 error:function(){
+				 
+				 Swal.fire({
+		                icon: 'error',              
+		                text: '실패했습니다.\n 운영자에게 문의주세에요.'
+		            });
+					
+			 }
+		
+		 })
+						   
+	});
+				
+				  
+				
+				
+////////////////////추천기능
+function updateLike(){
+//나중에 로그인한 userId받아와야함.>추가함.
+			
+	var boardBno2 = '[[${board.boardBno}]]';
+	let oldCountNum = parseInt($('#likeCount').text());
+	let plusCount = String(oldCountNum+1);
+	let minCount = String(oldCountNum-1);
+	
+	$.ajax({
+		
+		url: "/ohnong/updateLike",
+		type:"POST",
+		data:{
+			"boardBno": boardBno2,
+			"userId":'[[${session.login?.userId}]]'							
+		}
+		,success:function(likeCheck){
+			
+			if(likeCheck == 0){
+				
+				$('#likeCount').text(plusCount);
+				$('#likeButton').attr('style','color:red');
+			
+			}else if(likeCheck == 1){
+				$('#likeCount').text(minCount);
+				$('#likeButton').attr('style','');
+			}
+		}
+		,error:function(){
+			 
+			 Swal.fire({
+	                icon: 'error',              
+	                text: '실패했습니다.\n 운영자에게 문의주세에요.'
+	            });
+		}			
+	})
+				
+}
+				 ////////////
+
+  ///////에디터 뷰어.
+function bodyinit() {
+
+	if (toastui === undefined) {
+		return;
+	}
+	var viewer = new toastui.Editor.factory({
+		el : document.querySelector('#viewer'),
+		initialValue : document.querySelector("#viewers").value,
+		viewer : true,
+		initialEditType : "wysiwyg"
+	})
+};
+
+bodyinit();
+				
+ //글삭제
+function deleteBoard(){
+	
+	 Swal.fire({
+	      title: '정말 글을 삭제하시겠습니까?',
+	      text: "다시 되돌릴 수 없습니다. 신중하세요.",
+	      icon: 'warning',
+	      showCancelButton: true,
+	      confirmButtonColor: '#3085d6',
+	      cancelButtonColor: '#d33',
+	      confirmButtonText: '승인',
+	      cancelButtonText: '취소',
+	      reverseButtons: true, // 버튼 순서 거꾸로
+	      
+	    }).then((result) => {
+	      if (result.isConfirmed) {
+	    	  
+	    	  $.ajax({
+	    			 
+	    			 url: "/ohnong/deleteBoard",
+	    			 data:{
+	    				 "boardBno" : boardBno2
+	    			 },
+	    			 type:"post",
+	    			 success:function(result){
+	    					    				
+	    				Swal.fire('삭제되었습니다.')
+	    				setTimeout(function(){window.location="/ohnong/community?pageNum="+[[${criteria_1.pageNum}]], 4000);
+	    				 							 					 
+	    			 },
+	    			 error:function(){
+	    				 
+	    				 Swal.fire('실패했습니다.')
+	    			 }
+	    		 })//ajax   
+	        }
+	    })
+	
+	
+ }
+ 	
+</script>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+
+</head>
+<aside th:fragment="sidebarMagementFragment">
+    <div class="col-md-3 left_col">
+        <div class="left_col scroll-view">
+            <div class="navbar nav_title" style="border: 0;">
+                <a href="main" class="site_title"><i class="fa fa-leaf"></i>
+                    <span>OH ! NONG</span></a>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <!-- menu profile quick info -->
+            <div class="profile clearfix">
+                <div class="profile_pic">
+                <table>
+                <tr class="even pointer" th:each="memberList : ${memberList }" >
+	               <td><img th:src="|/ohnong/home/ubuntu/etc/${memberList?.filePath}|" alt="..." class="img-circle profile_img"></td> 
+                </tr>
+                </table>
+                </div>
+                <div class="profile_info">
+                    <span>Welcome,</span>
+                    <!-- 계정 정보 -->
+                    <div th:text="${session.login?.userId}" style="font-size: 20px; color: white">
+                    <!-- 계정 정보 -->
+                    </div>
+                </div>
+            </div>
+            <!-- /menu profile quick info -->
+
+            <br />
+
+            <!-- sidebar menu : 일반인 -->
+            <div sec:authorize="hasRole('ROLE_MEMBER')">
+            <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                <div class="menu_section">
+                    <ul class="nav side-menu">
+                        <li><a><i class="fa fa-home"></i> 회원정보 <span class="fa fa-chevron-down"></span></a>
+                            <ul class="nav child_menu">
+                            
+                            <li><a>내 정보<span class="fa fa-chevron-down"></span></a>
+                            	<ul class="nav child_menu">
+                                	<li><a th:href="@{'/memberInfo?userId='+ ${session.login?.userId}}">내 프로필</a></li>
+                                	<li><a th:if="${session.login != null}" href="mywrite">내가 작성한 글</a></li>
+                                	<li><a th:if="${session.login != null}" href="myreply">내가 작성한 댓글</a></li>
+                                	<li><a th:if="${session.login != null}" href="boardLike">내가 추천한 글</a></li>
+                                </ul>
+                            </li>
+                          
+						    </ul>
+						</li>
+						
+						<li><a><i class="fa fa-bell"></i> 공지사항 <span class="fa fa-chevron-down"></span></a>
+							<ul class="nav child_menu">
+								<li><a href="noticeList">공지사항</a></li>
+								<li><a href="FarmPrice">농가 가격 정보</a></li>
+								<li><a href="subProject">지원 사업 / 교육 안내</a></li>
+								<li><a href="youthPolicy">청년정책 안내</a></li>
+								<li><a>청년농 사례 안내<span class="fa fa-chevron-down"></span></a>
+									<ul class="nav child_menu">
+										<li><a href="farmerInfo">청년농 영상 소개</a></li>
+										<li><a href="youthCase">청년농 글 소개</a></li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+
+						<li><a href="calculationSelect"><i class="fa fa-laptop"></i> 수익모델 <span
+                                class="fa fa-chevron-down"></span></a></li>
+                               
+                        <li><a><i class="fa fa-comments-o"></i> 커뮤니티 <span
+                                class="fa fa-chevron-down"></span></a>
+                            <ul class="nav child_menu">
+                                <li><a th:href="${'community?pageNum=1&amount=10&category=A'}">노하우 / 팁</a></li>
+                                <li><a th:href="${'community?pageNum=1&amount=10&category=B'}">1:1 문의</a></li>
+                                <li><a th:href="${'community?pageNum=1&amount=10&category=D'}">잡담</a></li>
+                                <li><a th:href="${'community?pageNum=1&amount=10&category=C'}">전문인에게 물어보세요</a></li>
+                            </ul></li>
+                    </ul>
+                </div>
+            </div>
+            </div>
+            <!-- /sidebar menu -->
+            
+            <!-- sidebar menu : 농가인 -->
+            <div sec:authorize="hasRole('ROLE_FAMER')">
+            <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                <div class="menu_section">
+                    <ul class="nav side-menu">
+                        <li><a><i class="fa fa-home"></i> 회원정보 <span class="fa fa-chevron-down"></span></a>
+                            <ul class="nav child_menu">
+                             <li><a>내 정보<span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a th:href="@{'/memberInfo?userId='+ ${session.login?.userId}}">내 프로필</a></li>
+                                    <li><a th:if="${session.login != null}" href="mywrite">내가 작성한 글</a></li>
+                                    <li><a th:if="${session.login != null}" href="myreply">내가 작성한 댓글</a></li>
+                                    <li><a th:if="${session.login != null}" href="boardLike">내가 추천한 글</a></li>
+                                </ul>
+                             </li>
+                             
+                             <li><a>농가 관리<span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a th:href="@{'/farmInfo?userId='+ ${session.login?.userId}}">내 농가</a></li>
+                                    <li><a th:href="@{'/customerList?userId='+ ${session.login?.userId}}">거래처 관리</a></li>
+                                    <li><a th:href="@{'/cropInfoList?userId='+ ${session.login?.userId}}">작물 관리</a></li>
+                                    <li><a th:href="@{'/warehouseList?userId='+ ${session.login?.userId}}">창고 관리</a></li>
+                                </ul>
+                             </li>
+                            </ul>
+                        </li>
+                        
+                        <li><a><i class="fa fa-bell"></i> 공지사항 <span class="fa fa-chevron-down"></span></a>
+                            <ul class="nav child_menu">
+                                <li><a href="noticeList">공지사항</a></li>
+                                <li><a href="FarmPrice">농가 가격 정보</a></li>
+                                <li><a href="subProject">지원 사업 / 교육 안내</a></li>
+                                <li><a href="youthPolicy">청년정책 안내</a></li>
+                                <li><a>청년농 사례 안내<span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="farmerInfo">청년농 영상 소개</a></li>
+                                        <li><a href="youthCase">청년농 글 소개</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li><a href="calculationSelect"><i class="fa fa-laptop"></i> 수익모델 <span
+                                class="fa fa-chevron-down"></span></a></li>
+                                
+                        <li><a><i class="fa fa-edit"></i>일지 <span
+                                class="fa fa-chevron-down"></span></a>
+                            <ul class="nav child_menu">
+                                <li><a href="journal">일지 관리</a></li>
+                                <li><a href="precedentJournal">선례 일지 조회</a></li>
+                            </ul></li>
+                            
+                            
+                        <li><a><i class="fa fa-archive"></i> 재고관리 <span
+                                class="fa fa-chevron-down"></span></a>
+                            <ul class="nav child_menu">
+                                <li><a href="harvestList">수확물 관리</a></li>
+                                <li><a href="defectiveList">불량품목 관리</a></li>
+                                <li><a href="seedList">종묘 관리</a></li>
+                                <li><a href="pesticideList">농약/비료 관리</a></li>
+                                <li><a href="equipmentList">농기구 관리</a></li>
+                                <li><a href="machineList">농기계 관리</a></li>
+                            </ul></li>
+                            
+                        <li><a><i class="fa fa-credit-card"></i> 지출/매출관리 <span
+                                class="fa fa-chevron-down"></span></a>
+                            <ul class="nav child_menu">
+                                <li><a href="costList">지출 내역</a></li>
+                                <li><a href="salesList">매출 내역</a></li>
+                            </ul></li> 
+                               
+                        <li><a><i class="fa fa-comments-o"></i> 커뮤니티 <span
+                                class="fa fa-chevron-down"></span></a>
+                            <ul class="nav child_menu">
+                                <li><a th:href="${'community?pageNum=1&amount=10&category=A'}">노하우 / 팁</a></li>
+                                <li><a th:href="${'community?pageNum=1&amount=10&category=B'}">1:1 문의</a></li>
+                                <li><a th:href="${'community?pageNum=1&amount=10&category=D'}">잡담</a></li>
+                                <li><a th:href="${'community?pageNum=1&amount=10&category=C'}">전문인에게 물어보세요</a></li>
+                            </ul></li>
+                    </ul>
+                </div>
+            </div>
+            </div>
+            <!-- /sidebar menu -->
+            
+            <!-- sidebar menu : 관리자 -->
+            <div sec:authorize="hasRole('ROLE_ADMIN')">
+            <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                <div class="menu_section">
+                    
+                    <ul class="nav side-menu">
+                        <li><a th:href="@{/memberList}"><i class="fa fa-sitemap"></i> 회원 관리</a></li>
+                    </ul>
+                    <ul class="nav side-menu">
+                        <li><a th:href="@{/farmList}"><i class="fa fa-sitemap"></i> 농가 관리</a></li>
+                    </ul>
+                    <ul class="nav side-menu">
+                        <li><a th:href="@{/neighborhoodRentalList}"><i class="fa fa-sitemap"></i> 농기계 관리</a></li>
+                    </ul>
+                    <ul class="nav side-menu">
+                    <li><a href="noticeList"><i class="fa fa-sitemap"></i>공지사항 관리</a>
+                        </li>
+                    </ul>
+                    <ul class="nav side-menu">
+                    <li><a><i class="fa fa-sitemap"></i> 커뮤니티 관리<span class="fa fa-chevron-down"></span></a>
+                            <ul class="nav child_menu">
+                                <li><a th:href="${'reportList'}">신고받은 글</a></li>
+                                <li><a th:href="${'communityPro'}">전문인에게 물어보세요</a></li>
+                            </ul></li>   
+                    </ul>
+                    
+                </div>
+            </div>
+            </div>
+            <!-- /sidebar menu -->
+            
+            <!--비회원일때 -->
+            <div sec:authorize="!isAuthenticated()">
+            	 <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                <div class="menu_section">
+                    <ul class="nav side-menu">						
+						<li><a><i class="fa fa-bell"></i> 공지사항 <span class="fa fa-chevron-down"></span></a>
+							<ul class="nav child_menu">
+								<li><a href="noticeList">공지사항</a></li>
+								<li><a href="FarmPrice">농가 가격 정보</a></li>
+								<li><a href="subProject">지원 사업 / 교육 안내</a></li>
+								<li><a href="youthPolicy">청년정책 안내</a></li>
+								<li><a>청년농 사례 안내<span class="fa fa-chevron-down"></span></a>
+									<ul class="nav child_menu">
+										<li><a href="farmerInfo">청년농 영상 소개</a></li>
+										<li><a href="youthCase">청년농 글 소개</a></li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+
+                        <li><a><i class="fa fa-comments-o"></i> 커뮤니티 <span
+                                class="fa fa-chevron-down"></span></a>
+                            <ul class="nav child_menu">
+                                <li><a th:href="${'community?pageNum=1&amount=10&category=A'}">노하우 / 팁</a></li>
+                                <li><a th:href="${'community?pageNum=1&amount=10&category=B'}">1:1 문의</a></li>
+                                <li><a th:href="${'community?pageNum=1&amount=10&category=D'}">잡담</a></li>
+                                <li><a th:href="${'community?pageNum=1&amount=10&category=C'}">전문인에게 물어보세요</a></li>
+                            </ul></li>
+                    </ul>
+                </div>
+            </div>
+            
+            
+            
+            </div>
+            
+            
+
+            <!-- /menu footer buttons -->
+            <div class="sidebar-footer hidden-small">
+                <a data-toggle="tooltip" data-placement="top" title="Settings">
+                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                </a> <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                    <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                </a> <a data-toggle="tooltip" data-placement="top" title="Lock"> <span
+                    class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                </a> <a data-toggle="tooltip" data-placement="top" title="Logout"
+                    href="bootstrap_magement/production/login.html"> <span class="glyphicon glyphicon-off"
+                    aria-hidden="true"></span>
+                </a>
+            </div>
+            <!-- /menu footer buttons -->
+        </div>
+    </div>
+    </div>
+</aside>
+
+</html>

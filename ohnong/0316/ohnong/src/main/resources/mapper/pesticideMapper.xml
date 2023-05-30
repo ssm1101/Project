@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohnong.app.stock.mapper.PesticideMapper">
+
+	<select id="getPesticideListWithPaging" resultType="OtherVO">
+		select * from(
+           select rownum rn, a.* from(
+              select o.stock_no,
+              		 o.count,
+              		 o.price,
+              		 o.regist_date,
+              		 o.item_code,
+              		 s.name,
+              		 o.warehouse_code,
+              		 w.warehouse_name,
+              		 s.middlecatagori
+              		 
+              from subdivision s
+              join otherStock o
+             	on (s.item_code = o.item_code)
+              join warehouse w
+                on (o.warehouse_code = w.warehouse_code)
+                
+              where o.user_id = #{userId}
+                and s.middlecatagori = '농약'
+	          <if test="warehouseCode != 0">
+		   		  and o.warehouse_code = #{warehouseCode}
+		   	  </if>
+		   	  <if test="middleCatagori != null and middleCatagori !=''">
+	    		  <if test="name != null and name != ''">
+	    			and s.middlecatagori = #{middleCatagori}
+        			and s.name LIKE '%'||#{name}||'%'
+	    		  </if>
+	    	  </if>
+	    	   <if test="startDate != null and startDate !=''">
+	    		  <if test="endDate != null and endDate !=''">
+	    			and o.regist_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD')
+	    							  	  AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+	    		  </if>
+	    	  </if>
+              or s.middlecatagori = '비료'
+        	  <if test="warehouseCode != 0">
+	    		and o.warehouse_code = #{warehouseCode}
+	    	  </if>
+	    	  <if test="middleCatagori != null and middleCatagori !=''">
+	    		  <if test="name != null and name != ''">
+	    			and s.middlecatagori = #{middleCatagori}
+        			and s.name LIKE '%'||#{name}||'%'
+	    		  </if>
+	    	  </if>
+	    	  <if test="startDate != null and startDate !=''">
+	    		  <if test="endDate != null and endDate !=''">
+	    			and o.regist_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD')
+	    							  	  AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+	    		  </if>
+	    	  </if>
+        <![CDATA[
+              order by o.stock_no desc) a where rownum <= (#{pageNum} * #{amount})) b
+                                          where b.rn > (#{pageNum} - 1) * #{amount}
+        ]]>
+	</select>
+	
+	<select id="getTotalCount" resultType="int">
+		select count(*)
+	    from subdivision s join otherStock o
+	      on (s.item_code = o.item_code)
+	    join warehouse w
+	      on (o.warehouse_code = w.warehouse_code)
+	    where o.user_id = #{userId}
+	      and s.middlecatagori = '농약'
+	    <if test="warehouseCode != 0">
+	   		and o.warehouse_code = #{warehouseCode}
+	   	</if>
+	   	<if test="middleCatagori != null and middleCatagori !=''">
+	   		<if test="name != null and name != ''">
+	   			and s.middlecatagori = #{middleCatagori}
+	      		and s.name LIKE '%'||#{name}||'%'
+	   		</if>
+	   	</if>
+	   	<if test="startDate != null and startDate !=''">
+	   		<if test="endDate != null and endDate !=''">
+	   			and o.regist_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD')
+	   							 	  AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+	   		</if>
+	   	</if>
+	    or s.middlecatagori = '비료'
+        <if test="warehouseCode != 0">
+	   		and o.warehouse_code = #{warehouseCode}
+	   	</if>
+	   	<if test="middleCatagori != null and middleCatagori !=''">
+   		  	<if test="name != null and name != ''">
+	   			and s.middlecatagori = #{middleCatagori}
+      			and s.name LIKE '%'||#{name}||'%'
+   		 	</if>
+   	  	</if>
+   	 	<if test="startDate != null and startDate !=''">
+   		 	<if test="endDate != null and endDate !=''">
+	   			and o.regist_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD')
+	   							  	  AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+   		 	</if>
+   	 	</if>
+	</select>
+	
+	<insert id="pesticideInsert" parameterType="OtherVO">
+		DECLARE
+        BEGIN
+            insert into subdivision(item_code, name, middlecatagori, user_id)
+            values (sub_seq.nextval, #{name}, #{middleCatagori}, #{userId});
+        
+            insert into otherStock(stock_no, count, price, regist_date, user_id, item_code, warehouse_code)
+        	values (other_seq.nextval, #{count}, #{price}, #{reDate}, #{userId}, sub_seq.currval, #{warehouseCode});
+            
+            insert into detail(detail_no, today, middlecategori, itemcode, detail, cash, user_id, maincategori, explation)
+            values (detail_seq.nextval, #{reDate}, #{middleCatagori}, sub_seq.currval, #{name}, #{count} * #{price}, #{userId}, #{mainCatagori}, #{explation});
+        END;
+	</insert>
+
+</mapper>

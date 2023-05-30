@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohnong.app.farm.mapper.FarmMapper">
+
+	<!-- 농가 등록 -->
+    <insert id="insertFarmInfo" parameterType="FarmVO">
+    	declare
+        begin
+		    insert into farm 
+		    (user_id, farm_name, farm_ceo, farm_addr, plant_area, MAINCATAGORI, middlecatagori, subdivision,
+		    farm_detailaddr, homepage, regist_num, memo, file_path) 
+		    values (#{userId}, #{farmName}, #{farmCeo}, #{farmAddr}, #{plantArea}, '작물', #{middlecatagori}, #{subdivision}, 
+		    #{farmDetailaddr}, #{homepage}, #{registNum}, #{memo}, SUBSTR(#{filePath}, INSTR(#{filePath}, '/', -1) + 1));
+		    
+		    update member
+            set farm_state = 'Y'
+            where user_id = #{userId};
+       	end;
+    </insert>
+    
+    <!-- 본인 농가 정보 조회 -->
+    <select id="selectFarmInfo" parameterType="String" resultType="FarmVO">
+        SELECT * FROM farm
+        WHERE user_id = #{userId}
+    </select>
+    
+    <!-- 본인 농가 정보 수정 -->
+    <update id="farmUpdate"> 
+        update farm
+        set farm_name = #{farmName}, farm_ceo = #{farmCeo}, farm_addr = #{farmAddr}, plant_area = #{plantArea}
+        , middlecatagori = #{middlecatagori}, subdivision = #{subdivision}, farm_detailaddr = #{farmDetailaddr}
+        , homepage = #{homepage}, regist_num = #{registNum}, memo = #{memo}
+        where user_id = #{userId}
+    </update>
+    
+    <!-- 관리자용 농가 목록 조회 -->
+    <select id="farmList" resultType="farmVO">
+      SELECT rownum rn, farm.*
+      FROM farm
+    </select>
+    
+    <!-- 관리자용 농가 승인 -->
+    <update id="signFarmState">
+        declare
+        begin
+            update farm
+            set farm_state = #{farmState}
+            where user_id = #{userId};
+            
+            update member
+            set grade = '3'
+            where user_id = #{userId};
+        end;
+    </update>
+    
+    <!-- 관리자용 농가 삭제 + 회원용 농가 탈퇴 -->
+    <delete id="farmDelete">
+        declare
+        begin
+            delete from FARM where user_id = #{userId};
+            delete from CROP where user_id = #{userId};
+            delete from CUSTOMER where user_id = #{userId};
+            delete from DETAIL where user_id = #{userId};
+            delete from EQUIPMENTSTATUS where user_id = #{userId};
+            delete from FARMJOURNAL where user_id = #{userId};
+            delete from HARVESTSTOCK where user_id = #{userId};
+            delete from OTHERSTOCK where user_id = #{userId};
+            delete from PLAN where user_id = #{userId};
+            delete from SALES where user_id = #{userId};
+            delete from SUBDIVISION where user_id = #{userId};
+            delete from WAREHOUSE where user_id = #{userId};
+            
+            update member set grade='2' where user_id = #{userId};
+        end;
+    </delete>
+    
+    <!-- 농가 중복 체크 -->
+	<select id="checkFarm" resultType="int">
+		select count(*)
+		from farm
+		where
+		farm_name = #{farmName}
+	</select>
+</mapper>

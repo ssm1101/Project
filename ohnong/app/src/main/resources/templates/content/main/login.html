@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layoutMain}">
+<head>
+<meta charset="UTF-8">
+</head>
+
+<th:block layout:fragment="css"></th:block>
+<th:block layout:fragment="script"></th:block>
+
+<div layout:fragment="contentMain">
+<header class="masthead">
+	<div class="text-center" style="color:black">
+		<div id="login" class="animate form login_form" style="width:30%; float:none; margin:0 auto">
+			<section class="login_content">
+				<form>
+					<h1>Login</h1>
+					<br>
+					<div>
+						<input type="text" class="form-control" placeholder="ID" required="" />
+					</div>
+					<br>
+					<div>
+						<input type="password" class="form-control" placeholder="Password" required="" />
+					</div>
+					<br>
+
+					<div>
+						<div class="checkbox">
+							<label> <input type="checkbox" class="flat"> 자동 로그인
+							</label>
+						</div>
+						<a class="btn btn-default submit" href="#">로그인</a>
+						<a href="join" class="btn btn-default submit to_register"> 회원가입 </a>
+						<br>
+						<a class="reset_pass" href="findId">ID 찾기</a>
+						<a class="reset_pass" href="findPw">PW 찾기</a>
+					</div>
+
+						<br />
+
+						<div>
+							<h1>
+								<i class="fa fa-paw"></i> 오늘의 농가!
+							</h1>
+							<p>©hello. This is today's farmhouse. nice to meet you.
+							hello. This is today's farmhouse. nice to meet you.</p>
+						</div>
+				</form>
+			</section>
+		</div>
+	</div>
+</header>
+</div>
+</html>

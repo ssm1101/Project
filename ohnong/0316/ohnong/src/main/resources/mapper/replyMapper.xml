@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.ohnong.app.community.mapper.ReplyMapper">
+
+
+<!-- 댓글목록. 관리자 댓글이 제일 위로가게 정렬해야함(grade도 봐야함..) -->
+<select id="getReplyList" resultType="com.ohnong.app.community.service.ReplyVO">
+select * from ( select rownum rn, a.*     from(
+	select * 
+	from replyboard
+	where exist=0
+	and board_bno=#{boardBno}
+	and rgrade=0
+	order by replyboard_bno desc
+	
+<![CDATA[             
+)          a where rownum <= #{criteria.pageNum} * #{criteria.amount}
+]]>           ) b
+where b.rn>=(#{criteria.pageNum}-1) * #{criteria.amount}
+</select>
+
+<!-- 댓글갯수 -->
+<select id="replyCount" resultType="int">
+select count(*) from replyboard
+where board_bno=#{boardBno,jdbcType=INTEGER} and exist=0
+</select>
+
+<!-- 댓글작성(아이디 추가해야함) -->
+<insert id="insertReply" parameterType="com.ohnong.app.community.service.ReplyVO">
+insert into replyboard
+values
+(REPLY_BNO_SEQ.nextval,
+#{replyboardContent,jdbcType=VARCHAR}, 
+sysdate, 
+sysdate, 
+#{userId,jdbcType=VARCHAR},
+#{boardBno},
+default,
+default)
+</insert>
+
+<!-- 댓글 수정 -->
+<update id="replyUpdate">
+update replyboard
+set replyboard_content=#{replyboardContent,jdbcType=VARCHAR},
+replyboard_uploaddate=sysdate
+where replyboard_bno=#{replyboardBno,jdbcType=INTEGER}
+</update>
+
+
+<select id="getReply" resultType="com.ohnong.app.community.service.ReplyVO">
+select *
+from replyboard
+where replyboard_bno =#{replyboardBno}	
+</select>
+
+<update id="deleteReply">
+update replyboard
+set exist= exist+1
+where replyboard_bno=#{replyboardBno,jdbcType=INTEGER}
+</update>
+
+<!-- 내 댓글 리스트.. -->
+<select id="getMyReply" resultType="com.ohnong.app.community.service.ReplyVO">
+select * from ( select rownum rn, a.*    from(
+			  select *
+      	  	  from replyboard r join board b
+             	on r.board_bno = b.board_bno
+              where r.exist =0
+              and r.user_id=#{userId}
+              <if test="criteria.category != null and criteria.category !=''">
+              	 and b.board_category=#{criteria.category}
+              </if>
+               order by r.replyboard_bno desc
+<![CDATA[             
+			) a where rownum <= #{criteria.pageNum} * #{criteria.amount}
+]]>           ) b
+where b.rn>=(#{criteria.pageNum}-1) * #{criteria.amount}
+</select>
+	
+<!-- 내 댓글 갯수 -->
+<select id="myReplyTotal" resultType="int">
+select count(*)
+from replyboard r join board b
+on r.board_bno = b.board_bno
+where r.exist =0 
+<if test="criteria.category != null and criteria.category !=''">
+      and b.board_category=#{criteria.category}
+</if>
+and r.user_id=#{userId}
+</select>
+
+<!-- 관리자 댓글 가져오기 -->
+<select id="getAdminReply" resultType="com.ohnong.app.community.service.ReplyVO">   
+select *
+from replyboard 
+where rgrade=1
+and exist=0
+and board_bno=#{boardBno}
+</select>
+
+<!-- 관리자의 댓글등록. -->
+<insert id="insertAdminReply" parameterType="com.ohnong.app.community.service.ReplyVO">
+insert into replyboard
+values
+(REPLY_BNO_SEQ.nextval,
+#{replyboardContent,jdbcType=VARCHAR}, 
+sysdate, 
+sysdate, 
+#{userId,jdbcType=VARCHAR},
+#{boardBno},
+default,
+1)
+</insert>
+
+<!-- 관리자 댓글등록시  -->
+<update id="adminRep">
+update board
+set adminrep=adminrep+1
+where board_bno =#{boardBno}
+</update>
+
+</mapper>

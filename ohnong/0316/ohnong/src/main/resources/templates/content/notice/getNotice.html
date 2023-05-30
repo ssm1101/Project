@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layoutMagement}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>oh-nong!</title>
+<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
+
+	<link rel="stylesheet" th:href="@{/css/default.css}" />
+	<link rel="stylesheet" th:href="@{/css/content.css}" />
+	<link rel="stylesheet" th:href="@{/css/button.css}" />
+	
+	
+	<link rel="stylesheet" href="https://uicdn.toast.com/editor/2.0.0/toastui-editor.min.css" />
+	<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor-viewer.min.css" />
+	<!-- TOAST UI Editor CDN(JS) -->
+	<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+	<!-- TOAST UI Editor CDN(CSS) -->
+	<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+	<script src="https://uicdn.toast.com/editor/latest/i18n/ko-kr.min.js"></script>
+	
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+<style>
+
+</style>
+</head>
+
+<th:block layout:fragment="css">
+</th:block>
+<th:block layout:fragment="script">
+</th:block>
+<body class="nav-md">
+	<div layout:fragment="contentMagement">
+		<!-- page content -->
+		<div class="right_col" role="main">
+			<div class="" > <!-- 전체 내용 -->
+				<div class="page-title"> <!-- 제목 -->
+					<div class="title_left">
+						<h3><i class="fa fa-leaf"></i> Oh! Nong</h3>
+					</div>
+				</div>	<!-- /검색창 -->
+				<div class="row" style="display: block;">
+				<div class="col-md-12">
+					<div class="x_panel">
+						<div class="x_title"> <!-- 제목 -->
+							<h2 class="green">글 번호 : <span th:text="${notice.noticeNo}"></span></h2>
+								<ul class="nav navbar-right panel_toolbox">
+									<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+									<li class="dropdown"><a href="#" class="dropdown-toggle"data-toggle="dropdown" role="button" aria-expanded="false">
+									<i class="fa fa-wrench"></i></a>
+									<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+										<a class="dropdown-item" href="#">공지사항</a> 
+										<a class="dropdown-item" href="#">오농식</a>
+										<a class="dropdown-item" href="#">오시는길</a>
+									</div></li>
+								</ul>
+							<div class="clearfix"></div>
+						</div>
+						<div class="x_content"> <!-- 작성자,등록일, 조쇠후 -->
+							<table class="tb tb_row" style="border: 1px solid black;">
+								<colgroup>
+									<col style="width: 15%;" />
+									<col style="width: 35%;" />
+									<col style="width: 15%;" />
+									<col style="width: 35%;" />
+								</colgroup>
+							<tbody>
+								<tr>
+									<th >제목</th>
+										<td>
+										<span class="value text-success" th:text="${notice.noticeTitle}"></span>
+										</td>
+									<th scope="row">조회수</th>
+										<td><span class="value text-success"
+											th:text="${notice.hitCnt}"></span></td>
+									</tr>
+									<tr>
+										<th scope="row">등록일</th>
+										<td><span class="value text-success"
+											th:text="${#dates.format(notice.regDate, 'yyyy-MM-dd')}"></span></td>
+										<th scope="row">수정일</th>
+										<td><span class="value text-success"
+											th:text="${#dates.format(notice.updateDate, 'yyyy-MM-dd')}"></span></td>
+																							
+									</tr>
+									<tr>
+										<th scope="row">작성자</th>
+										<td><span class="value text-success"
+											th:text="${notice.noticeWriter}"></span></td>
+										<th scope="row">카테고리</th>
+										<td><span class="value text-success"
+											th:text="${notice.noticeCategory}"></span></td>
+									</tr>
+
+									<tr>
+										<th>내용</th>
+										<td colspan="3">
+											<div id="viewer"></div>
+											<textarea spellcheck="false" id="viewers" style="display: none; height:500px">[[${notice.noticeContent}]]</textarea>
+										</td>
+									</tr>
+									
+							</tbody>
+										</table>
+										<hr>
+										<div>
+										<table class="tb tb_row" style="border: 1px solid black;">
+											<colgroup>
+												<col style="width: 15%;" />
+												<col style="width: 35%;" />
+												<col style="width: 15%;" />
+												<col style="width: 35%;" />
+											</colgroup>
+											<tbody th:each="page:${notice}">
+												<tr>
+													<th>이전글</th>
+													<td colspan="3" >										
+													<a class="move" th:if="${page.noticeNo != 1 }" 
+														 th:href="@{getNotice(noticeNo=${page.noticeNo-1}, pageNum=${pageMaker.cri.pageNum},amount=${pageMaker.cri.amount},keyword=${pageMaker.cri.keyword },type=${pageMaker.cri.type})}" 
+														 th:text="${page.noticeNo-1}"></a>
+													</td>
+													
+												</tr><tr>
+												</tr>
+												<tr>
+													<th>다음글</th>                                      
+													<td colspan="3">
+													<a class="move" th:if="${noticeList[0].noticeNo  != page.noticeNo}" th:href="@{getNotice(noticeNo=${page.noticeNo+1}, pageNum=${pageMaker.cri.pageNum},amount=${pageMaker.cri.amount},keyword=${pageMaker.cri.keyword },type=${pageMaker.cri.type})}"  th:text="${page.noticeNo+1}"></a>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<hr>
+										<div style="text-align:center">
+											<button class="btn btn-round btn-info" id="list_btn" type="button">목록 <i class="fa fa-repeat"></i></button>
+											<button class="btn btn-round btn-warning" id="modify_btn" type="button"  th:if="${session.login?.userId} == ${notice.noticeWriter}"  >수정 <i class="fa fa-edit"></i></button>
+											<button class="btn btn-round btn-danger" id="delete_btn" type="button" th:if="${session.login?.userId} == ${notice.noticeWriter}"  >삭제 <i class="fa fa-close"></i></button>
+											
+										<form  id="infoForm" th:action="@{modifyNotice}" method="get">
+											<input type="hidden" name="noticeNo" id="noticeNo"  th:value="${notice.noticeNo}"> 
+						  					<input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum }">
+        				  					<input type="hidden" name="amount" th:value="${pageMaker.cri.amount }">
+        				  					<input type="hidden" name="keyword" th:value="${pageMaker.cri.keyword }">  
+        				  					<input type="hidden" name="type" th:value="${pageMaker.cri.type }">  
+        				 				</form>
+										
+										</div>
+									</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			</div>
+			<!-- /page content -->
+<script th:inline="javascript">
+	
+
+	let form = $("#infoForm");
+	
+	//목록화면으로 이동
+	$("#list_btn").on("click", function(e){
+		form.find("#noticeNo").remove();
+		form.attr("action", "noticeList");
+		form.submit();
+	});
+	
+	// 수정화면 이동
+	$("#modify_btn").on("click", function(e){
+		form.attr("action", "modifyNotice");
+		form.submit();
+	});	
+	
+	$("#delete_btn").on("click", function(e){
+       Swal.fire({
+           title: '삭제 하시겠습니까??',
+           icon: 'warning',
+           showCancelButton: true,
+           confirmButtonColor: '#3085d6',
+           cancelButtonColor: '#d33',
+           confirmButtonText: '승인',
+           cancelButtonText: '취소'
+       }).then((result) => {
+           if (result.isConfirmed) {
+           	form.attr("action", "deleteNotice");
+       		form.submit();
+           }
+       })
+	})
+	
+	let result =  [[${result}]];
+	
+	checkAlert(result);
+	function checkAlert(result){
+		if(result === ''){
+			return;
+		}
+		if(result === "modify success"){
+			const Toast = Swal.mixin({
+                toast: true,
+                position: 'center-center',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener('mouseenter', Swal.stopTimer)
+                  toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+              })
+              Toast.fire({
+                icon: 'warning',
+                title: '수정이 완료되었습니다.'
+              })
+		}
+				
+	}
+	
+	  ///////에디터 뷰어.
+	function bodyinit() {
+
+		if (toastui === undefined) {
+			return;
+		}
+		var viewer = new toastui.Editor.factory({
+			el : document.querySelector('#viewer'),
+			initialValue : document.querySelector("#viewers").value,
+			viewer : true,
+			initialEditType : "wysiwyg"
+		})
+	};
+
+	bodyinit();
+	
+	
+</script>		
+</div>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns:th="http://www.thymeleaf.org"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+   layout:decorate="~{layout/layoutMagement}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>oh-nong!</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+</head>
+
+<th:block layout:fragment="css">
+</th:block>
+<th:block layout:fragment="script">
+</th:block>
+<body class="nav-md">
+   <div layout:fragment="contentMagement">
+      <style type="text/css">
+ul, li {
+   list-style: none;
+   padding: 0;
+   margin: 0
+}
+
+#wrap {
+   width: 811px;
+   height: 1130px;
+   margin: 0 auto;
+   border: 1px solid #dfdfdf;
+}
+
+.main {
+   border: 2px solid #333333;
+   border-radius: 4px;
+   padding: 10px;
+   margin: 10px;
+   height: 1085px
+}
+
+.main h1 {
+   text-align: center;
+   font-family: 'pretendard';
+   color: #333333
+}
+
+.section1 {
+   text-align: center;
+   border-bottom: 2px solid #c4c4c4;
+   margin: 0 40px;
+}
+
+.section1 ul {
+   text-align: center;
+   background: url(bootstrap_main/assets/img/portfolio/section_bg.jpg)
+      no-repeat center 35px;
+   margin: 30px auto;
+}
+
+.section1 p {
+   font-weight: bold;
+   color: #e74d3e
+}
+
+.section1 li {
+   display: inline-block;
+   width: 120px;
+   font-weight: bold;
+   line-height: 24px
+}
+body{
+	font-weight: bold;
+	color:black;
+}
+</style>
+<div id="pdf_wrap">
+<div class="right_col" role="main" style="min-height: 1000px;">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+<script type = "text/javascript" src = "http://code.jquery.com/jquery-latest.min.js"></script>
+<script type = "text/javascript" src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<script type = "text/javascript" src = "https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+         <div class="row" id="wrap" style="height: 720px;">
+            <div class="main" style="height: 690px;">
+               <div class="section1">
+                  <h1 style="font-weight: bold">경영모의계산</h1>
+                  <ul>
+                     <li><img src="bootstrap_main/assets/img/portfolio/체크.PNG" style="cursor:pointer; width: 63px; height: 63px;"><br>경영분석방식</li>
+                     <li><img src="bootstrap_main/assets/img/portfolio/체크.PNG" style="cursor:pointer; width: 63px; height: 63px;"><br>농업목표 설정</li>
+                     <li><img src="bootstrap_main/assets/img/portfolio/icon3.jpg"><br><span style="color: #e74d3e">분석결과 리포트</span></li>
+
+                  </ul>
+                  <h4>
+                     <span style="color: black;">통합분석결과</span>
+                  </h4>
+               </div>
+                  <div style="border: 2px solid gray; margin:10px; width:230px; height:170px; display: inline-block; text-align: center; background-color:white; border-radius:5px" >
+                  <img src="bootstrap_main/assets/img/portfolio/재배면적.PNG" style="padding:10px">
+                  <p style="color:red">필요재배 면적</p>
+                  <b>[[${amount}]]m²</b>
+               </div>
+               
+               <div style="border: 2px solid gray; margin:10px; width:230px; height:170px; display: inline-block; text-align: center; background-color:white; border-radius:5px" >
+                  <img src="bootstrap_main/assets/img/portfolio/작물정보.PNG" style="padding:10px">
+                  <p style="color:red">선택작물정보</p>
+                  
+                  <b>[[${cropName}]]</b><br>
+                  <!--  <b th:text="${cropName}"></b>-->
+               </div>
+               
+               <div style="border: 2px solid gray; margin:10px; width:230px; height:170px; display: inline-block; text-align: center; background-color:white; border-radius:5px" >
+                  <img src="bootstrap_main/assets/img/portfolio/월수익.PNG" style="padding:10px">
+                  <p style="color:red">월 목표 소득</p>
+                  <b id="monthlyIncome">원</b>
+               </div>
+               
+               <div style="border: 2px solid gray; margin: 10px; width: 350px; height: 200px; display: inline-block; text-align: center; background-color: white; border-radius: 5px;vertical-align: top;">
+                  <img src="bootstrap_main/assets/img/portfolio/연간예상매출액.PNG" style="padding:10px">
+                  <p style="color:red">연간예상 매출액</p>
+                  <div style="display: inline-block;">
+                     <p >총 주산물 평가액</p>
+                     <p></p>                  
+                  </div>
+                  <span>+</span>      
+                  <div style="display: inline-block;">
+                     <p>총 부산물 평가액</p>
+                     <p></p>                  
+                  </div>
+                  <span>=</span> <b id="result">원</b>
+               </div>
+               
+               <div style="border: 2px solid gray; margin: 10px; width: 350px; height: 200px; display: inline-block; text-align: center; background-color: white; border-radius: 5px;vertical-align: top;">
+                  <img src="bootstrap_main/assets/img/portfolio/총경영비.PNG" style="padding:10px">
+                  <p style="color:red">총 경영비</p>
+                  <div style="display: inline-block;">
+                     <b id="management">원</b>
+                                    
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div style="width: 900px; height: 900px;margin:0 auto">
+            <p></p>
+            <canvas id="myChart"></canvas>
+            <button id="create_pdf" style="font-size: 12px;font-weight: bold;background: #e7d178;color: #fff;border-radius: 5px;padding: 0 17px;border: none;height: 42px;">파일저장</button>
+         </div>
+      </div>
+      </div>
+      <script>
+      
+         $(document).ready(function() {
+             var cropPrice1 = [[${cropPrice1}]];         // 시간당 매출
+            var cropPrice2 = [[${cropPrice2}]];         // 평당 매출
+            var amount = [[${amount}]];               // 평수
+            var sales = amount * cropPrice2;          // 총매출
+            
+            var management = sales*0.5733158411791957;    // 경영비
+            var managementResult = Math.ceil(management);
+            var income = Math.ceil((sales-managementResult)/12);
+            document.getElementById("result").innerText= toLocalString(sales); 
+            document.getElementById("management").innerText= toLocalString(managementResult);
+            document.getElementById("monthlyIncome").innerText = toLocalString(income);
+            
+            var data_1 = Math.round(management * 0.024168177730786);      //수도광열비
+            var data_2 = Math.round(management * 0.0780424175446468);      //기타재료비
+            var data_3 = Math.round(management * 0.00027108915);         //소농구비
+            var data_4 = Math.round(management * 0.09400945072);         //대농구상각비
+            var data_5 = Math.round(management * 0.0508887860322664);      //영농시설상각비
+            var data_6 = Math.round(management * 0.0105917030842577);      //수리유지비
+            var data_7 = Math.round(management * 0.0128100322460266);      //기타비용
+            var data_8 = Math.round(management * 0.00198290147);         //농기계-시설임차료
+            var data_9 = Math.round(management * 0.086369028433475);      //토지임차료
+            var data_10 = Math.round(management * 0.0104996034755229);      //위탁영농비
+            var data_11 = Math.round(management * 0.2274709007099857);      //고용노동비
+            var data_12 = Math.round(management * 0);                  //자동차비
+            var data_13 = Math.round(management * 0);                  //생산관리비
+            var data_14 = Math.round(management * 0.1980611078733258);      //종자&종묘비
+            var data_15 = Math.round(management * 0.0794802257798651);      //보통비료비
+            var data_16 = Math.round(management * 0.0786699973027529);      //부산물비료비
+            var data_17 = Math.round(management * 0.0466831519797974);      //농약비
+            
+            function toLocalString(text){
+               var textResult = text.toString().replaceAll(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+               console.log(textResult);
+               return textResult+"원";
+            }
+            
+            var context = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(context, {
+               type : 'bar', // 차트의 형태
+               data : { // 차트에 들어갈 데이터
+                  labels : [
+                  //x 축
+                  '수도광열비', '기타재료비', '소농구비', '대농구삼각비', '영농시설삼각비', '수리유지비', '기타비용','농기계-시설임차료','토지임차료'
+                  ,'위탁영농비','고용노동비','자동차비','생산관리비','종자&종묘비','보통비료비','부산물비료비','농약비'],
+                  datasets : [ { //데이터
+                     label : '경영분석결과', //차트 제목
+                     fill : false, // line 형태일 때, 선 안쪽을 채우는지 안채우는지
+                     data : [ data_1, data_2, data_3, data_4, data_5, data_6, data_7,data_8,data_9,data_10,data_11,data_12,data_13,data_14,data_15,data_16,data_17 //x축 label에 대응되는 데이터 값
+                     ],
+                     backgroundColor : [
+                     //색상
+                     'rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)','rgba(255, 206, 86, 0.2)','rgba(75, 192, 192, 0.2)',
+                     'rgba(153, 102, 255, 0.2)','rgba(109, 255, 86, 0.2)','rgba(53, 250, 27, 0.2)','rgba(86, 187, 255, 0.2)',
+                     'rgba(216, 86, 255, 0.2)','rgba(162, 86, 255, 0.2)','rgba(47, 78, 235, 0.2)','rgba(235, 232, 47, 0.2)',
+                     'rgba(135, 235, 47, 0.2)','rgba(53, 250, 27, 0.2)','rgba(108, 24, 161, 0.2)','rgba(255, 0, 17, 0.2)',
+                     'rgba(170, 165, 207, 0.2)'],
+                     borderColor : [
+                     //경계선 색상
+                     'rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)','rgba(255, 206, 86, 1)','rgba(75, 192, 192, 1)',
+                     'rgba(153, 102, 255, 1)','rgba(109, 255, 86, 1)','rgba(53, 250, 27, 1)','rgba(86, 187, 255, 1)',
+                     'rgba(216, 86, 255, 1)','rgba(162, 86, 255, 1)','rgba(47, 78, 235, 1)','rgba(235, 232, 47, 1)',
+                     'rgba(135, 235, 47, 1)','rgba(53, 250, 27, 1)','rgba(108, 24, 161, 1)','rgba(255, 0, 17, 1)',
+                     'rgba(170, 165, 207, 1)'],
+                     borderWidth : 1
+                  //경계선 굵기
+                  } /* ,
+                                  {
+                                      label: 'test2',
+                                      fill: false,
+                                      data: [
+                                          8, 34, 12, 24
+                                      ],
+                                      backgroundColor: 'rgb(157, 109, 12)',
+                                      borderColor: 'rgb(157, 109, 12)'
+                                  } */
+                  ]
+               },
+               options :    {
+                  scales : {
+                     yAxes : [ {
+                        ticks : {
+                           beginAtZero : true
+                        }
+                     } ]
+                  }
+               }
+            });
+            var today = new Date();
+
+            var year = today.getFullYear();
+            var month = ('0' + (today.getMonth() + 1)).slice(-2);
+            var day = ('0' + today.getDate()).slice(-2);
+
+            var dateString = year + month + day;
+            
+            $('#create_pdf').click(function() {
+                  //pdf_wrap을 canvas객체로 변환
+                  html2canvas($('#pdf_wrap')[0]).then(function(canvas) {
+                    var doc = new jsPDF('p', 'mm', 'a1'); //jspdf객체 생성
+                    var imgData = canvas.toDataURL('image/png'); //캔버스를 이미지로 변환
+                    doc.addImage(imgData, 'PNG', 0, 0); //이미지를 기반으로 pdf생성
+                    doc.save(dateString+'예상수익모델.pdf'); //pdf저장
+                  });
+            });
+         })
+         
+      </script>
+   </div>
+
+</body>
+</html>

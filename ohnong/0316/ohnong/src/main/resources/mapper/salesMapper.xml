@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohnong.app.cost.mapper.SalesMapper">
+	
+	<select id="getSalesListWithPaging" resultType="SalesVO">
+		select * from(
+           select rownum rn, a.* from(
+              select sa.no,
+		             sa.this_day,
+		             sa.middlecatagori,
+		             s.name,
+		             sa.amount,
+		             sa.crop_no,
+		             sa.unitprice,
+		             sa.customer,
+		             sa.user_id
+              
+		        from sales sa 
+	            join crop c
+	              on (sa.crop_no = c.crop_no)
+	            join subdivision s
+	              on (c.item_code = s.item_code)
+	              
+		        where sa.user_id = #{userId}
+	              and s.user_id = #{userId}
+	              and sa.middlecatagori = #{middleCategori}
+      <![CDATA[
+	        	order by sa.no desc) a where rownum <= (#{pageNum} * #{amount})) b
+	                                   where b.rn > (#{pageNum} - 1) * #{amount}
+      ]]>
+	</select>
+	
+		<select id="getSalesListWithPagingDate" resultType="SalesVO">
+		select * from(
+           select rownum rn, a.* from(
+              select sa.no,
+		             sa.this_day,
+		             sa.middlecatagori,
+		             s.name,
+		             sa.amount,
+		             sa.crop_no,
+		             sa.unitprice,
+		             sa.customer,
+		             sa.user_id
+              
+		        from sales sa 
+	            join crop c
+	              on (sa.crop_no = c.crop_no)
+	            join subdivision s
+	              on (c.item_code = s.item_code)
+	              
+		        where sa.user_id = #{userId}
+	              and s.user_id = #{userId}
+	              and sa.middlecatagori = #{middleCategori}
+			   	  and sa.this_day BETWEEN TO_DATE(#{startDate},'YYYY-MM-DD')
+				  	                  AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+	            
+      <![CDATA[
+	        	order by sa.no desc) a where rownum <= (#{pageNum} * #{amount})) b
+	                                   where b.rn > (#{pageNum} - 1) * #{amount}
+      ]]>
+	</select>
+	
+	<select id="getTotalCount" resultType="int">
+		select count(*)
+		
+		from sales sa 
+        join crop c
+          on (sa.crop_no = c.crop_no)
+        join subdivision s
+          on (c.item_code = s.item_code)
+          
+     	where sa.user_id = #{userId}
+          and s.user_id = #{userId}
+          and sa.middlecatagori = #{middleCategori}
+	</select>
+	
+	<select id="getTotalCountDate" resultType="int">
+		select count(*)
+		
+		from sales sa 
+        join crop c
+          on (sa.crop_no = c.crop_no)
+        join subdivision s
+          on (c.item_code = s.item_code)
+          
+     	where sa.user_id = #{userId}
+          and s.user_id = #{userId}
+          and sa.middlecatagori = #{middleCategori}
+		  and sa.this_day BETWEEN TO_DATE(#{startDate},'YYYY-MM-DD')
+		                      AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+	</select>
+	
+	<select id="totalSales" resultType="SalesVO">
+		select middlecatagori,
+			   sum((unitprice)*(amount)) as total
+		from sales
+		where user_id = #{userId}
+		<if test="startDate != null and startDate !=''">
+			<if test="endDate != null and endDate !=''">
+		and this_day BETWEEN TO_DATE(#{startDate},'YYYY-MM-DD')
+			             AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+			</if>
+		</if>
+		group by middlecatagori
+	</select>
+</mapper>

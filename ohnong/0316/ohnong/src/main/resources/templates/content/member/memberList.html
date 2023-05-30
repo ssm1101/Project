@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layoutMagement}">
+
+<head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+  <meta charset="UTF-8">
+  <title>oh-nong!</title>
+  <style type="text/css">
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox  */
+    input[type='number'] {
+      -moz-appearance: textfield;
+    }
+
+    .left-box {
+      float: left;
+      width: 50%;
+    }
+
+    .right-box {
+      float: right;
+      width: 50%;
+    }
+
+    .form-group {
+      width: 350px !important;
+    }
+    
+    .table-td {
+      font-weight:bold;
+    }
+  </style>
+</head>
+</th:block>
+<th:block layout:fragment="script">
+</th:block>
+<div layout:fragment="contentMagement">
+  <!-- page content -->
+  <div class="right_col" role="main">
+    <div class="">
+      <div class="page-title">
+        <div class="title_left">
+        </div>
+      </div>
+
+      <div class="clearfix"></div>
+
+      <div class="row" style="display: block;">
+
+        <div class="clearfix"></div>
+
+        <div class="col-md-12 col-sm-12  ">
+        <h3 style="text-align:left"><b>‍👩‍🌾 회원 관리</b></h3>
+          <div class="x_panel">
+            <div class="x_title">
+              <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i
+                      class="fa fa-wrench"></i></a>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Settings 1</a>
+                    <a class="dropdown-item" href="#">Settings 2</a>
+                  </div>
+                </li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                </li>
+              </ul>
+              <div class="clearfix"></div>
+            </div>
+
+            <div class="x_content">
+
+              <div class="table-responsive">
+                <table class="table table-striped jambo_table bulk_action">
+                  <thead>
+                    <tr class="headings">
+                      <th>
+                        <input type="checkbox" id="check-all" class="flat">
+                      </th>
+                      <th class="column-title">No. </th>
+                      <th class="column-title">아이디 </th>
+                      <th class="column-title">이름 </th>
+                      <th class="column-title">생년월일 </th>
+                      <th class="column-title">연락처 </th>
+                      <th class="column-title">이메일 </th>
+                      <th class="column-title">등급 </th>
+                      <th class="column-title">회원 삭제 </th>
+                      <th class="bulk-actions" colspan="7">
+                        <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt">
+                          </span> ) <i class="fa fa-chevron-down"></i></a>
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody class="farm">
+                    <tr class="even pointer" th:each="memberList : ${memberList }" >
+                      <td class="a-center ">
+                        <input type="checkbox" class="flat" name="table_records">
+                      </td>                    
+                      <td class="table-td  " th:text="${memberList.rn}"></td>
+                      <td class="table-td  " id="userId" th:text="${memberList.userId}"></td>
+                      <td class="table-td  " id="userName" th:text="${memberList.Name}"></td>
+                      <td class="table-td  " id="birth" th:text="${memberList.birth}"></td>
+                      <td class="table-td  " id="userEmail" th:text="${memberList.userTel}"></td>
+                      <td class="table-td  " id="userEmail" th:text="${memberList.userEmail}"></td>
+                        <th:block th:if="${memberList.grade} == '1'">
+                          <td class="table-td  " id="grade">관리자</td>
+                        </th:block>
+                        <th:block th:if="${memberList.grade} == '2'">
+                          <td class="table-td  " id="grade">일반 회원</td>
+                        </th:block>
+                        <th:block th:if="${memberList.grade} == '3'">
+                          <td class="table-td  " id="grade">농가 회원</td>
+                        </th:block>
+                      <td><button type="button" th:id="deleteBtn+${memberList.userId}" th:onclick="deleteBtn([[${memberList.userId}]])" class="btn btn-danger btn-sm">삭제</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /page content -->
+
+  <script>
+			// 삭제 -> 업데이트
+			function deleteBtn(userId) {
+				let deleteBtn = document.getElementById('deleteBtn' + userId);
+				let delTrTag = deleteBtn.parentElement.parentElement;
+				
+				Swal.fire({
+                    title: '삭제하시겠습니까?',
+                    text: "다시 되돌릴 수 없습니다. 신중하세요.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '삭제',
+                    cancelButtonText: '취소'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        
+                        $.ajax({
+                            type : 'get',
+                            url : "/ohnong/memberDelete/" + userId,
+                            dataType : 'text',
+                            success : function(data) {
+                                console.log(data);
+                                if (data == 'success') {
+                                    delTrTag.remove();
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'center-center',
+                                    showConfirmButton: false,
+                                    timer: 2000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                  })
+                                  Toast.fire({
+                                    icon: 'success',
+                                    title: '삭제되었습니다.'
+                                  })
+                                } else if(data = 'fail') {
+                                    alert("다시 시도 바랍니다.")
+                                }
+                            },
+                            error : function(status, error) {
+                                console.log(status, error);
+                            }
+                        })
+                        
+                        setTimeout("location.reload()", 2000);
+                        Swal.fire(
+                            '삭제가 완료되었습니다.',
+                            'success'
+                        )
+                    }
+                })
+            }
+			
+  </script>
+</div>

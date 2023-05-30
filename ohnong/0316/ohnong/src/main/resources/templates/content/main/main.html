@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layoutMain}">
+
+<head>
+<meta charset="UTF-8">
+<title>oh-nong!</title>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+</head>
+<th:block layout:fragment="css"></th:block>
+<th:block layout:fragment="script"></th:block>
+<body>
+	<div layout:fragment="contentMain">
+<style type="text/css">
+#weatherInfo {
+	padding: 15px 20px;
+	background-color: #d9f0ad;
+	border-radius: 5px;
+	color: black;
+	font-size: 1px;
+	position: fixed;
+	opacity: 0;
+	transition: all ease 0.5s;
+	top : 50%;
+	left: 75%;
+	transform: translate(-93%,-50%);
+	z-index : -1;
+}
+
+#weatherText:hover+#weatherInfo {
+	opacity: 1;
+	z-index : 2;
+}
+
+.hero-area {
+	position: relative;
+	background-color: #fff;
+	margin-top: 12px;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+	.hero-area .md-custom-padding {
+		padding-right: 0 !important;
+	}
+}
+
+.hero-area .custom-padding-right {
+	padding-right: 0;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+	.hero-area .custom-padding-right {
+		padding-right: calc(var(- -bs-gutter-x)/2);
+	}
+}
+
+@media ( max-width : 767px) {
+	.hero-area .custom-padding-right {
+		padding-right: calc(var(- -bs-gutter-x)/2);
+	}
+}
+
+.hero-area .slider-head {
+	position: relative;
+	overflow: hidden;
+}
+
+.hero-area .slider-head:hover .tns-controls button:first-child {
+	left: 0;
+}
+
+.hero-area .slider-head:hover .tns-controls button:last-child {
+	right: 0;
+}
+
+.hero-area .tns-controls button {
+	width: 35px;
+	height: 60px;
+	cursor: pointer;
+	z-index: 2;
+	color: #fff;
+	font-size: 17px;
+	background: #0167F3;
+	border: none;
+	padding: 2px 5px;
+	border-radius: 4px;
+	-webkit-transition: all .3s ease-out 0s;
+	transition: all .3s ease-out 0s;
+	position: absolute;
+	z-index: 99;
+	top: 50%;
+	margin-top: -30px;
+	border-radius: 0;
+}
+
+.hero-area .tns-controls button:hover {
+	background-color: #081828;
+	color: #fff;
+}
+
+.hero-area .tns-controls button:first-child {
+	left: -40px;
+	border-radius: 0 4px 4px 0;
+}
+
+.hero-area .tns-controls button:last-child {
+	right: -40px;
+	border-radius: 4px 0px 0px 4px;
+}
+
+.hero-area .hero-slider .single-slider {
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	height: 500px;
+	position: relative;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+	.hero-area .hero-slider .single-slider {
+		height: 400px;
+		margin-bottom: 12px;
+	}
+}
+
+@media ( max-width : 767px) {
+	.hero-area .hero-slider .single-slider {
+		height: 350px;
+		margin-bottom: 12px;
+	}
+}
+
+.hero-area .hero-slider .single-slider .content {
+	padding: 20px 365px 20px 50px;
+	position: absolute;
+	left: 0;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+	.hero-area .hero-slider .single-slider .content {
+		padding-right: 300px;
+	}
+}
+
+@media ( max-width : 767px) {
+	.hero-area .hero-slider .single-slider .content {
+		padding-right: 30px;
+		padding-left: 20px;
+	}
+}
+
+.hero-area .hero-slider .single-slider .content h2 {
+	font-size: 30px;
+	font-weight: 800;
+	color: #081828;
+}
+
+.hero-area .hero-slider .single-slider .content h2 span {
+	font-size: 17px;
+	font-weight: 600;
+	display: block;
+	color: #8a8a8a;
+	margin-bottom: 10px;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+	.hero-area .hero-slider .single-slider .content h2 span {
+		font-size: 14px;
+		font-weight: 500;
+	}
+}
+
+@media ( max-width : 767px) {
+	.hero-area .hero-slider .single-slider .content h2 span {
+		font-size: 14px;
+		font-weight: 500;
+	}
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+	.hero-area .hero-slider .single-slider .content h2 {
+		font-size: 22px;
+	}
+}
+
+@media ( max-width : 767px) {
+	.hero-area .hero-slider .single-slider .content h2 {
+		font-size: 20px;
+	}
+}
+
+.hero-area .hero-slider .single-slider .content p {
+	margin-top: 20px;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+	.hero-area .hero-slider .single-slider .content p {
+		margin-top: 10px;
+	}
+}
+
+@media ( max-width : 767px) {
+	.hero-area .hero-slider .single-slider .content p {
+		margin-top: 10px;
+	}
+}
+
+.hero-area .hero-slider .single-slider .content h3 {
+	margin-top: 20px;
+	font-size: 25px;
+	font-weight: 800;
+	color: #081828;
+}
+
+.hero-area .hero-slider .single-slider .content h3 span {
+	display: inline-block;
+	margin-right: 12px;
+	font-size: 16px;
+	font-weight: 600;
+	color: #8a8a8a;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+	.hero-area .hero-slider .single-slider .content h3 span {
+		margin-right: 10px;
+		font-size: 14px;
+	}
+}
+
+@media ( max-width : 767px) {
+	.hero-area .hero-slider .single-slider .content h3 span {
+		margin-right: 8px;
+		font-size: 14px;
+	}
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+	.hero-area .hero-slider .single-slider .content h3 {
+		font-size: 20px;
+	}
+}
+
+@media ( max-width : 767px) {
+	.hero-area .hero-slider .single-slider .content h3 {
+		font-size: 20px;
+	}
+}
+
+.hero-area .hero-slider .single-slider .content .button {
+	margin-top: 30px;
+}
+
+.hero-area .hero-small-banner {
+	height: 244px;
+	position: relative;
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-size: cover;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+	.hero-area .hero-small-banner {
+		height: 240px;
+	}
+}
+
+@media ( max-width : 767px) {
+	.hero-area .hero-small-banner {
+		height: 240px;
+	}
+}
+
+.hero-area .hero-small-banner .content {
+	padding: 30px;
+	position: absolute;
+	left: 0;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
+.hero-area .hero-small-banner .content h2 {
+	font-size: 20px;
+	font-weight: 700;
+}
+
+.hero-area .hero-small-banner .content h2 span {
+	font-size: 15px;
+	font-weight: 500;
+	color: #888;
+	display: block;
+	margin-bottom: 4px;
+}
+
+.hero-area .hero-small-banner .content h3 {
+	color: #0167F3;
+	font-size: 20px;
+	font-weight: 800;
+	display: block;
+	margin-top: 7px;
+}
+
+.hero-area .hero-small-banner.style2 {
+	margin-top: 12px;
+	background-image: url("../images/hero/small-banner-bg.png");
+	background-color: #081828;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+	.hero-area .hero-small-banner.style2 {
+		margin-top: 0;
+	}
+}
+
+.hero-area .hero-small-banner.style2 .content h2 {
+	color: #fff;
+}
+
+.hero-area .hero-small-banner.style2 .content h2 span {
+	color: #fff;
+}
+
+.hero-area .hero-small-banner.style2 .content p {
+	font-size: 15px;
+	color: #fff;
+	font-weight: 600;
+	margin-top: 15px;
+}
+
+.hero-area .hero-small-banner.style2 .content .button {
+	margin-top: 20px;
+}
+
+.hero-area .hero-small-banner.style2 .content .button .btn {
+	background-color: #fff;
+	color: #0167F3;
+	padding: 10px 25px;
+}
+
+.hero-area .hero-small-banner.style2 .content .button .btn:hover {
+	background-color: #0167F3;
+	color: #fff;
+}
+
+/*======================================
+    Services CSS
+========================================*/
+.services {
+  background-color: #F4F7FA;
+}
+
+.services .section-title {
+  margin-bottom: 50px;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+  .services .section-title {
+    margin-bottom: 40px;
+  }
+}
+
+@media (max-width: 767px) {
+  .services .section-title {
+    margin-bottom: 30px;
+  }
+}
+
+.services.style2 .single-service {
+  background-color: transparent;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  -webkit-transition: all 0.4s ease;
+  transition: all 0.4s ease;
+  border: 1px solid #eaeaea;
+}
+
+.services.style2 .single-service h3 {
+  font-size: 20px;
+}
+
+.services.style2 .single-service:hover {
+  -webkit-box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.048);
+          box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.048);
+  background-color: #fff;
+}
+
+.single-service {
+  padding: 35px;
+  border-radius: 18px;
+  -webkit-box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.048);
+          box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.048);
+  background-color: #fff;
+  margin-top: 30px;
+}
+
+.single-service .service-icon {
+  height: 65px;
+  width: 65px;
+  line-height: 65px;
+  border-radius: 15px;
+  color: #fff;
+  background-color: #3080E3;
+  text-align: center;
+  font-size: 30px;
+  -webkit-box-shadow: 0px 10px 30px rgba(48, 128, 227, 0.18);
+          box-shadow: 0px 10px 30px rgba(48, 128, 227, 0.18);
+}
+
+.single-service h3 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  margin-top: 40px;
+}
+
+.single-service p {
+  font-size: 16px;
+}
+
+.single-service a {
+  color: #3080E3;
+  margin-top: 40px;
+  display: inline-block;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.single-service a i {
+  font-size: 22px;
+  margin-left: 12px;
+  position: relative;
+  top: 3px;
+}
+
+.single-service a:hover {
+  letter-spacing: 1px;
+}
+
+.single-service.two .service-icon {
+  background-color: #fd723b;
+  -webkit-box-shadow: 0px 10px 30px rgba(253, 114, 59, 0.25);
+          box-shadow: 0px 10px 30px rgba(253, 114, 59, 0.25);
+}
+
+.single-service.two a {
+  color: #fd723b;
+}
+
+.single-service.three .service-icon {
+  background-color: #FFA842;
+  -webkit-box-shadow: 0px 10px 30px rgba(255, 168, 66, 0.26);
+          box-shadow: 0px 10px 30px rgba(255, 168, 66, 0.26);
+}
+
+.single-service.three a {
+  color: #FFA842;
+}
+
+ul, li { /*ul, li의 리스트 스타일 제거*/
+    list-style: none;
+}
+
+
+
+.slide_div img{
+	width:100%;
+	height:500px;
+	margin: auto;
+}
+.image_wrap img{
+	max-width: 85%;
+    height: auto;
+    display: block;
+	margin: auto;    
+}
+
+</style>
+		<!-- <div id="ww_5605c369db4e9" v='1.3' loc='id' a='{"t":"ticker","lang":"ko","sl_lpl":1,"ids":["wl2309"],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"#388E3C","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#FFFFFF","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'>Weather Data Source: 
+<a href="https://wetterlabs.de/wetter_daegu/30_tage/" id="ww_5605c369db4e9_u" target="_blank">30 tage Daegu wetter</a></div>
+<script async src="https://app1.weatherwidget.org/js/?id=ww_5605c369db4e9"></script> -->
+
+		<script type="text/javascript" src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+		
+		<section class="hero-area">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-8 col-12 custom-padding-right">
+					<div>
+						<div class="slide_div_wrap" >
+							<div class="slide_div">
+								 <div>
+	                                <a><img src="bootstrap_main/assets/img/portfolio/main.jpg"></a>
+	                            </div>
+								<div>
+									<a> <img src="bootstrap_main/assets/img/portfolio/메인3.jpg"></a>
+								</div>
+								<div>
+									<a> <img src="bootstrap_main/assets/img/portfolio/메인4.jpg"></a>
+								</div>
+								<div>
+									<a> <img src="bootstrap_main/assets/img/portfolio/메인5.jpg"></a>
+								</div>
+							</div>
+						</div>
+						</div>
+					</div>
+					<div class="col-lg-4 col-12">
+						<div class="row">
+							<div class="col-lg-12 col-md-6 col-12 md-custom-padding">
+								<!-- Start Small Banner -->
+								<div class="hero-small-banner"
+									style="background-image: url(bootstrap_main/assets/img/portfolio/배경라스트.jpg);">
+								</div>
+								<!-- End Small Banner -->
+							</div>
+							<div class="col-lg-12 col-md-6 col-12">
+								<!-- Start Small Banner -->
+								<div class="hero-small-banner style2"
+									style="background-color: white; border: 1px solid black">
+									<div class="content">
+										<div
+											style="width: 100%; height: 230px; margin: 0 auto; text-align: right">
+											<div style="width: 100%; height: 200px;">
+												<div style="width: 100%; height: 100px; text-align: center;">
+													<img id ="reSky" src="bootstrap_main/assets/img/portfolio/맑음.gif"
+														style="width: 100px; height: 100px;"> <strong>오늘의날씨</strong>
+												</div>
+												<div
+													style="width: 32%; height: 50px; margin: 0px; float: left; text-align: center;">
+													<img src="bootstrap_main/assets/img/portfolio/기온.png"
+														style="width: 50px; height: 48px;">
+												</div>
+												<div
+													style="width: 32%; height: 50px; float: left; margin: 0px; text-align: center;">
+													<img src="bootstrap_main/assets/img/portfolio/풍속.png"
+														style="width: 50px; height: 48px;">
+												</div>
+												<div
+													style="width: 32%; height: 50px; float: left; margin: 0px; text-align: center;">
+													<img src="bootstrap_main/assets/img/portfolio/강수.png"
+														style="width: 50px; height: 48px;">
+												</div>
+
+												<div
+													style="width: 32%; height: 50px; float: left; margin: 0px; text-align: center;">
+													<b>오늘의 기온</b><br>
+													<b id="tmp" style="color: black">tmp</b>
+												</div>
+												<div
+													style="width: 32%; height: 50px; float: left; margin: 0px; text-align: center;">
+													<b>오늘의 풍속</b>
+													<b id="wsd" style="color: black">wsd</b>
+												</div>
+												<div
+													style="width: 32%; height: 50px; float: left; margin: 0px; text-align: center;">
+													<b>오늘 강수확률</b>
+													<b id="pop" style="color: black">pop</b>
+												</div>
+ 											</div>
+											<b style="float:left; font-size: 12px;margin-top: 10px;" id="weatherTime"></b><b id="weatherText">날씨 상세보기 ❓</b>
+											<div id="weatherInfo" style="text-align: center; width: 700px;">
+												<img src="bootstrap_main/assets/img/portfolio/sunRise.png"
+													style="width: 100px; height: 100px; margin-bottom: 0px" />
+												<img src="bootstrap_main/assets/img/portfolio/sunSet.png"
+													style="width: 100px; height: 100px; margin-bottom: 0px;">
+												<!-- Portfolio Modal - Text-->
+												<p class="sunsetTime" style="color:black;">일출시간 일몰시간</p>
+												<p class="mb-4" >
+													<Strong style="color:black;" >날씨 상세정보</Strong>
+												</p>
+												<p class="weatherInformation" style="color:black;"></p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- Start Small Banner -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		 <!-- Start Services Area -->
+    <section class="services section" style ="margin-bottom:100px; background-color: white;">
+        <div class="container">
+            <div class="row">
+                <!-- <div class="col-12">
+                    <div class="section-title">
+                        <h2 class="wow fadeInUp" data-wow-delay=".4s">서비스 메뉴</h2>
+                        <p class="wow fadeInUp" data-wow-delay=".6s">There are many variations of passages of Lorem
+                            Ipsum available, but the majority have suffered alteration in some form.</p>
+                    </div>
+                </div> -->
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-12 wow fadeInUp" data-wow-delay=".4s" >
+                    <div class="single-service one" onclick="pagehref('harvestList')" >
+                    	<h3 style="margin: 3px; margin-bottom:10px;text-align: center;" onclick="pagehref('harvestList')">⚙ 관리 시스템</h3>
+                           <img src="bootstrap_main/assets/img/portfolio/관리시스템.gif" style="width:100%; height: 100%;" onclick="pagehref('harvestList')">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-12 wow fadeInUp" data-wow-delay=".6s">
+                    <!-- Start Single Service -->
+                    <div class="single-service two" onclick="pagehref('calculationSelect')">
+                    	<h3 style="margin: 3px; margin-bottom:10px;text-align: center;" onclick="pagehref('calculationSelect')">📊 경영모의 계산</h3>
+                    	<img src="bootstrap_main/assets/img/portfolio/계산.gif" style="width:100%; height: 100%;" onclick="pagehref('calculationSelect')">
+                    </div>
+                    <!-- End Single Service -->
+                </div>
+                <div class="col-lg-4 col-md-6 col-12  wow fadeInUp" data-wow-delay=".8s" >
+                    <!-- Start Single Service -->
+                    <div class="single-service three" onclick="pagehref('community?pageNum=1&amount=10')">
+                    	<h3 style="margin: 3px; margin-bottom:10px;text-align: center;" onclick="pagehref('community?pageNum=1&amount=10')">📢 커뮤니티</h3>
+                    		<img src="bootstrap_main/assets/img/portfolio/커뮤니티2.gif" style="width:100%; height: 100%;" onclick="pagehref('community?pageNum=1&amount=10')">
+                    </div>
+                    <!-- End Single Service -->
+                </div>
+            </div>
+            <div id="ww_1e9a75347b156" v='1.3' loc='id' a='{"t":"ticker","lang":"ko","sl_lpl":1,"ids":["wl2309"],"font":"Arial","sl_ics":"one_a","sl_sot":"celsius","cl_bkg":"#FFFFFF00","cl_font":"#000000","cl_cloud":"#d4d4d4","cl_persp":"#2196F3","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'>Weather Data Source: <a href="https://wetterlabs.de/wetter_daegu/woche/" id="ww_1e9a75347b156_u" target="_blank">wettervorhersage 7 tage</a></div><script async src="https://app1.weatherwidget.org/js/?id=ww_1e9a75347b156"></script>
+        </div>
+    </section>
+    <!-- /End Services Area -->
+
+		<script>
+	      
+			$(document).ready(function() {
+				  $(".slide_div").slick({
+			            dots: true,
+			            autoplay : true,
+			            autoplaySpeed: 1200,
+			        });
+				
+				
+				
+				
+				let today = new Date();
+
+				let year = today.getFullYear().toString(); // 년도
+				
+				let month = today.getMonth() + 1; // 월
+				if (month < 10) {
+					month.toString();
+					var months = '0' + month;
+				}
+				
+				
+				var arrWeather = [];
+		
+				let date = today.getDate().toString(); // 날짜
+				console.log(typeof(date));
+				
+				if(date.length == 1){
+					date = '0'+date;
+				}
+				
+				var days = year + months + date;
+				
+				let hours = today.getHours(); // 시간
+				var weatherTime;
+				if(parseInt(hours) < 12){
+					hours = "0530";
+					weatherTime = `<span style="color:red;">＊</span>오전 5시 30분`
+				} else {
+					hours = "1100";
+					weatherTime = `<span style="color:red;">＊</span>오전 11시`
+				}
+				$("#weatherTime").html(weatherTime +" 기준");
+							var url = 'http://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo'; /*URL*/
+							var queryParams = '?'
+							+ encodeURIComponent('serviceKey')
+							+ '='
+							+ 'dj8MIn5a3WAzSkc%2BYRbos2LgtVy7psks1fHd9%2FRxN%2B3d5OVxJke6yFJ%2B9s6yIaGTNmDbjX08J2lP0h2vSENtsQ%3D%3D'; /*Service Key*/
+							queryParams += '&'
+							+ encodeURIComponent('locdate') + '='
+							+ encodeURIComponent(days); /**/
+							queryParams += '&'
+							+ encodeURIComponent('location') + '='
+							+ encodeURIComponent('대구'); /**/
+		
+										$.ajax({
+											url : url + queryParams,
+											type : 'GET',
+											success : function(data) {
+												xmlParsing(data);
+												console.log(data);
+											},
+											error : function() {
+												console.log("실패");
+											}
+										})
+		
+										function xmlParsing(data) {
+											$(data).find('items').each(
+											function(index, item) {
+												$(".sunsetTime").text("일출시간 : "+ $(this).find('sunrise').text()
+														+ "  일몰시간 : "+ $(this).find('sunset').text())
+											})
+								}
+
+								var url_2 = 'http://apis.data.go.kr/1360000/MidFcstInfoService/getMidFcst'; /*URL*/
+								var queryParams_2 = '?'
+										+ encodeURIComponent('serviceKey')
+										+ '='
+										+ 'dj8MIn5a3WAzSkc%2BYRbos2LgtVy7psks1fHd9%2FRxN%2B3d5OVxJke6yFJ%2B9s6yIaGTNmDbjX08J2lP0h2vSENtsQ%3D%3D'; /*Service Key*/
+								queryParams_2 += '&'
+										+ encodeURIComponent('pageNo') + '='
+										+ encodeURIComponent('1'); /**/
+								queryParams_2 += '&'
+										+ encodeURIComponent('numOfRows') + '='
+										+ encodeURIComponent('10'); /**/
+								queryParams_2 += '&'
+										+ encodeURIComponent('dataType') + '='
+										+ encodeURIComponent('XML'); /**/
+								queryParams_2 += '&'
+										+ encodeURIComponent('stnId') + '='
+										+ encodeURIComponent('108'); /**/
+								queryParams_2 += '&'
+										+ encodeURIComponent('tmFc') + '='
+										+ encodeURIComponent(days + '0600'); /**/
+
+								$.ajax({
+									url : url_2 + queryParams_2,
+									type : 'GET',
+									success : function(data) {
+										$(data).find('items').each(function(index,item) {
+											var weather = $(this).find('wfSv').text()
+											var weatherInfo = weather.replaceAll('다.','다.<br>');
+											console.log(typeof (weather));
+											$(".weatherInformation").html(weatherInfo);
+											
+										})
+
+									},
+									error : function() {
+										console.log("실패");
+									}
+								})
+
+								
+								$.ajax({
+									url : "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=dj8MIn5a3WAzSkc%2BYRbos2LgtVy7psks1fHd9%2FRxN%2B3d5OVxJke6yFJ%2B9s6yIaGTNmDbjX08J2lP0h2vSENtsQ%3D%3D&numOfRows=10&pageNo=1&base_date="+ days
+										+ "&base_time="+hours+"&nx=55&ny=127",
+									type : 'get',
+									async : false,
+									success : function(data) {
+										console.log(data)
+										$(data).find('item').each(function(index,item) {
+											arrWeather.push($(this).find('fcstValue').text());
+										})
+
+									},
+									error : function() {
+										console.log("실패");
+									}
+
+								})
+								console.log(arrWeather);
+								$("#tmp").text(arrWeather[0] + "˚c")
+								$("#wsd").text(arrWeather[4] + "(m/s)")
+								$("#sky").text(arrWeather[5] + "하늘상태")
+								$("#pty").text(arrWeather[6] + "강수형태")
+								$("#pop").text(arrWeather[7] + "%")
+								$("#pcp").text(arrWeather[9] + "1시간강수량")
+								console.log(arrWeather[5]);
+								console.log(typeof(arrWeather[7]));
+								
+								var rain = arrWeather[7];
+								rain = parseInt(rain)
+								
+								if (rain > 50){
+									var reSkyImg = document.getElementById("reSky");
+									reSkyImg.src = "bootstrap_main/assets/img/portfolio/비.png";
+								}
+								console.log(5);
+								
+							});
+			
+			var info = '[[${session.login}]]';
+			function pagehref(page){
+				
+				if (page == 'harvestList'){
+					if(info !=''){
+						window.location.href = page;	
+					}
+					else {
+						const Toast = Swal.mixin({
+							  toast: true,
+						      position: 'center-center',
+						      showConfirmButton: false,
+						      timer: 1000,
+						      timerProgressBar: true,
+						      didOpen: (toast) => {
+						      toast.addEventListener('mouseenter', Swal.stopTimer)
+						      toast.addEventListener('mouseleave', Swal.resumeTimer)
+						      }
+						    })
+
+						    Toast.fire({
+						      icon: 'warning',
+						      title: '로그인이 필요한 기능입니다.'
+						    })
+						     setTimeout(function(){
+						    	 window.location.href = 'login';
+            				}, 1000); 
+						   
+					}
+				}
+				else {
+					window.location.href = page;
+				}
+			}
+			
+		</script>
+	</div>
+</body>
+
+</html>

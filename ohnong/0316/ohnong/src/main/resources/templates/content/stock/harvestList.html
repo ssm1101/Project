@@ -1,0 +1,2058 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layoutMagement}">
+<head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<meta charset="UTF-8">
+<style>
+
+.pageInfo_area{
+    text-align: center;
+    width: 50%;
+}
+.pagination2{
+    list-style: none;
+    display: inline-block;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.pagination2 li {
+    display: inline;
+    text-align: center;
+}
+/*숫자*/ 
+.pagination2 a {
+    float: left;
+    display: block;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 5px 12px;
+    color: #96a0ad;
+    line-height: 1.5;
+}
+.pagefirst{
+    margin-right: 15px;
+}
+.pagelast{
+    margin-left: 15px;
+}
+.pagefirst:hover, .pagelast:hover, .arrowright:hover, .arrowleft:hover, .model .num:h{
+    color:#2e9cdf;
+}
+.pagination2 .move.active{
+    cursor: default;
+    color: #ffffff;
+}
+.pagination2 .move:active{
+    outline: none;
+}
+.model .num {
+    margin-left: 3px;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    -moz-border-radius: 100%;
+    -webkit-border-redius:100%;
+    border-radius: 100%;
+}
+.model .num.active, .model .num:active{
+    background-color: #2e9cdf;
+    cursor: pointer;
+}
+.arrowleft{
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10ox solid blue;
+}
+
+ a.active {
+ 	cursor:default;
+ 	color:#ffffff; 	
+ }
+
+  
+  .search_area{
+    text-align:center;
+  }
+  .search_area input{
+    height: 30px;
+    width: 250px;
+  }
+  .search_area button{
+    height: 30px;
+    width: 100px;
+  }
+   .search_area select{
+  	height: 30px;
+    width:150px;
+  }
+ .move:link {color: #2e9cdf; text-decoration: none; }
+ .move:visited {color:purple;,text-decoration: overline;}
+ .move:hover {color:#bbb;,text-decoration: underline;}
+ 
+</style>
+</head>
+<th:block layout:fragment="script">
+</th:block>
+<div layout:fragment="contentMagement">
+	<style type="text/css">
+	/* Chrome, Safari, Edge, Opera */
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+	  -webkit-appearance: none;
+	  margin: 0;
+	}
+	
+	/* Firefox  */
+	input[type='number'] {
+	  -moz-appearance: textfield;
+	}
+	
+	modal {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: none;
+	background-color: rgba(0, 0, 0, 0.4);
+	}
+	
+	.modal.show {
+		display: block;
+	}
+	
+	.modal_body {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 600px;
+		height: 300px;
+		/* padding: 40px; */
+		/* text-align: center; */
+		background-color: rgb(255, 255, 255);
+		border-radius: 10px;
+		box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+		transform: translateX(-50%) translateY(-50%);
+	}
+	
+	.m_head {
+		height: 15%;
+		padding: 10px;
+		display: flex;
+		justify-content: space-between;
+		background-color: #2A3F54;
+		border-top-left-radius: 10px;
+		border-top-right-radius: 10px;
+		color: white;
+	}
+	
+	.m_body {
+		height: 70%;
+		padding: 20px;
+		background-color: #F4F4F4;
+	}
+	
+	.m_footer {
+		height: 15%;
+		padding: 10px;
+		background-color: #2A3F54;
+		border-bottom-left-radius: 10px;
+		border-bottom-right-radius: 10px;
+		display: flex;
+		justify-content: end;
+	}
+	
+	.modal_title {
+		font-size: 18px;
+		color: gray;
+		font-weight: 500;
+	}
+	
+	.close_btn {
+		font-size: 20px;
+		color: rgb(139, 139, 139);
+		font-weight: 900;
+		cursor: pointer;
+	}
+	
+	.modal_label {
+		padding: 2px 0px 2px 0px;
+		background-color: skyblue;
+		width: 80px;
+		border-top: 2px solid black;
+		border-bottom: 2px solid black;
+		text-align: center;
+		color: black;
+		margin-top: 10px;
+		opacity: 0.7;
+		font-weight: bolder;
+	}
+	
+	.modal_btn {
+		width: 80px;
+		height: 30px;
+		border-radius: 5px;
+		text-align: center;
+		font-size: 14px;
+		font-weight: bolder;
+		padding-top: 5px;
+		margin-left: 5px;
+		font-family: sans-serif;
+		cursor: pointer;
+	}
+	
+	.cancle {
+		background-color: white;
+		color: black;
+	}
+	
+	.save {
+		background-color: rgb(50, 77, 158);
+		color: white;
+	}
+	
+	.input_box {
+		width: 130px;
+		height: 25px;
+		vertical-align: middle;
+	}
+	
+	modal2 {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		display: none;
+		background-color: rgba(0, 0, 0, 0.4);
+	}
+	
+	.modal2.show2 {
+		display: block;
+	}
+	
+	.modal_body2 {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 600px;
+		height: 300px;
+		/* padding: 40px; */
+		/* text-align: center; */
+		background-color: rgb(255, 255, 255);
+		border-radius: 10px;
+		box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+		transform: translateX(-50%) translateY(-50%);
+	}
+	
+	.m_head2 {
+		height: 15%;
+		padding: 10px;
+		display: flex;
+		justify-content: space-between;
+		background-color: #b6f09c;
+		border-top-left-radius: 10px;
+		border-top-right-radius: 10px;
+	}
+	
+	.m_body2 {
+		height: 70%;
+		padding: 20px;
+	}
+	
+	.m_footer2 {
+		height: 15%;
+		padding: 10px;
+		background-color: #b6f09c;
+		border-bottom-left-radius: 10px;
+		border-bottom-right-radius: 10px;
+		display: flex;
+		justify-content: end;
+		opacity: 0.7;
+	}
+	
+	.modal_title2 {
+		font-size: 18px;
+		color: gray;
+		font-weight: 500;
+	}
+	
+	.close_btn2 {
+		font-size: 20px;
+		color: rgb(139, 139, 139);
+		font-weight: 900;
+		cursor: pointer;
+	}
+	
+	.modal_label2 {
+		padding: 2px 0px 2px 0px;
+		background-color: skyblue;
+		width: 80px;
+		border-top: 2px solid black;
+		border-bottom: 2px solid black;
+		text-align: center;
+		color: black;
+		margin-top: 10px;
+		opacity: 0.7;
+		font-weight: bolder;
+	}
+	
+	.modal_btn2 {
+		width: 80px;
+		height: 30px;
+		border-radius: 5px;
+		text-align: center;
+		font-size: 14px;
+		font-weight: bolder;
+		padding-top: 5px;
+		margin-left: 5px;
+		font-family: sans-serif;
+		cursor: pointer;
+	}
+	
+	.cancle2 {
+		background-color: white;
+		color: black;
+	}
+	
+	.save2 {
+		background-color: rgb(50, 77, 158);
+		color: white;
+	}
+	
+	.input_box2 {
+		width: 130px;
+		height: 25px;
+		vertical-align: middle;
+	}
+	
+	modal2 {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		display: none;
+		background-color: rgba(0, 0, 0, 0.4);
+	}
+	
+	.modal2.show2 {
+		display: block;
+	}
+	
+	.modal_body2 {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 600px;
+		height: 300px;
+		/* padding: 40px; */
+		/* text-align: center; */
+		background-color: rgb(255, 255, 255);
+		border-radius: 10px;
+		box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+		transform: translateX(-50%) translateY(-50%);
+	}
+	
+	.m_head2 {
+		height: 15%;
+		padding: 10px;
+		display: flex;
+		justify-content: space-between;
+		background-color: #2A3F54;
+		border-top-left-radius: 10px;
+		border-top-right-radius: 10px;
+	}
+	
+	.m_body2 {
+		height: 70%;
+		padding: 20px;
+	}
+	
+	.m_footer2 {
+		height: 15%;
+		padding: 10px;
+		background-color: #b6f09c;
+		border-bottom-left-radius: 10px;
+		border-bottom-right-radius: 10px;
+		display: flex;
+		justify-content: end;
+		opacity: 0.7;
+	}
+	
+	.modal_title2 {
+		font-size: 18px;
+		color: gray;
+		font-weight: 500;
+	}
+	
+	.close_btn2 {
+		font-size: 20px;
+		color: rgb(139, 139, 139);
+		font-weight: 900;
+		cursor: pointer;
+	}
+	
+	.modal_label2 {
+		padding: 2px 0px 2px 0px;
+		background-color: skyblue;
+		width: 80px;
+		border-top: 2px solid black;
+		border-bottom: 2px solid black;
+		text-align: center;
+		color: black;
+		margin-top: 10px;
+		opacity: 0.7;
+		font-weight: bolder;
+	}
+	
+	.modal_btn2 {
+		width: 80px;
+		height: 30px;
+		border-radius: 5px;
+		text-align: center;
+		font-size: 14px;
+		font-weight: bolder;
+		padding-top: 5px;
+		margin-left: 5px;
+		font-family: sans-serif;
+		cursor: pointer;
+	}
+	
+	.cancle2 {
+		background-color: white;
+		color: black;
+	}
+	
+	.save2 {
+		background-color: rgb(50, 77, 158);
+		color: white;
+	}
+	
+	.input_box2 {
+		width: 130px;
+		height: 25px;
+		vertical-align: middle;
+	}
+	td {
+		font-weight: bold;
+	}
+	</style>
+	<!-- page content -->
+	<div class="right_col" role="main">
+		<div class="">
+			<div class="col-md-12 col-sm-12  ">
+				<!-- 검색기능 -->
+				<div class="x_panel">
+					<div class="x_title">
+						<h4 style="color:black;font-weight: bold;">📃 수확물 관리</h4>
+						<div class="clearfix"></div>
+					</div>
+					<div class="clearfix"></div>
+					<!--  
+						<div style="display: inline-block">
+							<p>농가이름
+							<input type="text" id="farmName" th:value="농가1" readonly>
+							</p>
+						</div>
+						<div style="display: inline-block">
+							<p>등록자
+							<input type="text" id="userName" th:value="user1" readonly>
+							</p>
+						</div>
+					-->	
+					<div>
+						<form id="SearchForm" th:action="@{/harvestList}" method="get" th:onSubmit="return checkSearch()">
+							<div style="display: inline-block">
+								<p><span style="font-weight: bold; color:black; font-size: 16px; margin-right: 10px;">품목</span>
+								<select th:name="middleCatagori" class="catagoriSelect" style="border-radius: 4px; height: 25px; font-weight: bold; color:black; margin-bottom: 10px;">
+									<option value="">분류선택</option>
+									<option th:value="곡류">곡류</option>
+									<option th:value="콩류">콩류</option>
+									<option th:value="구근류">구근류</option>
+									<option th:value="채소류">채소류</option>
+									<option th:value="과실류">과실류</option>
+									<option th:value="종실류">종실류</option>
+									<option th:value="버섯류">버섯류</option>
+								</select>
+							
+								<input type="text" name="name" placeholder="품목명" id="cropName" style="border-radius: 4px; border: 1px solid black;height: 25px; margin-left: 10px; margin-right: 100px;"/>
+								</p>
+							</div>
+							<div style="display: inline-block">  
+								<p><span style="font-weight: bold; color:black; font-size: 16px; margin-right: 10px;">등록기간</span>
+						    	<input name="startDate" type="date" id="startDate" style="border-radius: 4px; border: 1px solid black;height: 25px;padding: 0 10px;">
+							    <span style="font-weight: bold; color:black; font-size: 16px; margin-right: 10px;">&nbsp&nbspㅡ&nbsp&nbsp</span>
+							    <input name="endDate" type="date" id="endDate" style="border-radius: 4px; border: 1px solid black;height: 25px;padding: 0 10px;">
+						  		</p>
+						    </div>
+						    <br>
+						    <div style="display: inline-block;vertical-align:middle;">
+								<p><span style="font-weight: bold; color:black; font-size: 16px; margin-right: 10px;">창고</span>
+								<select th:name="warehouseCode" id="warehouseSelect" style="border-radius: 4px; height: 25px; font-weight: bold; color:black; margin-bottom: 10px;">
+									<option value="0">-----------창고선택-----------</option>
+									<th:block th:each="warehouseInfo : ${warehouseList }">
+										<option th:value="${warehouseInfo.warehouseCode }" th:selected="${warehouseInfo.warehouseCode} eq ${cri.warehouseCode}">[[${warehouseInfo.warehouseName }]]</option>
+									</th:block>
+								</select>
+								<input type="hidden" name="amount" th:value="${pageInfo.cri.amount }"/>
+								<input type="hidden" name="pageNum" th:value="${pageInfo.cri.pageNum }"/>
+								<button id="searchSubmit" type="submit" class="btn btn-secondary btn-sm" style="border: none; font-weight: bold; color:white; background: #2A3F54; height: 25px; padding:0 15px; margin-left: 25px;">조회</button>
+								<button id="searchReset" type="reset" class="btn btn-secondary btn-sm" style="border: none; font-weight: bold; color:white; background: #2A3F54; height: 25px; padding:0 15px; margin-left: 5px;">초기화</button>
+								</p>
+							</div>
+						</form>
+					</div>
+					
+					<!-- 테이블 -->
+					<div class="x_title">
+						<h5 style="color:black;font-weight: bold;">🌽 수확물 재고</h5>
+						<div class="clearfix"></div>
+					</div>
+
+					<div class="x_content">
+					<!-- 오버플로우 막을려고 클래스 끝에 # 넣었습니다  -->
+						<div class="table-responsive#">
+							<table class="table table-striped jambo_table bulk_action" style="width: 680px">
+									<colgroup>
+										<col style="width: 40%;" />
+										<col style="width: 30%;" />
+										<col style="width: 30%;" />
+									</colgroup>
+								<thead>
+									<tr class="headings">
+										<th class="column-title">품목명</th>
+										<th class="column-title">총 수량</th>
+										<th class="column-title">단 위</th>
+									</tr>
+								</thead>
+
+								<tbody>
+									<tr class="even pointer" th:each="harvestInfo : ${harvestListTotal }">
+										<td style="vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${harvestInfo.name}" th:text="${harvestInfo.name}" />
+										<td style="vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${#numbers.formatInteger(harvestInfo.count, 0, 'COMMA')}" th:text="|${#numbers.formatInteger(harvestInfo.count, 0, 'COMMA')}" />
+										<td style="vertical-align:middle" th:text="EA" />
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					
+					<!-- 테이블 -->
+					<div class="x_title">
+						<h5 style="color:black;font-weight: bold;">🌽 수확물 정보</h5>
+						<div class="clearfix"></div>
+					</div>
+
+					<div class="x_content">
+					<!-- 오버플로우 막을려고 클래스 끝에 # 넣었습니다  -->
+						<div class="table-responsive#">
+							<table class="table table-striped jambo_table bulk_action">
+									<colgroup>
+										<col style="display:none;width:0"/>
+										<col style="width: 20%;" />
+										<col style="width: 15%;" />
+										<col style="width: 15%;" />
+										<col style="width: 20%;" />
+										<col style="width: 15%;" />
+										<col style="width: 15%;" />
+									</colgroup>
+								<thead>
+									<tr class="headings">
+										<th style="display:none;"><input type="checkbox" id="check-all" class="flat"></th>
+										<th class="column-title">품목명</th>
+										<th class="column-title">수 량</th>
+										<th class="column-title">단 위</th>
+										<th class="column-title">입고 날짜</th>
+										<th class="column-title">창 고</th>
+										<th class="column-title">수정/삭제</th>
+									</tr>
+								</thead>
+
+								<tbody>
+									<tr class="even pointer" th:each="harvestInfo : ${harvestList }">
+										<td style="display:none;" class="a-center"><input type="checkbox" class="flat"name="table_records"></td>
+										<td style="vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${harvestInfo.name}" th:text="${harvestInfo.name}" />
+										<td style="vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${#numbers.formatInteger(harvestInfo.count, 0, 'COMMA')}" th:text="${#numbers.formatInteger(harvestInfo.count, 0, 'COMMA')}" />
+										<td style="vertical-align:middle" th:text="EA" />
+										<td style="vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${#dates.format(harvestInfo.registeDate,'yyyy-MM-dd')}" th:text="${#dates.format(harvestInfo.registeDate,'yyyy-MM-dd')}" />
+										<td style="vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${harvestInfo.warehouseName}" th:text="${harvestInfo.warehouseName}" />
+										<td style="vertical-align:middle">
+											<button type="button" th:id="updateForm+${harvestInfo.harvestNo}" th:onclick="updateForm([[${harvestInfo.harvestNo}]])" th:data-harvestno="${harvestInfo.harvestNo }" class="btn btn-warning btn-sm" style="font-weight: bold; color:white;">수 정</button>
+											<button type="button" th:id="update+${harvestInfo.harvestNo}" th:onclick="update([[${harvestInfo.harvestNo}]])" th:data-harvestno="${harvestInfo.harvestNo }" class="btn btn-warning btn-sm" style="display: none; font-weight: bold; color:white;"  >완 료</button>
+											<button type="button" style="display: none;" th:id="cancel+${harvestInfo.harvestNo}" th:onclick="cancel([[${harvestInfo.harvestNo}]])" class="btn btn-primary btn-sm">취소</button>
+											<button type="button" th:id="deleteBtn+${harvestInfo.harvestNo}" th:onclick="deleteBtn([[${harvestInfo.harvestNo}]])" th:data-harvestNo="${harvestInfo.harvestNo }" class="btn btn-danger btn-sm" style="font-weight: bold; color:white;">삭 제</button>
+										</td>
+										<td style="display:none;" th:text="${harvestInfo.cropNo}" />
+										<td style="display:none;" th:text="${harvestInfo.warehouseCode}"/>
+									</tr>
+								</tbody>
+							</table>
+							<br>
+							<!-- 입고등록, 출고등록 -->
+							<div style="float: right;">
+								<button type="button" id="registration" class="btn btn-secondary btn-sm" style="border: none; font-weight: bold; color:white; background: #2A3F54; height: 30px; padding:0 15px; margin-left: 5px;" >입고등록</button>
+								<button type="button" id="release" class="btn btn-secondary btn-sm" style="border: none; font-weight: bold; color:white; background: #2A3F54; height: 30px; padding:0 15px; margin-left: 5px;">출고등록</button>
+							</div>
+							<!--  페이징  -->
+								<div class="pageInfo_area" style="width:100%; text-align: center;">
+									<ul class="pagination2 model" th:each="page:${pageInfo}">
+										<th:block
+											th:with="start = ${page.startPage}, end = ${page.endPage} ">
+											
+											<!-- 이전 -->
+											<li class="pageInfo_btn" th:if="${page.prev}"><a
+												class="allowleft"
+												th:text="'<'"></a></li>
+											<!-- 숫자 -->
+											<li class="pageInfo_btn"
+												th:with="start = ${page.startPage}, end = ${page.endPage}"
+												th:each="pageButton : ${#numbers.sequence(start, end)}">
+												<a class="num"
+												th:text=${pageButton}
+												th:href="@{/harvestList?pageNum={page}&amount=10 (page = ${pageButton},name = ${pageInfo.cri.name},middleCatagori=${pageInfo.cri.middleCatagori},startDate=${pageInfo.cri.startDate},endDate=${pageInfo.cri.endDate},warehouseCode=${pageInfo.cri.warehouseCode})}"
+												th:classappend="${pageInfo.cri.pageNum == pageButton ? 'active':'' }"></a>
+											</li>
+											<!-- 다음 -->
+											<li class="pageInfo_btn" th:if="${page.next}"><a
+												class="arrowright"
+												th:text="'>'"></a></li>
+											
+										</th:block>
+									</ul>
+								</div>
+								
+							<form th:action="@{harvestList }" id="actionForm" method="get">
+								<input type="hidden" name="pageNum" th:value="${pageInfo.cri.pageNum }">
+								<input type="hidden" name="amount" th:value="${pageInfo.cri.amount }">
+								<input type="hidden" name="name" th:value="${pageInfo.cri.name }">
+								<input type="hidden" name="middleCatagori" th:value="${pageInfo.cri.middleCatagori }">
+								<input type="hidden" name="startDate" th:value="${pageInfo.cri.startDate }">
+								<input type="hidden" name="endDate" th:value="${pageInfo.cri.endDate }"> 
+								<input type="hidden" name="warehouseCode" th:value="${pageInfo.cri.warehouseCode }">
+							</form>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /page content -->
+	<!-- 입고등록 modal -->
+    <div class="modal" id="registrationModal">
+	    <div class="modal_body" style="height:330px;">
+	        <div class="m_head" style="height:15%">
+	            <div class="modal_title" style="color: white; font-weight: bolder">
+	            	📃입고 등록
+	            </div>
+	            <div class="close_btn" id="close_btn">X</div>
+	        </div>
+	
+            <form id="insertHarvestForm" th:action="@{/harvestInsert}" method="POST" th:onSubmit="return Checkform()">
+	        	<div class="m_body">
+	                
+	                <div style="display: flex; align-items: center;">
+					    <div class="modal_label" style="display: inline-block;">
+					        품목
+					    </div>
+					    <select th:name="middleCatagori" class="catagori" style="margin-left: 10px;margin-top: 10px;">
+					        <option value="">분류선택</option>
+					        <option th:value="곡류">곡류</option>
+					        <option th:value="콩류">콩류</option>
+					        <option th:value="구근류">구근류</option>
+					        <option th:value="채소류">채소류</option>
+					        <option th:value="과실류">과실류</option>
+					        <option th:value="종실류">종실류</option>
+					        <option th:value="버섯류">버섯류</option>
+					    </select>
+					    <div class="DivCrop" style="display: inline-block;margin-top: 10px;margin-left: 10px;"></div>
+					</div>
+					
+					<div style="display: flex; align-items: center;">
+					    <div class="modal_label" style="display: inline-block;">
+					        창고선택
+					    </div>
+					    <select th:name="warehouseCode" id="warehouseSelect" style="margin-left: 10px;margin-top: 10px;margin-right: 20px;width:180px;">
+					        <option value="">-----------창고선택-----------</option>
+					        <th:block th:each="warehouseInfo : ${warehouseList }">
+					            <option th:value="${warehouseInfo.warehouseCode }">[[${warehouseInfo.warehouseName }]]</option>
+					        </th:block>
+					    </select>
+					
+					    <div class="modal_label" style="display:inline-block">
+					        등록날짜
+					    </div>
+					    <input name="reDate" type="date" id="registeDate" class="input_box" style="width:180px;margin-left:10px;margin-top:10px;" />
+					</div>
+					
+					<div style="display: flex; align-items: center;">
+		                <div class="modal_label" style="display: inline-block; width: 80px;margin-top: 10px;">
+		                    수량
+		                </div>
+		                <input type="text" class="input_box" id="count" style="width:180px;margin-left:10px;margin-top:10px;" min="0" value="0" th:onkeyup="valueUpdate2()" />
+		                <input name="count" type="hidden" id="countHidden">
+					</div>
+					
+					<div style="display: flex; align-items: center;">
+		                <div class="modal_label" style="display: inline-block;">
+		                    불량수량
+		                </div>
+		                <input type="text" class="input_box" id="defectiveCount" style="width:180px;margin-left:10px;margin-top:10px;" min="0" value=0 th:onkeyup="valueUpdate2()"/> 
+		                <input name="defect" type="hidden" id="defectiveCountHidden">
+					</div>
+					
+					<div style="display: flex; align-items: center;">
+						<div class="modal_label" style="display: inline-block;">
+		                    불량사유
+		                </div>
+		                <input name="explation" type="text" class="input_box" id="explation" style="margin-top:10px;margin-left:10px;width:473px;">
+					</div>
+				     
+		        </div>
+		
+		        <div class="m_footer">
+		            <div class="btn btn-secondary" id="close_btn" th:onclick="resetModal()" style="padding-top: 2px;padding-left: 0px;padding-right: 0px;padding-bottom: 0px;width: 70px;height: 30px;">초기화</div>
+		            <button type="submit" id="submitInsert" style="background-color: #1ABB9C;border: none;height: 30px;width: 70px;padding-top: 3px;" class="btn btn-primary">저장</button>
+		        </div>
+	    	</form> 
+	    </div>
+	</div>
+    <!-- 출고등록 modal -->
+    <div class="modal" id="releaseModal">
+	    <div class="modal_body2" style="width: 670px;height: 410px;">
+	        <div class="m_head2" style="height: 13%;">
+	            <div class="modal_title2" style="color: white; font-weight: bolder">
+	                📃출고 등록
+	            </div>
+	            <div class="close_btn" id="close_btn2">X</div>
+	        </div>
+	
+	        <form id="insertHarvestForm2" th:action="@{/harvestRelease}" method="POST" th:onSubmit="return CheckReleaseForm()">
+	            <div class="m_body2">
+	                
+	                <div style="display: flex; align-items: center;">
+	                    <div class="modal_label2" style="display: inline-block;margin-top: 10px;margin-right: 10px;">
+	                        거래처명
+	                    </div>
+	                    <input type="text" name="customer" id="businessName" style="display: inline-block;padding-right:20px;margin-top:10px">
+	                    <button type="button" id="businessBtn" style="display: inline-block;margin-right:20px; width:45px; border: 1px solid black;margin-top: 12px;margin-left: 10px;">✔</button>
+	                
+	                    <div class="modal_label2" style="display: inline-block;margin-top: 10px;margin-right: 10px;">
+	                        대표자명
+	                    </div>
+	                    <input type="text" id="ceo" readonly style="display: inline-block;margin-top:10px">
+	                </div>
+	                
+	                <div style="display: flex; align-items: center;">
+	                    <div class="modal_label2" style="display: inline-block; margin-top: 10px;margin-right: 10px;">
+	                        담당자명
+	                    </div>
+	                    <input type="text" id="manager" style="display:inline-block;padding-right:20px;margin-top:10px" readonly>
+	                    
+	                    <div class="modal_label2" style="display: inline-block; width: 80px;margin-top: 10px;margin-left: 75px;margin-right: 10px;">
+	                        전화번호
+	                    </div>
+	                    <input type="text" id="tel" readonly style="display: inline-block;margin-top:10px">
+	                </div>
+	                
+	                <div style="display: flex; align-items: center;">
+	                    <div class="modal_label2" style="display: inline-block; width: 80px;margin-top: 10px;">
+	                        주소
+	                    </div>
+	                    <input type="text" style="display:inline-block;width:536px;margin-top:10px;margin-left:10px" id="addr" readonly>
+	                </div>
+	
+	                <div style="display: flex; align-items: center;">
+	                    <div class="modal_label2" style="display: inline-block; width: 80px;margin-top: 10px;">
+	                        계좌번호
+	                    </div>
+	                    <input type="text"  style="display:inline-block;padding-right:20px;margin-top:10px;margin-left:10px;margin-right: 75px;" id="accountNumber" readonly>
+	
+	                    <div class="modal_label2" style="display: inline-block; width: 80px;margin-top: 10px;">
+	                        예금주
+	                    </div>
+	                    <input type="text" id="accountHolder" readonly style="display: inline-block;margin-top:10px;margin-left:10px">
+	                </div>
+	
+	                <div style="display: flex; align-items: center;">
+	                    <div class="modal_label2" style="display: inline-block; width: 80px;margin-top: 10px;">
+	                        품목선택
+	                    </div>
+	                    <select th:name="middleCatagori" class="catagoriRelease" style="margin-left: 10px;margin-top: 10px;">
+	                        <option value="">분류선택</option>
+	                        <option th:value="곡류">곡류</option>
+	                        <option th:value="콩류">콩류</option>
+	                        <option th:value="구근류">구근류</option>
+	                        <option th:value="채소류">채소류</option>
+	                        <option th:value="과실류">과실류</option>
+	                        <option th:value="종실류">종실류</option>
+	                        <option th:value="버섯류">버섯류</option>
+	                    </select>
+	
+	                    <div class="DivCrop" style="display: inline-block;margin-top:10px;margin-left:10px"></div>
+						<div class="DivCount" style="display: inline-block;margin-top: 10px;height: 20px;margin-left: 15px;"></div>
+						<input type="hidden" id="cropNo" name="cropNo">
+						<input type="hidden" id="name" name="name">
+	                </div>
+	
+	                <div style="display: flex; align-items: center;">
+	                    <div class="modal_label2" style="display: inline-block; width: 80px;margin-top: 10px;">
+	                        수량
+	                    </div>
+	                    <input type="text" value=0 min="0" id="quantity" style="display:inline-block;padding-right:20px;margin-top:10px;margin-left:10px;margin-right:75px" th:onkeyup="valueUpdate()">
+		              	<input name="amount" type="hidden" id="quantityHidden">
+	
+	                    <div class="modal_label" style="display: inline-block; width: 80px;margin-top: 10px;">
+	                        출고날짜
+	                    </div>
+	                    <input name="today" type="text" id="shipDate" readonly style="display: inline-block;margin-top:10px;margin-left:10px">
+	                </div>
+	
+	                <div style="display: flex; align-items: center;">
+	                    <div class="modal_label2" style="display: inline-block; width: 80px;margin-top: 10px;">
+	                        단가
+	                    </div>
+	                    <input type="text" value=0 min="0" id="unitPrice" style="display:inline-block;padding-right:20px;margin-top:10px;margin-left:10px;margin-right:75px" th:onkeyup="valueUpdate()">
+		              	<input name="unitPrice" type="hidden" id="unitPriceHidden">
+	
+	                    <div class="modal_label" style="display: inline-block; width: 80px;margin-top: 10px;">
+	                        토탈금액
+	                    </div>
+	                    <input type="text" value=0 min="0" id="totalPrice" readonly style="display: inline-block;margin-top:10px;margin-left:10px">
+	                </div>
+	                 
+	            </div>
+	    
+	            <div class="m_footer">
+	            	<div class="btn btn-secondary" id="close_btn" th:onclick="resetModal()" style="padding-top: 2px;padding-left: 0px;padding-right: 0px;padding-bottom: 0px;width: 70px;height: 30px;">초기화</div>
+		            <button type="submit" id="submitInsert" style="background-color: #1ABB9C;border: none;height: 30px;width: 70px;padding-top: 3px;" class="btn btn-primary">저장</button>
+	            </div>
+	        </form> 
+	    </div>
+	</div>
+    
+    <!-- insert modal -->
+	<script>
+		$(document).ready(function(){
+			//페이징
+			let actionForm = $("#actionForm");
+			console.log(actionForm);
+		    $('.paginate_button a').on('click', function (e) {
+	        	actionForm.find('input[name="pageNum"]').val($(this).attr('href'))
+		    	e.preventDefault();
+		        actionForm.submit();
+	        })
+			
+	        //검색
+	        //검색후 값 유지
+			$('.catagoriSelect').val('[[${param.middleCatagori}]]');
+			$('#cropName').val('[[${param.name}]]');
+			$('#startDate').val('[[${param.startDate}]]');
+			$('#endDate').val('[[${param.endDate}]]');
+			
+	        let SearchForm = $("#SearchForm");
+		    $("#SearchForm > #searchSubmit").on("click", function(e){
+		    	let catagoriSelect = $(".catagoriSelect").val();
+				let name = $("#SearchForm input[name='name']").val();
+				let warehouseSelect = $("#warehouseSelect").val();
+				let startDate = $("#startDate").val();
+				let endDate = $("#endDate").val();
+				let warehouseName = $("#houseName").val(); 
+				
+		    	actionForm.find("input[name='middleCatagori']").val(catagoriSelect);
+				actionForm.find("input[name='name']").val(name);
+				actionForm.find("input[name='warehouseCode']").val(warehouseSelect);
+				actionForm.find("input[name='startDate']").val(startDate);
+				actionForm.find("input[name='endDate']").val(endDate);
+				actionForm.find("input[name='warehouseName']").val(warehouseName);
+				actionForm.find("input[name='pageNum']").val(1);
+				e.preventDefault();
+				actionForm.submit();
+		    })
+		    
+		    
+			/*
+			const input = document.querySelector('#count');
+			input.addEventListener('keyup', function(e) {
+  				let value = e.target.value;
+  				value = Number(value.replaceAll(',', ''));
+  					if(isNaN(value)) {
+    					input.value = 0;
+  					}else {
+    					const formatValue = value.toLocaleString('ko-KR');
+    					input.value = formatValue;
+  					}
+			})
+		    */
+		   	//모달 입고등록
+			$('#registration').click(function(e){
+				e.preventDefault();
+				$('#registrationModal').modal("show");
+			});
+			$("#close_btn").click(function(){
+				 $('#registrationModal').modal('hide');
+			})
+		    
+		    //입고등록 - 등록일 현재일 입력
+		    document.getElementById('registeDate').value = new Date().toISOString().substring(0, 10);
+			
+		    
+		    //입고등록 - 분류 선택시 해당분류 품목명
+		    $('.catagori').on('change',function(e){
+		    	$('#count').val(0);
+		    	$('#defectiveCount').val(0);
+	        	let middleCatagori;
+		    	if($('.catagori').val() != ''){
+	        		middleCatagori = $('.catagori').val();
+		    	} else{
+		    		middleCatagori = null;
+		    	}
+	        	console.log(middleCatagori);
+	        	
+	        	let DivCropTag = $('.DivCrop');
+	        	
+	        	fetch("/ohnong/cropList/" + middleCatagori)
+			   	.then(resolve => resolve.json())
+			   	.then(result => {
+			   		console.log(result);
+			   		
+			   		if(result == null || result ==''){
+			   			$('.DivCrop').empty();
+			   			selectTag = document.createElement('select');
+			   			selectTag.setAttribute("name","cropNo");
+			   			selectTag.setAttribute("id","selectName");
+			   			let optionTag = document.createElement('option');
+			   			optionTag.value = "";
+			   			optionTag.innerText = "--------품목명--------";
+			   			selectTag.append(optionTag);
+			   			DivCropTag.append(selectTag);
+			   		} else{
+			   			$('.DivCrop').empty();
+			   			let selectTag = document.createElement('select');
+			   			selectTag.setAttribute("name","cropNo");
+			   			selectTag.setAttribute("id","selectName");
+			   			let optionTag = document.createElement('option');
+			   			optionTag.value = "";
+			   			optionTag.innerText = "--------품목명--------";
+			   			selectTag.append(optionTag);
+						for(let i=0;i<result.length;i++){
+							optionTag = document.createElement('option');
+							optionTag.value = result[i].cropNo;
+							optionTag.innerText = result[i].name;
+							selectTag.append(optionTag);
+						}		   		
+						DivCropTag.append(selectTag);
+						
+						$('#selectName').on('change',function(e){
+				        	$('#count').val(0);
+					    	$('#defectiveCount').val(0);
+				        })
+			   		}
+			   		
+			   	})
+			   	.catch(reject => console.log(reject))
+	        })
+	        
+	        //출고
+	         $('.catagoriRelease').on('change',function(e){
+	        	let middleCatagori;
+		    	if($('.catagoriRelease').val() != ''){
+	        		middleCatagori = $('.catagoriRelease').val();
+		    	} else{
+		    		middleCatagori = null;
+		    	}
+	        	console.log(middleCatagori);
+	        	
+	        	let DivCropTag = $('.DivCrop');
+	        	
+	        	fetch("/ohnong/selectHarvestList/" + middleCatagori)
+			   	.then(resolve => resolve.json())
+			   	.then(result => {
+			   		console.log(result);
+			   		
+			   		if(result == null || result ==''){
+			   			$('.DivCrop').empty();
+			   			$('.DivCount').empty();
+			   			selectTag = document.createElement('select');
+			   			selectTag.setAttribute("name","cropNo");
+			   			let optionTag = document.createElement('option');
+			   			optionTag.value = "";
+			   			optionTag.innerText = "-------품목명-------";
+			   			selectTag.append(optionTag);
+			   			DivCropTag.append(selectTag);
+			   		} else{
+			   			$('.DivCrop').empty();
+			   			$('.DivCount').empty();
+			   			let selectTag = document.createElement('select');
+			   			
+			   			selectTag.setAttribute("name","cropNo");
+			   			selectTag.setAttribute("class", "selectHarvest")
+			   			selectTag.setAttribute("id", "cropNo")
+			   			let optionTag = document.createElement('option');
+			   			optionTag.value = "";
+			   			optionTag.innerText = "-------품목명-------";
+			   			selectTag.append(optionTag);
+						for(let i=0;i<result.length;i++){
+							optionTag = document.createElement('option');
+							optionTag.value = result[i].cropNo;
+							optionTag.innerText = result[i].name;
+							selectTag.append(optionTag);
+						}		   		
+						DivCropTag.append(selectTag);
+						
+						$('.selectHarvest').on('change',function(e){
+							let formTag = document.querySelector('#insertHarvestForm2');
+							let priceTag = formTag.querySelector('#unitPrice');
+							priceTag.value = 0;
+							let countTag = formTag.querySelector('#quantity');
+							countTag.value = 0;
+							let totalTag = formTag.querySelector('#totalPrice');
+							totalTag.value = 0;
+							
+							let cropNo = $(this).children("option:selected").val();
+							let name = $(this).children("option:selected").text();
+							console.log(name);
+							let releaseModalTag = document.querySelector("#releaseModal");
+							console.log(releaseModalTag);
+							let nameTag = releaseModalTag.querySelector("#name");
+							console.log(nameTag);
+							nameTag.value = name;
+							
+							$("#cropNo").val(cropNo);
+						    console.log(cropNo);
+						    let pTag = '';
+						    let DivCountTag = $('.DivCount');
+						    $('.DivCount').empty();
+						    fetch("/ohnong/selectHarvestListWithCrop/" + cropNo)
+						   	.then(resolve => resolve.json())
+						   	.then(result => {
+						   		console.log(result);
+						   		console.log(result.count);
+						   		if(result.count == null){
+						   			result.count = 0;
+						   		} else{
+						   			pTag = document.createElement('p');
+							   		pTag.innerText = "*등록된 품목의 총 수량 : " + result.count + " 개";
+							   		pTag.setAttribute("class","notTarget");
+							   		pTag.style.color = 'red';
+							   		DivCountTag.append(pTag);
+							   		DivCountTag.setAttribute("height","20px");
+						   		}
+						   		
+						   	})
+						   	.catch(reject => console.log(reject))
+						    
+						})
+			   		}
+			   	})
+			   	.catch(reject => console.log(reject))
+	        })
+	        
+	        
+		});
+		
+		//초기화
+		$("#searchReset").on('click', function(e){
+			e.preventDefault();
+			$("#warehouseSelect").val(0);
+			$(".catagoriSelect").val("");
+			$("#startDate").val("");
+			$("#endDate").val("");
+			$("#SearchForm input[name='name']").val("");
+			document.getElementById('searchSubmit').click();
+		})
+		
+		function checkSearch(){
+			let catagoriSelect = $(".catagoriSelect").val();
+			let name = $("#SearchForm input[name='name']").val();
+			
+			//분류만 선택시 알림
+			if(catagoriSelect){
+				if(!name){
+					const Toast = Swal.mixin({
+	                    toast: true,
+	                    position: 'center-center',
+	                    showConfirmButton: false,
+	                    timer: 500,
+	                    timerProgressBar: true,
+	                    didOpen: (toast) => {
+	                      toast.addEventListener('mouseenter', Swal.stopTimer)
+	                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+	                    }
+	                  })
+
+	                  Toast.fire({
+	                    icon: 'warning',
+	                    title: '품목명을 입력하세요.'
+	                  })
+					return false;
+				}
+			}
+			
+			if(name){
+				if(!catagoriSelect){
+					const Toast = Swal.mixin({
+	                    toast: true,
+	                    position: 'center-center',
+	                    showConfirmButton: false,
+	                    timer: 500,
+	                    timerProgressBar: true,
+	                    didOpen: (toast) => {
+	                      toast.addEventListener('mouseenter', Swal.stopTimer)
+	                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+	                    }
+	                  })
+
+	                  Toast.fire({
+	                    icon: 'warning',
+	                    title: '분류를 선택하세요.'
+	                  })
+					return false;
+				}
+			}
+			
+			//날짜 둘다 입력 체크 + 시작일 > 종료일인경우 체크
+			var stDt = $('#startDate').val();
+		    var edDt = $('#endDate').val();
+		    
+		    if(stDt == '' && edDt != ''){
+		    	const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '시작일과 종료일을 입력하세요.'
+                  })
+		     	return false;
+		    } 
+		    
+		    if (stDt != '' && edDt == ''){
+		    	const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '시작일과 종료일을 입력하세요.'
+                  })
+			    return false;
+		    } 
+	    	
+		    if( Number(stDt.replace(/-/gi,"")) > Number(edDt.replace(/-/gi,"")) ){
+		    	const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '시작일이 종료일보다 클 수 없습니다.'
+                  })
+		     	return false;
+		    }
+		}
+		
+		//입고등록 - 모달창 초기화(기본값 유지)
+		function resetModal(){
+			$('#insertHarvestForm')[0].reset();
+			$("#defectiveCount").val(0);
+			$("#count").val(0);
+			$('#countHidden').val(0);
+			$(".catagori").val("");
+			$('.DivCrop').empty();
+			document.getElementById('registeDate').value = new Date().toISOString().substring(0, 10);
+		}
+		
+		//출고등록 - 모달당 초기화(기본값 유지)
+		function resetModal2(){
+			$('#insertHarvestForm2')[0].reset();
+			$("#quantity").val(0);
+			$('#quantityHideen').val(0);
+			$("#unitPrice").val(0);
+			$("#unitPriceHidden").val(0);
+			$(".catagori").val("");
+			$('.DivCrop').empty();
+			$('.DivCount').empty();
+			document.getElementById('registeDate').value = new Date().toISOString().substring(0, 10);
+		}
+		
+		//입고등록 - submit시 입력값 체크
+		function Checkform(){
+			console.log($('#registeDate').val());
+			
+			
+			if(insertHarvestForm.warehouseCode.value == "") {
+				const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '창고를 선택해주세요.'
+                  })
+		        return false;
+		    }
+			if(insertHarvestForm.middleCatagori.value == "") {
+		        const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '등록하실 작물을 선택해주세요.'
+                  })
+		        return false;
+		    }
+			if(!insertHarvestForm.middleCatagori.value == ""){
+				if(insertHarvestForm.cropNo.value == ""){
+					const Toast = Swal.mixin({
+	                    toast: true,
+	                    position: 'center-center',
+	                    showConfirmButton: false,
+	                    timer: 500,
+	                    timerProgressBar: true,
+	                    didOpen: (toast) => {
+	                      toast.addEventListener('mouseenter', Swal.stopTimer)
+	                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+	                    }
+	                  })
+
+	                  Toast.fire({
+	                    icon: 'warning',
+	                    title: '등록하실 작물을 선택해주세요.'
+	                  })
+					return false;
+				}
+			}
+			if(insertHarvestForm.reDate.value == "") {
+				const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '등록일을 입력해주세요.'
+                  })
+		        return false;
+		    }
+			if(insertHarvestForm.countHidden.value == "") {
+				const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '수량을 입력해주세요.'
+                  })
+		        return false;
+		    }
+			
+			const Toast = Swal.mixin({
+                toast: true,
+                position: 'center-center',
+                showConfirmButton: false,
+                timer: 500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener('mouseenter', Swal.stopTimer)
+                  toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+              })
+
+              Toast.fire({
+                icon: 'success',
+                title: '등록 되었습니다.'
+              })
+			
+		}
+		
+		//출고등록 - submit시 입력값체크
+		function CheckReleaseForm(){
+			let cropNo = $("#cropNo").val();
+		    let limitCount = check(cropNo);
+		    
+		    function check(cropNo){
+		    	var limitCount = 0;
+			    $.ajax({
+					type : 'get',
+					url : '/ohnong/selectHarvestListWithCrop/' + cropNo,
+					async : false,
+					success : function(result){
+				    	limitCount = result.count;
+					},
+					error : function(status, error){
+						console.log(status, error);
+					}
+				})
+				return limitCount;
+		    }
+		    console.log(limitCount);
+		    console.log(insertHarvestForm2.quantity.value);
+		    
+		    if(insertHarvestForm2.quantity.value > limitCount) {
+		        const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: "최대" + limitCount + " 개까지 입력가능합니다."
+                  })
+		        return false;
+		    }
+		    if(insertHarvestForm2.businessName.value == '') {
+		        const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '거래처명을 입력해주세요.'
+                  })
+		        return false;
+		    }
+		    if(insertHarvestForm2.ceo.value == '') {
+		        const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '대표자명을 입력해주세요.'
+                  })
+		        return false;
+		    }
+		    if(insertHarvestForm2.manager.value == '') {
+		        const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '담당자명을 입력해주세요.'
+                  })
+		        return false;
+		    }
+		    if(insertHarvestForm2.tel.value == '') {
+		        const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '전화번호를 입력해주세요.'
+                  })
+		        return false;
+		    }
+		    if(insertHarvestForm2.addr.value == '') {
+		        const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '주소를 입력해주세요.'
+                  })
+		        return false;
+		    }
+		    if(insertHarvestForm2.accountNumber.value == '') {
+		        const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '계좌번호를 입력해주세요.'
+                  })
+		        return false;
+		    }
+		    if(insertHarvestForm2.accountHolder.value == '') {
+		        const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '예금주를 입력해주세요.'
+                  })
+		        return false;
+		    }
+		    if(insertHarvestForm2.middleCatagori.value == "") {
+		        const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '등록하실 작물을 선택해주세요.'
+                  })
+		        return false;
+		    }
+			if(!insertHarvestForm2.middleCatagori.value == ""){
+				if($('.selectHarvest').val() == ""){
+					const Toast = Swal.mixin({
+	                    toast: true,
+	                    position: 'center-center',
+	                    showConfirmButton: false,
+	                    timer: 500,
+	                    timerProgressBar: true,
+	                    didOpen: (toast) => {
+	                      toast.addEventListener('mouseenter', Swal.stopTimer)
+	                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+	                    }
+	                  })
+
+	                  Toast.fire({
+	                    icon: 'warning',
+	                    title: '등록하실 작불을 선택해주세요.'
+	                  })
+					return false;
+				}
+			}
+			if(insertHarvestForm2.quantityHidden.value == '') {
+		        const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '수량을 입력해주세요.'
+                  })
+		        return false;
+		    }
+			if(insertHarvestForm2.shipDate.value == '') {
+		        const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '출고일을 입력해주세요.'
+                  })
+		        return false;
+		    }
+			if(insertHarvestForm2.unitPriceHidden.value == '') {
+		        const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '단가를 입력해주세요.'
+                  })
+		        return false;
+		    }
+		    
+			const Toast = Swal.mixin({
+                toast: true,
+                position: 'center-center',
+                showConfirmButton: false,
+                timer: 500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener('mouseenter', Swal.stopTimer)
+                  toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+              })
+
+              Toast.fire({
+                icon: 'success',
+                title: '등록 되었습니다.'
+              })
+		}
+		
+		//출고등록
+		$('#release').click(function(e){
+			e.preventDefault();
+			$('#releaseModal').modal("show");
+			
+			/*
+			fetch("/ohnong/accountList/" + "user1")
+		   	.then(resolve => resolve.json())
+		   	.then(result => {
+		   		console.log(result);
+		   	})
+		   	.catch(reject => console.log(reject))
+			*/
+			
+		});
+		
+		$("#close_btn2").click(function(){
+			 $('#releaseModal').modal('hide');
+		})
+		var businessName = document.getElementById('businessName');
+		
+		/*
+		var today = new Date();
+		var year = today.getFullYear(); 
+		var month = today.getMonth() + 1
+		var date = today.getDate(); // 일
+		var days = year +"-"+month+"-"+date;
+		*/
+		
+		$("#businessBtn").click(function(e){
+			console.log(businessName.value)
+			
+			fetch("/ohnong/accountList/" + "[[${session.login.userId}]]" + "/" + businessName.value)
+		   	.then(resolve => resolve.json())
+		   	.then(result => {
+		   		console.log(result);
+
+		   		if (result.length == 0){
+		   			const Toast = Swal.mixin({
+	                    toast: true,
+	                    position: 'center-center',
+	                    showConfirmButton: false,
+	                    timer: 500,
+	                    timerProgressBar: true,
+	                    didOpen: (toast) => {
+	                      toast.addEventListener('mouseenter', Swal.stopTimer)
+	                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+	                    }
+	                  })
+
+	                  Toast.fire({
+	                    icon: 'warning',
+	                    title: '거래처명이 없습니다.'
+	                  })
+		   		}
+		   		else {
+			   		$('#accountNumber').val(result[0].accountNum);
+			   		$('#accountHolder').val(result[0].accountName);
+			   		$('#manager').val(result[0].managerName);
+			   		$('#tel').val(result[0].customerTel);
+			   		$('#addr').val(result[0].customerAddr);
+			   		$('#ceo').val(result[0].customerName);
+			   		$("#shipDate").val(new Date().toISOString().substring(0, 10));
+		   		}
+		   	})
+		   	.catch(reject => console.log(reject))
+		})
+		
+		$('#unitPrice').change(function(){
+			let price = Number($(this).val().replaceAll(',', ''));
+        	$('#unitPriceHidden').val(price);
+    	});
+		
+		$('#quantity').change(function(){
+			let count = Number($(this).val().replaceAll(',', ''));
+			$('#quantityHidden').val(count);	
+		});
+		
+		//수량 단가 입력시 토탈금액 표시
+		function valueUpdate(){
+			let pCount = $('#quantity').val();
+			let pPrice = $('#unitPrice').val();
+			
+			pCount = Number(pCount.replaceAll(',', ''));
+			pPrice = Number(pPrice.replaceAll(',', ''));
+		    
+		    if(isNaN(pCount)){
+		    	$('#quantity').val(0);
+		    	$('#totalPrice').val(0);
+		    	const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '숫자만 입력가능합니다.'
+                  })
+		    }else {
+		    	let formatCount = pCount.toLocaleString('ko-KR');
+				$('#quantity').val(formatCount);
+		    }
+		    
+		    if(isNaN(pPrice)){
+		    	$('#unitPrice').val(0);
+		    	$('#totalPrice').val(0);
+		    	const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '숫자만 입력가능합니다.'
+                  })
+		    } else {
+		    	let formatPrice = pPrice.toLocaleString('ko-KR');
+			    $('#unitPrice').val(formatPrice);
+		    }
+		    
+		    let total = pCount * pPrice;
+		    let formatTotal = total.toLocaleString('ko-KR') + " 원";
+			$('#totalPrice').val(formatTotal);
+		}
+		
+		$('#count').change(function(){
+			let count = Number($(this).val().replaceAll(',', ''));
+        	$('#countHidden').val(count);
+    	});
+		
+		$('#defectiveCount').change(function(){
+			let defectiveCount = Number($(this).val().replaceAll(',', ''));
+			$('#defectiveCountHidden').val(defectiveCount);	
+		});
+		
+		function valueUpdate2(){
+			let count = $('#count').val();
+			let defectiveCount = $('#defectiveCount').val();
+			
+			count = Number(count.replaceAll(',', ''));
+			defectiveCount = Number(defectiveCount.replaceAll(',', ''));
+		    
+		    if(isNaN(count)){
+		    	$('#count').val(0);
+		    	const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '숫자만 입력가능합니다.'
+                  })
+		    }else {
+		    	let formatCount = count.toLocaleString('ko-KR');
+				$('#count').val(formatCount);
+		    }
+		    
+		    if(isNaN(defectiveCount)){
+		    	$('#defectiveCount').val(0);
+		    	const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '숫자만 입력가능합니다.'
+                  })
+		    } else {
+		    	let formatDefectiveCount = defectiveCount.toLocaleString('ko-KR');
+			    $('#defectiveCount').val(formatDefectiveCount);
+		    }
+		}
+		
+		//테이블 수정,삭제
+		let updateFormBtn, updateBtn, trTag, registDateTag,
+			countTag, unitTag, warehouseNameTag, warehouseCodeTag;
+		let count, countOr, warehouseName, selectTag, warehouseCode;
+		let inpCount;
+		let pageNum = [[${pageInfo.cri.pageNum}]];
+		
+		//수정폼으로 전환
+		function updateForm(harvestNo){
+			updateFormBtn = document.getElementById('updateForm' + harvestNo);
+	    	updateFormBtn.style.display = 'none';
+	    	
+	    	deleteBtn = document.getElementById('deleteBtn' + harvestNo);
+	    	deleteBtn.style.display = 'none';
+	    	
+	    	updateBtn = document.getElementById('update' + harvestNo);
+	    	updateBtn.style.display = 'inline-block';
+	    	
+	    	cancelBtn = document.getElementById('cancel' + harvestNo);
+	    	cancelBtn.style.display = 'inline-block';
+	    	
+	    	trTag = updateFormBtn.parentElement.parentElement;
+	    	checkBoxTag = trTag.childNodes[1];
+	    	countTag = trTag.childNodes[5];
+	    	unitTag = trTag.childNodes[7];
+	    	registDateTag = trTag.childNodes[9];
+	    	warehouseNameTag = trTag.childNodes[11];
+	    	cropNo = trTag.childNodes[15].textContent;
+	    	warehouseCodeTag = trTag.childNodes[17];
+	    	console.log(warehouseCodeTag);
+	    	
+	    	fetch("/ohnong/warehouseList/" + "[[${session.login.userId}]]")
+		   	.then(resolve => resolve.json())
+		   	.then(result => {
+		   		
+		   		//Count
+		   		count = countTag.textContent;
+		   		countOr = countTag.textContent;
+		   		countTag.innerHTML = '';
+		   		
+		   		inpCount = document.createElement('input');
+		   		inpCount.setAttribute("id","co");
+		   		inpCount.addEventListener('input', function(){
+		   			let co = $('#co').val();
+		   			co = Number(co.replaceAll(',',''));
+		   			if(isNaN(co)){
+		   				$('#co').val(count);
+		   				const Toast = Swal.mixin({
+		                    toast: true,
+		                    position: 'center-center',
+		                    showConfirmButton: false,
+		                    timer: 500,
+		                    timerProgressBar: true,
+		                    didOpen: (toast) => {
+		                      toast.addEventListener('mouseenter', Swal.stopTimer)
+		                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+		                    }
+		                  })
+
+		                  Toast.fire({
+		                    icon: 'warning',
+		                    title: '숫자만 입력가능합니다.'
+		                  })
+		   			} else {
+		   				let formatCo = co.toLocaleString('ko-KR');
+		   				$('#co').val(formatCo);
+		   			}
+		   		});
+		   		
+		   		inpCount.value = count;
+		   		inpCount.style.width = '100%';
+		   		countTag.append(inpCount);
+		   		
+		   		//WarehouseName
+		   		warehouseName = warehouseNameTag.textContent;
+		   		warehouseCode = warehouseCodeTag.textContent;
+		   		warehouseNameTag.innerHTML = '';
+		   		
+		   		selectTag = document.createElement('select');
+				for(let i=0;i<result.length;i++){
+					let optionTag = document.createElement('option');
+					optionTag.value = result[i].warehouseCode;
+					optionTag.innerText = result[i].warehouseName;
+					selectTag.append(optionTag);
+				}		   		
+		   		selectTag.style.width = '100%';
+				warehouseNameTag.append(selectTag);
+		   		selectTag.value = warehouseCode;
+		   	})
+		   	.catch(reject => console.log(reject))
+	    }
+		
+		//취소
+		function cancel(harvestNo){
+			location.reload();
+			countTag.innerHTML = countOr;
+	   		warehouseNameTag.innerHTML = warehouseName;
+	   		
+	   		updateFormBtn = document.getElementById('updateForm' + harvestNo);
+	    	updateFormBtn.style.display = 'inline-block';
+	    	
+	    	deleteBtn = document.getElementById('deleteBtn' + harvestNo);
+	    	deleteBtn.style.display = 'inline-block';
+	    	
+	    	updateBtn = document.getElementById('update' + harvestNo);
+	    	updateBtn.style.display = 'none';
+	    	
+	    	cancelBtn = document.getElementById('cancel' + harvestNo);
+	    	cancelBtn.style.display = 'none';
+		}
+		
+		//수정
+		function update(harvestNo){
+			let newWarehouseCode = selectTag.value;
+			let newWarehouseName = selectTag.options[selectTag.selectedIndex].text;
+			let newCount = inpCount.value;
+			newCount = newCount.replaceAll(',','');
+			
+			$.ajax({
+				type : 'post',
+				url : '/ohnong/harvestUpdate',
+				dataType : 'text',
+				data : {
+						"harvestNo" : harvestNo,
+						"count" : newCount,
+						"warehouseCode" : newWarehouseCode,
+				},
+				success : function(data){
+					//itemCodeTag.innerText = newItemCode;
+					//itemNameTag.innerText = newItemName;
+					//countTag.innerText = newCount;
+					//warehouseNameTag.innerText = newWarehouseName;
+			    	//updateFormBtn.style.display = 'inline-block';
+			    	//updateBtn.style.display = 'none';
+					const Toast = Swal.mixin({
+	                    toast: true,
+	                    position: 'center-center',
+	                    showConfirmButton: false,
+	                    timer: 500,
+	                    timerProgressBar: true,
+	                    didOpen: (toast) => {
+	                      toast.addEventListener('mouseenter', Swal.stopTimer)
+	                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+	                    }
+	                  })
+
+	                  Toast.fire({
+	                    icon: 'success',
+	                    title: '수정 되었습니다.'
+	                  })
+					setTimeout(function(){location.reload()}, 500);
+				},
+				error : function(status, error){
+					console.log(status, error);
+				}
+			})
+			
+			
+		}
+		
+		//삭제
+		function deleteBtn(harvestNo){
+			let deleteBtn = document.getElementById('deleteBtn' + harvestNo);
+			let delTrTag = deleteBtn.parentElement.parentElement;
+			
+			Swal.fire({
+	            title: '삭제 하시겠습니까?',
+	            icon: 'warning',
+	            showCancelButton: true,
+	            confirmButtonColor: '#3085d6',
+	            cancelButtonColor: '#d33',
+	            confirmButtonText: '확인',
+	            cancelButtonText: '취소'
+	        }).then((result) => {
+	            if (result.isConfirmed) {
+	            	$.ajax({
+						type : 'get',
+						url : "/ohnong/harvestDelete/" + harvestNo,
+						dataType : 'text',
+						success : function(data){
+							console.log(data);
+							if(data == 'success'){
+								//delTrTag.remove();
+								location.reload();
+								const Toast = Swal.mixin({
+				                    toast: true,
+				                    position: 'center-center',
+				                    showConfirmButton: false,
+				                    timer: 500,
+				                    timerProgressBar: true,
+				                    didOpen: (toast) => {
+				                      toast.addEventListener('mouseenter', Swal.stopTimer)
+				                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+				                    }
+				                  })
+
+				                  Toast.fire({
+				                    icon: 'warning',
+				                    title: '해당 품목이 삭제 되었습니다.'
+				                  })
+							} else if(data = 'fail'){
+								const Toast = Swal.mixin({
+				                    toast: true,
+				                    position: 'center-center',
+				                    showConfirmButton: false,
+				                    timer: 500,
+				                    timerProgressBar: true,
+				                    didOpen: (toast) => {
+				                      toast.addEventListener('mouseenter', Swal.stopTimer)
+				                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+				                    }
+				                  })
+
+				                  Toast.fire({
+				                    icon: 'warning',
+				                    title: '오류.'
+				                  })
+							}
+						},
+						error : function(status, error){
+							console.log(status, error);
+						}
+					})
+			
+			    }
+		    })
+		}		   	
+	</script>
+</div>
+
+
+

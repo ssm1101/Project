@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohnong.app.main.mapper.MemberMapper">
+
+	<!-- 로그인 -->
+	<select id="login" resultType="MemberVO">
+		SELECT user_id, user_pw, user_name, birth,
+		user_email, user_addr, user_tel, grade, farm_state,
+		temporary_pw, file_path, session_id, limit_time, delete_date
+		FROM member
+		WHERE user_id = #{userId}
+	</select>
+
+	<!-- 회원가입 -->
+	<insert id="insertMemberInfo" parameterType="MemberVO">
+		insert into MEMBER
+		(USER_ID,USER_PW,USER_NAME,BIRTH,USER_EMAIL,USER_ADDR,USER_TEL)
+		values
+		(#{userId},#{userPw},#{userName},#{birth},#{userEmail},#{userAddr},#{userTel})
+	</insert>
+
+	<!-- 아이디 중복 체크 -->
+	<select id="checkId" resultType="int">
+		select count(*)
+		from MEMBER
+		where
+		USER_ID = #{userId}
+	</select>
+
+	<!-- 아이디 찾기 -->
+	<select id="findId" resultType="String">
+		select user_id
+		from MEMBER
+		where
+		user_name = #{userName}
+		and birth = #{birth}
+	</select>
+
+	<!-- 비밀번호 찾기 -->
+	<select id="checkPw" resultType="MemberVO">
+		select *
+		from member
+		where user_id
+		= #{userId}
+		and user_email= #{userEmail}
+		and user_tel=#{userTel}
+	</select>
+
+	<!-- 비밀번호 찾기 -->
+	<update id="changePw">
+		update member
+		set user_pw = #{userPw}, temporary_pw =
+		'Y'
+		where user_id = #{userId}
+	</update>
+
+	<!-- 회원 본인 정보 조회 -->
+	<select id="selectMemberInfo" parameterType="String"
+		resultType="MemberVO">
+		SELECT *
+		FROM member
+		WHERE user_id = #{userId}
+	</select>
+
+	<!-- 회원 본인 정보 수정 -->
+	<update id="memberUpdate">
+		update member
+		set user_addr = #{userAddr},
+		user_email =
+		#{userEmail}, user_tel = #{userTel},
+		file_path =
+		SUBSTR(#{filePath}, INSTR(#{filePath}, '/', -1) + 1)
+		where user_id =
+		#{userId}
+	</update>
+
+	<!-- 관리자용 회원 조회 -->
+	<select id="memberList" resultType="MemberVO">
+		SELECT rownum rn, member.*
+		FROM member
+		where grade != '4'
+	</select>
+
+	<!-- 관리자용 회원 삭제(업데이트) -->
+	<update id="memberDelete">
+		update member
+		set user_pw = null,
+		user_name = null,
+		birth = null,
+		user_email = null, user_addr = null, user_tel = null,
+		grade = '4', farm_state =
+		null, temporary_pw = null,
+		file_path = null,
+		session_id = null, limit_time = null, delete_date=sysdate
+		where user_id
+		= #{userId}
+	</update>
+
+	<!-- 비밀번호 찾기 -->
+	<update id="updatePw">
+		update member set user_pw = #{pw} where user_id= #{userId}
+	</update>
+	
+	<!-- 비밀번호 변경 -->
+	<update id="modPw">
+		update member
+		set user_pw = #{userPw}, TEMPORARY_PW = 'N'
+		where user_id = #{userId}
+	</update>
+	
+	<!-- 회원 본인 정보 수정2 -->
+    <update id="memberUpdate2">
+        update member
+        set user_addr = #{userAddr},
+        user_email =
+        #{userEmail}, user_tel = #{userTel}
+        where user_id =
+        #{userId}
+    </update>
+</mapper>

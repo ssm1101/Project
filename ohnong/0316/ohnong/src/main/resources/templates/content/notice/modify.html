@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layoutMagement}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
+
+	<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+<!-- TOAST UI Editor CDN URL(CSS) -->
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+<!-- TOAST UI Editor CDN URL(JS) -->
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<script src="https://uicdn.toast.com/editor/latest/i18n/ko-kr.min.js"></script>
+
+<link rel="stylesheet" th:href="@{/css/default.css}" />
+<link rel="stylesheet" th:href="@{/css/content.css}" />
+<link rel="stylesheet" th:href="@{/css/button.css}" />
+
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+
+</head>
+
+<th:block layout:fragment="css">
+</th:block>
+<th:block layout:fragment="script">
+</th:block>
+<body class="nav-md">
+<div layout:fragment="contentMagement">
+	<!-- page content -->
+	<div class="right_col" role="main">
+	
+		<div class="" > <!-- 전체 내용 -->
+			<div class="page-title"> <!-- 제목 -->
+				<div class="title_left">
+					<h3><i class="fa fa-leaf"></i> Oh! Nong</h3>
+				</div>
+				
+			</div>	<!-- /검색창 -->
+			<div class="row" style="display: block;">
+			
+		<div class="col-md-12">
+				<div class="x_panel">
+					<div class="x_title"> <!-- 제목 -->
+						<h2 class="green">글번호 : <span th:text="${notice.noticeNo}"></span></h2>
+						<ul class="nav navbar-right panel_toolbox">
+							<li><a class="collapse-link"><i
+									class="fa fa-chevron-up"></i></a></li>
+							<li class="dropdown"><a href="#" class="dropdown-toggle"data-toggle="dropdown" role="button" aria-expanded="false">
+							<i class="fa fa-wrench"></i></a>
+								<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+									<a class="dropdown-item" href="#">Settings 1</a> 
+									<a class="dropdown-item" href="#">Settings 2</a>
+								</div></li>
+						</ul>
+						<div class="clearfix"></div>
+					</div>
+					<!-- 내용 -->
+					<div class="x_content"> <!-- 작성자,등록일, 조쇠후 -->
+							
+							<table class="tb tb_row" style="border: 1px solid black;">
+								<colgroup>
+										<col style="width: 15%;" />
+										<col style="width: 35%;" />
+										<col style="width: 15%;" />
+										<col style="width: 35%;" />
+								</colgroup>
+									<tbody>
+										<tr>
+											<th>제목</th>
+											<td><input type="text" id="noticeTitle" name="noticeTitle" maxlength="10" th:value="${notice.noticeTitle}" /></td>
+											<th scope="row">조회수</th>
+											<td><span class="value text-success" th:text="${notice.hitCnt}"></span></td>
+										</tr>
+										<tr>
+											<th scope="row">등록일</th>
+											<td colspan="3"><input type="date" name="updateDate" maxlength="50" th:value="${#dates.format(notice.regDate, 'yyyy-MM-dd')}" READONLY /></td>
+										</tr>
+										<tr>
+											<th>작성자</th>
+											<td colspan="3"><span class="value text-success" th:text="${notice.noticeWriter}"></span></td>
+										</tr>
+										<tr>
+											<th>내용</th>
+											<td colspan="3">
+											<div id="editor"></div>
+											<input type="hidden" id="noticeContent" th:value="${notice.noticeContent}" /></td>
+										</tr>
+									</tbody>
+							</table>
+							<hr>
+							<div style="text-align: center">
+								<button class="btn btn-round btn-info" id="list_btn" type="button">목록 <i class="fa fa-repeat"></i></button>
+								<button class="btn btn-round btn-primary" id="modify_btn" type="button" >저장 <i class="fa fa-edit"></i></button>
+							</div>
+							<form id="modifyForm" th:action="@{modifyNotice}" method="POST">
+								<input type="hidden" name="noticeTitle" value=""> 
+								<input type="hidden" name="noticeContent" value=""> 
+								
+								<input type="hidden" name="noticeNo" id="noticeNo" th:value="${notice.noticeNo}" />
+								<input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum}" />
+								<input type="hidden" name="amount" th:value="${pageMaker.cri.amount}" />
+								<input type="hidden" name="keyword" th:value="${pageMaker.cri.keyword}" />
+								<input type="hidden" name="type" th:value="${pageMaker.cri.type}" />
+							</form>
+							
+							<form id="infoForm" th:action="@{modifyNotice}" method="GET">
+								<input type="hidden" name="noticeNo" id="noticeNo" th:value="${notice.noticeNo}" />
+								<input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum}" />
+								<input type="hidden" name="amount" th:value="${pageMaker.cri.amount}" />
+								<input type="hidden" name="keyword" th:value="${pageMaker.cri.keyword}" />
+								<input type="hidden" name="type" th:value="${pageMaker.cri.type}" />
+        				  	</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div></div>
+	<script>
+
+	 
+    let form = $("#infoForm");        // 페이지 이동 form(리스트 페이지 이동, 조회 페이지 이동)
+    let mForm = $("#modifyForm");    // 페이지 데이터 수정 from
+    
+    /* 목록 페이지 이동 버튼 */
+    $("#list_btn").on("click", function(e){
+        form.find("#noticeNo").remove();
+        form.attr("action", "noticeList");
+        form.submit();
+    });
+    
+    /* 수정 저장 버튼 */
+    $("#modify_btn").on("click", function(e){
+    	submit();
+    }); 
+ 	
+
+	//에디터
+	 const onUploadImage2 = async(blob, callback) => {
+             const formData = new FormData();
+             formData.append("image", blob);
+             formData.append("uri", window.location.pathname);
+             
+	      $.ajax({
+               type: "post",
+               url: "/ohnong/image_upload.do",
+               async: true,
+               data: formData,
+               processData: false,
+               contentType: false,
+               success: function (data) {
+                 imageURL = data;
+                 callback(imageURL, "image");
+               },
+               error: function (request, status, error) {
+                 alert(request + ", " + status + ", " + error);
+               },
+             });
+           };
+
+	const editor2 = new toastui.Editor({
+		el: document.querySelector("#editor"),
+		height: "600px",
+		initialEditType: "wysiwyg",
+		initialValue: $('#noticeContent').val(),
+		language: "ko-kr",
+		hooks: {
+			addImageBlobHook: onUploadImage2
+		}
+	});
+
+	
+	function submit(){
+		
+		let noticeTitle = $("#noticeTitle").val();
+		let noticeContent = editor2.getMarkdown(); //에디터써서 콘텐츠안에 이미지 같이있음.
+		
+		$("#modifyForm").children().eq(0).attr("value", noticeTitle);
+		$("#modifyForm").children().eq(1).attr("value", noticeContent);
+		
+		$("#modifyForm").attr("action", "modifyNotice").submit();
+	}
+	</script>
+</div>
+<!-- /page content -->
+
+
+</body>
+</html>

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layoutMagement}">
+
+<head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+  <meta charset="UTF-8">
+  <title>oh-nong!</title>
+  <style type="text/css">
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox  */
+    input[type='number'] {
+      -moz-appearance: textfield;
+    }
+
+    .left-box {
+      float: left;
+      width: 50%;
+    }
+
+    .right-box {
+      float: right;
+      width: 50%;
+    }
+    .form-group {
+      width: 350px !important;
+    }
+    
+    .form-control{
+      font-size: 13px;
+	  color: #222222;
+	  width: 320px;
+	  border: none;
+	  border-bottom: solid #aaaaaa 1px;
+	  padding-left: 10px;
+	  position: relative;
+	  background: none;
+	  z-index: 5;
+     }
+     
+    .table-td {
+      text-align:center;
+      font-weight:bold;
+    }     
+  </style>
+</head>
+</th:block>
+<th:block layout:fragment="script">
+</th:block>
+<div layout:fragment="contentMagement">
+  <!-- page content -->
+  <div class="right_col" role="main">
+    <div class="">
+      <div class="page-title">
+        <div class="title_left">
+        </div>
+
+      </div>
+
+      <div class="clearfix"></div>
+
+      <div class="row" style="display: block;">
+
+        <div class="clearfix"></div>
+
+        <div class="col-md-12 col-sm-12  ">
+         <h3 style="text-align:left"><b>🛒 거래처 관리</b></h3>
+          <div class="x_panel">
+            <div class="x_title">
+              <ul class="nav navbar-right panel_toolbox">
+                <button type="button" id="button" class="btn btn-primary antosubmit" style="float:right; padding: 8px 20px;background-color:#2A3F54;border: none;"><b>등록</b></button>
+              </ul>
+              <div class="clearfix"></div>
+            </div>
+
+            <div class="x_content">
+
+              <div class="table-responsive">
+                <table class="table table-striped jambo_table bulk_action">
+                  <thead>
+                    <tr class="headings">
+                      <th>
+                        <input type="checkbox" id="check-all" class="flat">
+                      </th>
+                      <th class="column-title table-td">No. </th>
+                      <th class="column-title table-td">상호명 </th>
+                      <th class="column-title table-td">대표명(이름) </th>
+                      <th class="column-title table-td">담당자(이름) </th>
+                      <th class="column-title table-td">연락처 </th>
+                      <th class="column-title table-td">주소 </th>
+                      <th class="column-title table-td">예금주 </th>
+                      <th class="column-title table-td">은행명 </th>
+                      <th class="column-title table-td">계좌번호 </th>
+                      <th class="column-title table-td">메모 </th>
+                      <th class="column-title table-td">사업자등록번호 </th>
+                      <th class="column-title table-td">대표 품목 </th>
+                      <th class="bulk-actions" colspan="7">
+                        <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt">
+                          </span> ) <i class="fa fa-chevron-down"></i></a>
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody class="farm">
+                    <tr class="even pointer" th:each="customerList : ${customerList }" th:onclick="updateForm()">
+                      <td class="a-center ">
+                        <input type="checkbox" class="flat" name="table_records">
+                      </td>
+                      <td class=" " th:text="${customerList.userId}" style="display:none"></td>
+                      <td class=" " th:text="${customerList.customerId}" style="display:none"></td>
+                      
+                      <td class="table-td " th:text="${customerList.rn}"></td>
+                      <td class="table-td " id="customer" th:text="${customerList.customer}"></td>
+                      <td class="table-td " th:text="${customerList.customerName}"></td>
+                      <td class="table-td " th:text="${customerList.managerName}"></td>
+                      <td class="table-td " th:text="${customerList.customerTel}"></td>
+                      <td class="table-td " th:text="${customerList.customerAddr}"></td>
+                      <td class="table-td " th:text="${customerList.accountName}"></td>
+                      <td class="table-td " th:text="${customerList.bankName}"></td>
+                      <td class="table-td " th:text="${customerList.accountNum}"></td>
+                      <td class="table-td " th:text="${customerList.memo}"></td>
+                      <td class="table-td " th:text="${customerList.registNum}"></td>
+                      <td class="table-td " th:text="${customerList.middlecatagori}" style="display:none"></td>
+                      <td class="table-td " th:text="${customerList.subdivision}"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /page content -->
+
+  <!-- insert modal 1 : 수정/ 삭제-->
+  <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <form name="form1" th:role="form" th:action="@{customerList}" method="POST">
+      <div class="modal-content" style="border: none;">
+        <div class="modal-header" style="display: flex; align-items: center; justify-content: space-between; width:100%;height:50px; background-color: #2A3F54;">
+          	<h5 class="modal-title" id="myModalLabel" style="color:white; font-weight: bold; ">🛒 거래처 수정</h5>
+          	<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="color:white;">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="left-box">
+          <input type="hidden" class="form-control" name="userId" id="userId" value="" />
+          <input type="hidden" class="form-control" name="customerId" id="customerId" value="" />
+            <div class="form-group">
+              <label style="color:black; margin-left: 5px; font-size: 14px; font-weight: bold;">상호명</label>
+              <input class="form-control" name="customer" id="customer" value="">
+            </div>
+            
+            <div class="form-group">
+              <label style="color:black; margin-left: 5px; font-size: 14px; font-weight: bold;">담당자(이름)</label>
+              <input class="form-control" name="managerName" id="managerName" value="">
+            </div>
+             <div class="form-group">
+              <label style="color:black; margin-left: 5px; font-size: 14px; font-weight: bold;">대표 품목</label>
+              <input class="form-control" id="middlecatagori" name="middlecatagori" value="" style="display:none;">
+              <select id="flag" th:onchange="changeSelect()" style="border-radius: 4px; height: 25px; font-weight: bold;">
+                <option value="">🌾 분류 선택</option>
+                <option th:value="곡류" >곡류</option>
+                <option th:value="콩류" >콩류</option>
+                <option th:value="구근류" >구근류</option>
+                <option th:value="채소류" >채소류</option>
+                <option th:value="과실류" >과실류</option>
+                <option th:value="종실류" >종실류</option>
+                <option th:value="버섯류" >버섯류</option>
+              </select>
+              <input class="form-control" name="subdivision" id="subdivision" value="">
+              
+            </div>
+            <div class="form-group">
+              <label style="color:black; margin-left: 5px; font-size: 14px; font-weight: bold;">예금주</label>
+              <input class="form-control" name="accountName" id="accountName" value="">
+            </div>
+            
+             <div class="form-group">
+              <label style="color:black; margin-left: 5px; font-size: 14px; font-weight: bold;">사업자번호</label>
+              <input class="form-control" name="registNum" id="registNum" value="">
+            </div>
+          </div>
+          <div class="right-box">
+          	<div class="form-group">
+              <label style="color:black; margin-left: 5px; font-size: 14px; font-weight: bold;">대표명(이름)</label>
+              <input class="form-control" name="customerName" id="customerName" value="">
+            </div>
+            <div class="form-group">
+              <label style="color:black; margin-left: 5px; font-size: 14px; font-weight: bold;"> 연락처</label>
+              <input class="form-control" name="customerTel" id="customerTel" value="">
+            </div>
+            <div class="form-group">
+              <label style="color:black; margin-left: 5px; font-size: 14px; font-weight: bold;">은행명</label>
+              <input class="form-control" name="bankName" id="bankName" value="">
+            </div>
+            <div class="form-group">
+              <label style="color:black; margin-left: 5px; font-size: 14px; font-weight: bold;">계좌번호</label>
+              <input class="form-control" name="accountNum" id="accountNum" value="">
+            </div>
+            <div class="form-group">
+              <label style="color:black; margin-left: 5px; font-size: 14px; font-weight: bold;">메모</label>
+              <input class="form-control" name="memo" id="memo" value="">
+            </div>
+          </div>
+          <div class="form-group">
+              <label style="color:black; margin-left: 5px; font-size: 14px; font-weight: bold;">주소</label>
+              <input class="form-control" name="customerAddr" id="customerAddr" value="" style ="width:700px;">
+            </div>
+        </div>
+        
+        <div class="modal-footer" style="display: flex; align-items: center; justify-content: flex-end; width:100%;height:50px; background-color: #2A3F54;">
+          <button id="modalModBtn" type="button" class="btn btn-warning" style="border: none; font-weight: bold; color:white; background: #035785; height: 30px;">수 정</button>
+          <button id="modalRemoveBtn" type="button" class="btn btn-danger" style="border: none; font-weight: bold; color:white; background: #035785; height: 30px;">삭 제</button>
+        </div>
+      </div>
+    </form>
+    </div>
+  </div>
+  <!-- /insert modal -->
+  <!-- insert modal 2 : 등록-->
+  <div id="myModal2" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <form name="form2" th:role="form" th:action="@{customerAdd}" method="POST">
+      <div class="modal-content" style="border: none;">
+        <div class="modal-header" style="display: flex; align-items: center; justify-content: space-between; width:100%;height:50px; background-color: #2A3F54;">
+ 			   <h5 class="modal-title" id="myModalLabel" style="color:white; font-weight: bold; ">🛒 거래처 등록</h5>
+    			<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="color:white; ">×</button>
+          <input class="form-control" type="hidden" id="userId2" name="userId" th:value="${session.login.userId}"  style="width:100px;"/>
+        </div>
+        <div class="modal-body">
+          <div class="left-box" >
+            <div class="form-group">
+              <label style="font-weight: bold"><span style="color:red; font-size: 15px;">✔</span><span style="color:black; margin-left: 5px; font-size: 14px;">상호명</span></label>
+              <input class="form-control" name="customer" id="customer2" value="" placeholder="필수 입력">
+            </div>
+            <div class="form-group">
+              <label style="font-weight: bold"><span style="color:red; font-size: 15px;">✔</span><span style="color:black; margin-left: 5px; font-size: 14px;">담당자(이름)</span></label>
+              <input class="form-control" name="managerName" id="managerName2" value="" placeholder="필수 입력">
+            </div>
+            
+            <div class="form-group">
+              <label style="font-weight: bold"><span style="color:red; font-size: 15px;">✔</span><span style="color:black; margin-left: 5px;font-size: 14px; margin-right: 10px;">대표 품목</span></label>
+              <select name="middlecatagori" id="middlecatagori2" style="border-radius: 4px; height: 25px; font-weight: bold;">
+                <option value="">🌾 분류 선택</option>
+                <option th:value="곡류" style="font-weight: bold;">곡류</option>
+                <option th:value="콩류" style="font-weight: bold;">콩류</option>
+                <option th:value="구근류" style="font-weight: bold;">구근류</option>
+                <option th:value="채소류" style="font-weight: bold;">채소류</option>
+                <option th:value="과실류" style="font-weight: bold;">과실류</option>
+                <option th:value="종실류" style="font-weight: bold;">종실류</option>
+                <option th:value="버섯류" style="font-weight: bold;">버섯류</option>
+              </select>
+              <input class="form-control" name="subdivision" id="subdivision2" value="" placeholder="필수 입력(소분류)">
+            </div>
+            
+             <div class="form-group">
+              <label><span style="color:black; margin-left: 5px; font-size: 14px;font-weight: bold;">예금주</span></label>
+              <input class="form-control" name="accountName" id="accountName2" value="">
+            </div>
+            <div class="form-group">
+              <label><span style="color:black; margin-left: 5px; font-size: 14px;font-weight: bold;">사업자 번호</span></label>
+              <input class="form-control" name="registNum" id="registNum2" value="">
+            </div>
+          </div>
+          <div class="right-box">
+           <div class="form-group">
+              <label style="font-weight: bold"><span style="color:red; font-size: 15px;">✔</span><span style="color:black; margin-left: 5px; font-size: 14px;">대표명(이름)</span></label>
+              <input class="form-control" name="customerName" id="customerName2" value="" placeholder="필수 입력">
+            </div>
+            <div class="form-group">
+              <label style="font-weight: bold"><span style="color:red; font-size: 15px;">✔</span><span style="color:black; margin-left: 5px; font-size: 14px;">연락처</span></label>
+              <input class="form-control" name="customerTel" id="customerTel2" value="" placeholder="필수 입력">
+            </div>
+            <div class="form-group">
+              <label><span style="color:black; margin-left: 5px; font-size: 14px;font-weight: bold;">은행명</span></label>
+              <input class="form-control" name="bankName" id="bankName2" value="">
+            </div>
+            <div class="form-group">
+              <label><span style="color:black; margin-left: 5px; font-size: 14px;font-weight: bold;">계좌번호</span></label>
+              <input class="form-control" name="accountNum" id="accountNum2" value="">
+            </div>
+            <div class="form-group">
+              <label><span style="color:black; margin-left: 5px; font-size: 14px;font-weight: bold;">주소</span></label>
+              <input class="form-control" name="customerAddr" id="customerAddr2" value="" >
+          	</div>
+          </div>
+          	<div class="form-group">
+              <label><span style="color:black; margin-left: 5px; font-size: 14px;font-weight: bold;">메모</span></label>
+              <input class="form-control" name="memo" id="memo2" value="" style ="width:690px;">
+            </div>
+        </div>
+        
+        <div class="modal-footer" style="display: flex; align-items: center; justify-content: flex-end; width:100%;height:50px; background-color: #2A3F54;">
+		    <button id="modalAddBtn" type="button" class="btn btn-warning" style="border: none; font-weight: bold; color:white; background: #035785; height: 30px;">등 록</button>
+		</div>
+      </div>
+    </form>
+    </div>
+  </div>
+  <!-- /insert modal -->
+
+  <script>
+    $(document).ready(function () {
+      var modal = $("#myModal");
+
+      // 입력값 처리
+      var modalUserId = modal.find('input[name="userId"]');
+      var modalCustomerId = modal.find('input[name="customerId"]'); // 삭제
+      
+      var modalCustomer = modal.find('input[name="customer"]');
+      var modalCustomerName = modal.find('input[name="customerName"]');
+      var modalManagerName = modal.find('input[name="managerName"]');
+      var modalCustomerTel = modal.find('input[name="customerTel"]');
+      var modalCustomerAddr = modal.find('input[name="customerAddr"]');
+      var modalAccountName = modal.find('input[name="accountName"]');
+      var modalBankName = modal.find('input[name="bankName"]');
+      var modalAccountNum = modal.find('input[name="accountNum"]');
+      var modalMemo = modal.find('input[name="memo"]');
+      var modalRegistNum = modal.find('input[name="registNum"]');
+      var modalMiddlecatagori = modal.find('input[name="middlecatagori"]');
+      var modalSubdivision = modal.find('input[name="subdivision"]');
+      
+      // 버튼 처리
+      var modalModBtn = $("#modalModBtn");
+      var modalRemoveBtn = $("#modalRemoveBtn");
+      var modalAddBtn = $("#modalAddBtn");
+
+      // 클릭하면 모달창(수정, 삭제)
+      // ul 태그 하위의 모든 li -> page가 로딩되면서 처음 생성되어진 dom 요소가 추가된 경우에는
+      // 상위 요소(ul.chat)의 이벤트 등록 대상을 하위 요소에 등록
+      $('.farm').on('click', 'tr', function (e) {
+    	console.log($(this)[0]);
+    	let tr = $(this)[0];
+    	
+    	modalUserId.val($(this)[0].children[1].textContent);
+    	modalCustomerId.val($(this)[0].children[2].textContent); // 삭제
+    	
+        modalCustomer.val($(this)[0].children[4].textContent);
+        modalCustomerName.val($(this)[0].children[5].textContent);
+        modalManagerName.val($(this)[0].children[6].textContent);
+        modalCustomerTel.val($(this)[0].children[7].textContent);
+        modalCustomerAddr.val($(this)[0].children[8].textContent);
+        modalAccountName.val($(this)[0].children[9].textContent);
+        modalBankName.val($(this)[0].children[10].textContent);
+        modalAccountNum.val($(this)[0].children[11].textContent);
+        modalMemo.val($(this)[0].children[12].textContent);
+        modalRegistNum.val($(this)[0].children[13].textContent);
+        modalMiddlecatagori.val($(this)[0].children[14].textContent);
+        modalSubdivision.val($(this)[0].children[15].textContent);
+        
+        if ($(this)[0].children[14].textContent == '곡류') {
+        	$("#flag").val("곡류").prop("selected", true);
+        } else if ($(this)[0].children[14].textContent == '콩류') {
+        	$("#flag").val("콩류").prop("selected", true);
+        } else if ($(this)[0].children[14].textContent == '구근류') {
+        	$("#flag").val("구근류").prop("selected", true);
+        } else if ($(this)[0].children[14].textContent == '채소류') {
+        	$("#flag").val("채소류").prop("selected", true);
+        } else if ($(this)[0].children[14].textContent == '과실류') {
+        	$("#flag").val("과실류").prop("selected", true);
+        } else if ($(this)[0].children[14].textContent == '종실류') {
+        	$("#flag").val("종실류").prop("selected", true);
+        } else if ($(this)[0].children[14].textContent == '버섯류') {
+        	$("#flag").val("버섯류").prop("selected", true);
+        }
+		
+		// 삭제 버튼
+		modalRemoveBtn.on('click', function() {
+			let customerId = modalCustomerId.val();
+            
+			Swal.fire({
+	               title: '삭제하시겠습니까?',
+	               text: "다시 되돌릴 수 없습니다. 신중하세요.",
+	               icon: 'warning',
+	               showCancelButton: true,
+	               confirmButtonColor: '#3085d6',
+	               cancelButtonColor: '#d33',
+	               confirmButtonText: '삭제',
+	               cancelButtonText: '취소'
+	           }).then((result) => {
+	               if (result.isConfirmed) {
+	                   
+	                   $.ajax({
+	                       type : 'get',
+	                       url : "/ohnong/customerDelete/" + customerId,
+	                       dataType : 'text',
+	                       success : function(data) {
+	                           console.log(data);
+	                           if(data == 'success') {
+	                           const Toast = Swal.mixin({
+	                               toast: true,
+	                               position: 'center-center',
+	                               showConfirmButton: false,
+	                               timer: 2000,
+	                               timerProgressBar: true,
+	                               didOpen: (toast) => {
+	                                 toast.addEventListener('mouseenter', Swal.stopTimer)
+	                                 toast.addEventListener('mouseleave', Swal.resumeTimer)
+	                               }
+	                             })
+	                             Toast.fire({
+	                               icon: 'success',
+	                               title: '삭제되었습니다.'
+	                             })
+	                           } else if(data = 'fail') {
+	                               alert("다시 시도 바랍니다.")
+	                           }
+	                       },
+	                       error : function(status, error) {
+	                           console.log(status, error);
+	                       }
+	                   })
+	                   
+	                   setTimeout("location.reload()", 2000);
+	                   Swal.fire(
+	                       '삭제가 완료되었습니다.',
+	                       'success'
+	                   )
+	               }
+	           })
+
+        })
+      }) // $('.farm').on('click', 'tr', function (e) 끝
+      
+	   	  // 연락처
+	      $('#customerTel').keyup(function() {
+	          $(this).val( $(this).val().replace(/[^0-9]/g, "").replace(/(^02|^0505|^1[0-9]{3}|^0[0-9]{2})([0-9]+)?([0-9]{4})$/,"$1-$2-$3").replace("--", "-"));
+	      }) 
+      
+	      // 등록 버튼
+	      modalAddBtn.on('click', function() {
+	    	  var customer = $('#customer2').val();
+	    	  var userId = $('#userId2').val();
+	    	  
+	    	  if($('#customer2').val() == '' || $('#managerName2').val() == ''
+	            	|| $('#customerName2').val() == '' || $('#customerTel2').val() == '' 
+	            	|| $('#middlecatagori2').val() == '' || $('#subdivision2').val() == '') {
+		    		  const Toast = Swal.mixin({
+		                    toast: true,
+		                    position: 'center-center',
+		                    showConfirmButton: false,
+		                    timer: 1500,
+		                    timerProgressBar: true,
+		                    didOpen: (toast) => {
+		                      toast.addEventListener('mouseenter', Swal.stopTimer)
+		                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+		                    }
+		                  })
+	
+		                  Toast.fire({
+		                    icon: 'info',
+		                    title: '입력값을 모두 적어주세요.'
+		                  })
+	
+		                return false;
+	      	  }
+	    	  
+	      	  // 중복 검사
+	    	  $.ajax({
+	    	        type : 'get',
+	    	        url : '/ohnong/checkCustomer', // 서버 요청 url
+	    	        dataType : 'text', // 서버로부터 응답받을 데이터 형태 
+	    	        data : {"customer" : customer,
+	    	        		"userId" : userId}, // 서버로 전송할 데이터. const id
+	    	        success : function(result) { // 통신 성공 시 매개변수에 데이터 저장
+	    	            console.log('통신 성공 ' + result);
+	    	            if(result === 'available') {
+	    	            	form2.submit();
+	    	            } else {
+
+	    	            	const Toast = Swal.mixin({
+			                    toast: true,
+			                    position: 'center-center',
+			                    showConfirmButton: false,
+			                    timer: 1500,
+			                    timerProgressBar: true,
+			                    didOpen: (toast) => {
+			                      toast.addEventListener('mouseenter', Swal.stopTimer)
+			                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+			                    }
+			                  })
+		
+			                  Toast.fire({
+			                    icon: 'warning',
+			                    title: '이미 등록된 거래처입니다.'
+			                  })
+	    	            	
+	    	                false;
+	    	            }
+	    	        },
+	    	        error : function(status, error) {
+	    	            console.log('통신 실패');
+	    	            console.log(status, error);
+	    	        }
+	    	  })
+	      })
+	      
+	      // 수정 버튼
+	      modalModBtn.on('click', function(e) {
+	    	  var customer = modalCustomer.val();
+	    	  var userId = modalUserId.val();
+	    	  
+	    	  if(modalCustomer.val() == '' || modalManagerName.val() == ''
+	            	|| modalCustomerName.val() == '' || modalCustomerTel.val() == '' 
+	            	|| modalMiddlecatagori.val() == '' || modalSubdivision.val() == '') {
+		    		  const Toast = Swal.mixin({
+		                    toast: true,
+		                    position: 'center-center',
+		                    showConfirmButton: false,
+		                    timer: 2000,
+		                    timerProgressBar: true,
+		                    didOpen: (toast) => {
+		                      toast.addEventListener('mouseenter', Swal.stopTimer)
+		                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+		                    }
+		                  })
+	
+		                  Toast.fire({
+		                    icon: 'info',
+		                    title: '입력값을 모두 적어주세요.'
+		                  })
+		                return false;
+	      	  } else {
+	    	  	form1.submit();
+	      	  }
+	      })
+    }) // document 끝
+
+    // 모달
+    function updateForm() {
+      console.log('updateForm');
+      $('#myModal').modal("show");
+    }
+    
+    // 등록 모달
+    $('#button').on("click", function() {
+    	console.log('c');
+    	$('#myModal2').modal("show");
+    })
+    
+    function changeSelect() {
+	  	$("#middlecatagori").val("");
+	  	
+	  	var selectvalue = "";
+	  	selectvalue = $('#flag').val();
+	  	
+	  	$("#middlecatagori").val(selectvalue);
+  	}
+    
+  </script>
+</div>

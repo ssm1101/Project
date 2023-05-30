@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layoutMagement}">
+  <head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+  <title> oh-nong!</title>
+   <meta charset="UTF-8">
+   <style>
+   .pageInfo_area{
+    text-align: center;
+    width: 50%;
+}
+.pagination2{
+    list-style: none;
+    display: inline-block;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.pagination2 li {
+    display: inline;
+    text-align: center;
+}
+/*숫자*/ 
+.pagination2 a {
+    float: left;
+    display: block;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 5px 12px;
+    color: #96a0ad;
+    line-height: 1.5;
+}
+.pagefirst{
+    margin-right: 15px;
+}
+.pagelast{
+    margin-left: 15px;
+}
+.pagefirst:hover, .pagelast:hover, .arrowright:hover, .arrowleft:hover, .model .num:hover{
+    color:#2e9cdf;
+}
+.pagination2 .move.active{
+    cursor: default;
+    color: #ffffff;
+}
+.pagination2 .move:active{
+    outline: none;
+}
+.model .num {
+    margin-left: 3px;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    -moz-border-radius: 100%;
+    -webkit-border-redius:100%;
+    border-radius: 100%;
+}
+.model .num.active, .model .num:active{
+    background-color: #2e9cdf;
+    cursor: pointer;
+}
+.arrowleft{
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10ox solid blue;
+}
+
+ a.active {
+ 	cursor:default;
+ 	color:#ffffff; 	
+ }
+
+  
+  .search_area{
+    text-align:center;
+  }
+  .search_area input{
+    height: 30px;
+    width: 250px;
+  }
+  .search_area button{
+    height: 30px;
+    width: 100px;
+  }
+   .search_area select{
+  	height: 30px;
+    width:150px;
+  }
+ .move:link {color: #2e9cdf; text-decoration: none; }
+ .move:visited {color:purple; text-decoration: overline;}
+ .move:hover {color:#bbb; text-decoration: underline;}
+ 
+ #report-modal,#report-modal2, #report-modal3{
+   position: fixed;
+   top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+ 
+ 
+ }
+ 
+ 
+ .m_head {
+	padding: 10px;
+	display: flex;
+	justify-content: space-between;
+	background-color: #2A3F54;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	color: white;
+}
+
+.m_body {
+	max-height: calc(400px);
+    overflow-y: auto;
+	padding: 20px;
+	background-color: #F4F4F4;
+}
+
+.m_footer {
+	height: 5%;
+	padding: 10px;
+	background-color: #2A3F54;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+	display: flex;
+	justify-content: end;
+}
+
+.modal_title {
+	font-size: 18px;
+	color: gray;
+	font-weight: 500;
+}
+
+.modal_label {
+	padding: 2px 0px 2px 0px;
+	background-color: skyblue;
+	width: 80px;
+	border-top: 2px solid black;
+	border-bottom: 2px solid black;
+	text-align: center;
+	color: black;
+	margin-top: 10px;
+	font-weight: bolder;
+}
+ 
+ 
+ 
+ 
+ 
+.modal-body{
+    max-height: calc(400px);
+    overflow-y: auto;
+}
+ 
+.x_content{
+	 width:100%; 
+	 text-align:center; 
+	 line-height:31px;
+ }
+.modal-content{
+	border: none;
+}
+</style>
+	</head>  
+    <!-- page content -->
+        
+ <div layout:fragment="contentMagement">
+		        <!-- page content -->
+<div class="right_col" role="main">
+   <div class="">
+      <div class="page-title">
+         <div class="title_left">
+            <h3>Oh! Nong</h3>
+              </div>
+      </div>
+      <div class="clearfix"></div>
+      <div class="row" style="display: block;">
+      <div class="col-md-12">
+         <div class="x_panel">
+            <div class="x_title">
+                   <h2> 커뮤니티  <small style="font-weight: bold;">신고받은 글</small></h2>
+		                  <ul class="nav navbar-right panel_toolbox">
+		                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+		                     <li class="dropdown">
+		                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+		                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+		                           <a class="dropdown-item" href="#">공지사항</a> 
+		                           <a class="dropdown-item" href="#">오농식</a>
+		                           <a class="dropdown-item" href="#">오시는길</a>
+		                        </div>
+		                     </li>
+		                  </ul>
+		               <div class="clearfix"></div>
+		            </div>
+		            <div class="x_content">
+		            <p style="text-align:left;">＊ 전체 <span th:text=${pageMaker.total}></span> 건 | 현재페이지 [[${pageMaker.criteria.pageNum}]]</p>
+		           <div style=" align-items:center; height: 50px; margin-top: 10px;">
+				 	 <!-- 카테고리별 분류 -->
+				  <div style=" margin-right:10px; height: 50px; float: left;">
+				    <select id="Category" name="type" th:onchange="categoryBoxChange(this.value)" class="btn btn-success dropdown-toggle" style="font-weight: bold; background-color:#2A3F54;border: none; " >
+				      <option value="" th:selected="${pageMaker.criteria.category == null?true:false }" >전체카테고리</option>
+				      <option value="A" th:selected="${pageMaker.criteria.category eq 'A'?true:false }">노하우 & 팁</option>
+				      <option value="B" th:selected="${pageMaker.criteria.category eq 'B'?true:false }">1:1문의</option>
+				      <option value="C" th:selected="${pageMaker.criteria.category eq 'C'?true:false }">전문인에게 물어봐</option>
+				      <option value="D" th:selected="${pageMaker.criteria.category eq 'D'?true:false }">잡담</option>
+				    </select>
+				  </div>
+					</div>
+				   <form id="moveFormCategory" method="get" style="display:none;">
+		                  <input type="text" name="pageNum" th:value="${pageMaker.criteria.pageNum }">
+		                    <input type="text" name="amount" th:value="${pageMaker.criteria.amount }">
+		                    <input type="text" name="category" th:value="${pageMaker.criteria.category }"> 
+                  </form> 
+            
+				<!-- 카테고리별 분류끝 --> 
+		</div>
+                <div class="clearfix"></div>
+                <div class="table-responsive" style="height: 700px">
+                    <table id="datatable-buttons" class="table table-striped jambo_table bulk_action">
+                    <colgroup>
+                     <col style="width: 5%;" />
+                     <col style="width: 10%;" />
+                     <col style="width: 10%;"/>
+                     <col style="width: 10%;" />
+                     <col style="width: 10%;" />
+                     <col style="width: 5%;" />
+                     <col style="width: 5%;" />
+                     <col style="width: 5%;" />
+                     <col style="width: 5%;" />
+                  </colgroup>
+                      <thead>
+                        <tr>
+                          <th  class="column-title">No.</th>
+                          <th class="column-title">카테고리</th>
+                          <th class="column-title">제목</th>
+                          <th class="column-title">작성자</th>
+                          <th class="column-title">등록일</th>
+                          <th class="column-title">조회수</th>
+                          <th class="column-title" >신고 수</th>
+                          <th class="column-title">신고내용</th>
+                          <th class="column-title">블라인드</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                         <tr th:each="boardInfo : ${reportBoard}">
+                				<td th:text="${boardInfo.boardBno}"/>
+                				<td th:switch="${boardInfo.boardCategory}">
+                					<span th:case="A">노하우&팁</span>
+                					<span th:case="B">1:1문의</span>
+                					<span th:case="C">전문인에게 </span>
+                					<span th:case="D">잡담</span>
+                					 
+                				</td>
+                				<td> <!--비밀글+ 로그인 + 작성자. -->
+	                				<a th:if="${boardInfo.noshow==1} AND ${session.login !=null} AND (${session.login.userId} == ${boardInfo.userId})"  th:href="@{/communityView(boardBno=${boardInfo.boardBno},userId=${session.login?.userId}),col=F}" th:text="'(비밀글)'+${boardInfo.boardTitle}"></a>
+	                				<a th:unless="${boardInfo.noshow==1} AND ${session.login !=null} AND (${session.login.userId} == ${boardInfo.userId})"  th:href="@{/communityView(boardBno=${boardInfo.boardBno},userId=${session.login?.userId},col=F)}" th:text="${boardInfo.boardTitle}"></a>
+                				<td th:text="${boardInfo.userId}"/>
+                				<td th:text="${#dates.format(boardInfo.boardRegdate,'yyyy-MM-dd')}"/> 
+                				<td th:text="${boardInfo.boardHitcount}"/>
+                				<td th:text="${boardInfo.reportCount}+'회'"/>
+                				<!-- 신고글목록 -->
+                				<td><button  th:onclick="reportList([[${boardInfo.boardBno}]])" class="btn btn-secondary btn-sm" >목록</button></td>
+                				<!-- 블라인드유무 -->
+                				<td><button th:if="${boardInfo.exist==0}" th:onclick="blindBoard([[${boardInfo.boardBno}]])"  class="btn btn-info btn-sm">블라인드</button>
+                					<button th:if="${boardInfo.exist==5}" th:onclick="boardRestore([[${boardInfo.boardBno}]])" style="background-color:#2A3F54; border:none;"class="btn btn-info btn-sm">복구</button></td>
+                				
+                				<!--신고글 모달창 -->
+											<div class="modal-wrapper">
+												<div class="modal" style="width: 700px;" id="report-modal">
+													
+													<div class="m_head" style="fond-weight:bold;">
+														<h2 class="modal-title" id="myModalLabel2"  style="color: white; padding-left:20px; ">🚨신고글 목록</h2>
+														<button type="button" class="close" data-dismiss="modal"
+																aria-label="Close">
+																<span class="close2" aria-hidden="true" style=" color: white; display:right;">X</span>
+															</button>
+														</div>
+														<div class="m_body">
+															<!-- 목록 -->
+															<div id="viewTable"></div>
+														</div>
+														<div class="m_footer">
+														</div>	
+														</div>
+													</div>
+											
+
+											<!-- 블라인드 모달창 -->
+	                		<div class="modal-wrapper2">        
+								<div class="modal" style="width:500px;border:none; font-weight:700;" id="report-modal2">
+									<div class="modal-content">
+		
+										<div class="m_head">
+											<button type="button" class="close" style="margin-left: 450px;">
+												<span class="close2" aria-hidden="true" style="color:white;">X</span>
+											</button>
+										</div>
+										<div class="m_body" style="background-color:white">
+										<h4 class="modal-title" id="myModalLabel2">
+											이 글을 블라인드 하시겠습니까?</h4>
+										</div>
+										<div class="m_footer">
+											<button type="button" class="btn btn-secondary" 
+												id="cancleBtn"
+												data-dismiss="modal">취소</button>
+											<button type="button" id="blindBtn" class="btn btn-primary" style="background-color: #17a2b8; border:none;"
+											>블라인드</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<div class="modal-wrapper3">        
+								<div class="modal" style="width:500px;border:none; font-weight:700;" id="report-modal3">
+									<div class="modal-content">
+		
+										<div class="m_head">
+											<button type="button" class="close" style="margin-left: 450px;">
+												<span class="close2" aria-hidden="true" style="color:white;">X</span>
+											</button>
+										</div>
+											<div class="m_body" style="background-color:white">
+										<h4 class="modal-title" id="myModalLabel2">
+											이 블라인드 글을 복구 하시겠습니까?</h4>
+										</div>
+										
+										<div class="m_footer">
+											<button type="button" class="btn btn-secondary" 
+												id="cancleBtn2"
+												data-dismiss="modal">취소</button>
+											<button type="button" id="restoreBtn" class="btn btn-primary" style="background-color: #17a2b8; border:none;"
+											>복구</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							</tr>
+            			</tbody>
+                  	 </table> 
+				
+				   <div class="pageInfo_area" style="width:100%; text-align: center; disiplay:inline-block; margin-top: 50px;"> 
+				<ul class="pagination2 model" th:each="page:${pageMaker}">
+					<th:block
+						th:with="start = ${page.startPage}, end = ${page.endPage} ">
+						<!-- 처음-->
+						<li class="pageInfo_btn"><a class="pagefirst" 
+							th:href="@{/reportList?pageNum={page}&amount=10(page = ${1})}" 
+							th:text="'<<'"></a></li>
+						<!-- 이전 -->
+						<li class="pageInfo_btn" th:if="${page.prev}"><a
+							class="allowleft"
+							th:href="@{/reportList?pageNum={page}&amount=10 (page = ${page.startPage-1})}"
+							th:text="'<'"></a></li>
+						<!-- 숫자 -->
+						<li class="pageInfo_btn"
+							th:with="start = ${page.startPage}, end = ${page.endPage} "
+							th:each="pageButton : ${#numbers.sequence(start, end)}">
+							<a class="num"
+							th:href="@{/reportList?pageNum={page}&amount=10(page = ${pageButton})}"
+							th:text=${pageButton}
+							th:classappend="${pageMaker.criteria.pageNum == pageButton ? 'active':'' }"></a>
+						</li>
+						<!-- 다음 -->
+						<li class="pageInfo_btn" th:if="${page.next}"><a
+							class="arrowright"
+							th:href="@{/reportList?pageNum={page}&amount=10(page = ${page.endPage+1})}"
+							th:text="'>'"></a></li>
+						<!-- 끝 -->
+						<li class="pageInfo_btn"><a class="pagelast"
+							th:href="@{/reportList?pageNum={page}&amount=10(page = ${page.realEnd})}"
+							th:text="'>>'"> <span>끝</span></a></li>
+					</th:block>
+					</ul>
+					</div>
+					</div >
+					</div>
+				  </div>
+              	</div>	
+              	 <!-- 페이징 -->
+              </div>
+             </div>                 
+<script>
+
+		var msg = "[[${msg}]]";
+	
+		if(msg != ''){
+			 Swal.fire({
+	                icon: 'warning',
+	                title: msg
+	            });
+		}
+
+
+
+		// 모달창 	외부 클릭 시 모달창 닫기
+		  $(window).on('click', function(event) {
+		    if (event.target == $('#report-modal')[0]) {
+		      $('#report-modal').css('display', 'none');
+		    }
+		  });
+		
+		  $('.modal-wrapper').on('click', function(event) {
+			  $('#report-modal').css('display', 'none');
+			});
+		  
+		  
+		  // 모달창 닫기 버튼 클릭 이벤트
+		  $('.close').on('click', function() {
+		    $('#report-modal').css('display', 'none');
+		    $('#report-modal2').css('display', 'none');
+		    $('#report-modal3').css('display', 'none');
+		  });
+		  
+		  $('#cancleBtn').on('click',function(){
+			  $('#report-modal2').css('display', 'none');
+		  })
+		  
+		  $('#cancleBtn2').on('click',function(){
+			  $('#report-modal3').css('display', 'none');
+		  })
+		  		  
+
+			//비밀글 직접접근방지 alert메세지.
+			var msg = "[[${msg}]]";
+			
+			if(msg != ''){
+				Swal.fire({
+	                icon: 'warning',
+	                title: msg
+	            });
+			}
+			
+        	//카테고리별 분류
+           	var categoryBoxChange= function(){
+        		
+        		
+        		let category =$("#Category  option:selected").val();
+        		
+        		let moveFormCategory = $("#moveFormCategory");
+        		
+         		console.log(category);	
+        		moveFormCategory.find("input[name='category']").val(category);
+        		moveFormCategory.find("input[name='pageNum']").val(1);
+        		moveFormCategory.submit();
+        		}
+        	
+        	
+        	//신고목록 보기.
+        	function reportList(boardBno){
+        		
+        		$("#viewTable").empty();
+        		
+        		$('#report-modal').css('display', 'block');
+        		
+        		
+        		fetch("/ohnong/reportList/" + boardBno,
+        			{method: "post"})
+				.then(resolve => resolve.json())
+				.then(result => {
+					let table='';
+					table+=`<div><table class="table table-striped jambo_table bulk_action" style="table-layout:fixed;">`;
+					table +=`<thead>
+							<tr class="headings">
+								<th width="50"><input type="checkbox" id="check-all" class="flat"></th>
+								<th width="70" style="color:red;" class="column-title">신고유형</th>
+								<th width="200" class="column-title">신고내용</th>
+								<th width="100" class="column-title">신고유저id</th>
+								<th width="98"  class="column-title">신고날짜</th>
+							</tr>
+						</thead>`;
+					table += `<tbody>`;
+					for(let i=0; i< result.length ; i++){
+						table += `<tr class="even pointer">
+										<td ><input type="checkbox" class="flat"name="table_records"></td>
+										<td >` + result[i].reportType + `</td>
+										<td >` + result[i].reportContent + `</td>
+										<td>` + result[i].userId + `</td>
+										<td>` + result[i].reportDate + `</td>
+									</tr>`;
+					}
+					table += `</tbody></table></div>`;
+					$("#viewTable").append(table);
+					
+				})
+        				
+        	};
+        	
+        	
+        	//블라인드처리
+        	function blindBoard(boardBno){
+        		
+				$('#report-modal2').css('display', 'block');
+        		
+				$('#blindBtn').on('click',function(){
+					
+
+					 $.ajax({
+						 
+						 url: "/ohnong/boardBlind",
+						 data:{
+							 "boardBno" : boardBno
+						 },
+						 type:"post",
+						 success:function(result){
+							 
+								 if(result ==1){
+								
+							     $('#report-modal2').css('display', 'none');
+								 
+								 location.reload()
+								 
+							 }else{
+								 
+								 Swal.fire({
+						                icon: 'warning',
+						                title: "블라인드 실패입니다. 다시 확인해주세요."
+						            });
+								 
+							 } 	
+							 
+						 },
+						 error:function(){
+							 
+							 Swal.fire({
+					                icon: 'warning',
+					                title: "실패했습니다."
+					            });
+							
+						 }
+					
+					 })
+					
+					
+					
+				});//blindBtn끝
+			}
+        	
+        	
+        	//블라인드글 복구
+        	function boardRestore(boardBno){
+        		
+				$('#report-modal3').css('display', 'block');
+        		
+				$('#restoreBtn').on('click',function(){
+					
+
+					 $.ajax({
+						 
+						 url: "/ohnong/boardRestore",
+						 data:{
+							 "boardBno" : boardBno
+						 },
+						 type:"post",
+						 success:function(result){
+							 
+							 if(result ==1){
+								
+								
+							 	$('#report-modal3').css('display', 'none');
+							 
+								 location.reload();
+							 }else{
+								 
+								 Swal.fire({
+						                icon: 'warning',
+						                title: "블라인드글 복구 실패입니다. 다시 확인해주세요."
+						            });
+								
+							 } 	
+							 
+						 },
+						 error:function(){
+							 
+							 Swal.fire({
+					                icon: 'warning',
+					                title: "실패했습니다."
+					            });
+						 }
+					
+					 })
+					
+					
+					
+				});//blindBtn끝
+			}
+
+        	      
+</script>
+                                    
+                 
+                
+                   </div>
+                </div>
+              <!-- 페이징 -->                    
+ 
+           <!-- content div 끝 -->
+             
+        <!-- /page content -->	
+  </body>
+
+</html>

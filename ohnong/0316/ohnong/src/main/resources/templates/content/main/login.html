@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/layoutMain}">
+<head>
+<meta charset="UTF-8">
+<title>oh-nong!</title>
+<style>
+.loginWarn {
+font-size: 14px;
+color: red;
+font-weight: bold;
+}
+.btn2 {
+    background-color: #15967d;
+    border-color: #15967d;
+    color: white;
+}
+ .reset_pass:link {color: #aaa; text-decoration: underline; }
+ .reset_pass:visited {color:#aaa;,text-decoration: underline;}
+ .reset_pass:hover {color:#ddd;,text-decoration: none;}
+ 
+ 
+</style>
+</head>
+
+<th:block layout:fragment="css"></th:block>
+<th:block layout:fragment="script"></th:block>
+
+<div layout:fragment="contentMain">
+<header class="masthead" style="padding-top: 80px !important">
+    <div class="text-center" style="color:black">
+        <div id="login" class="" style="width:30%; float:none; margin:0 auto">
+            <section class="login_content">
+                <form id="loginForm" method="post" >
+                    <h1 style=" background: linear-gradient(to right top, #cafcd6,#035c2f );color: transparent;-webkit-background-clip: text;">Login</h1>
+                    <br>
+                    <div>
+                        <input type="text" class="form-control" id="userId" name="userId" placeholder="ID" />
+                    </div>
+                    <br>
+                    <div>
+                        <input type="password" class="form-control" id="userPw" name="userPw" placeholder="Password" />
+                    </div>
+                    <br>
+                    [[${param.error}]]
+                    <div th:if="${param.error}">
+                        <p class="loginWarn">아이디 또는 비밀번호를 잘못 입력하였습니다.</p>
+                    </div>
+                    
+                    <div>
+                        <!--  <div class="checkbox">
+                           <label> <input type="checkbox" class="flat"> <span style="font-weight: bold;"> 자동 로그인</span></label> 
+                        <br>
+                        <br> -->
+                        <button type="button" id="loginBtn" class="btn btn2" style="font-weight: bold">로그인</button>
+                        <button type="button" id="joinBtn" class="btn btn2" style="font-weight: bold">회원가입</button>
+                        <hr>
+                        <a class="reset_pass" href="findId" style="text-decoration: none;">ID 찾기</a>
+                        &nbsp;&nbsp;&nbsp;
+                        <a class="reset_pass" href="findPw" style="text-decoration: none;">PW 찾기</a>
+                    </div>
+
+                        <br>
+
+                        <div>
+                            <h1 style="background: linear-gradient(to right top, #cafcd6,#035c2f );color: transparent;-webkit-background-clip: text;">Oh - Nong</h1>
+                        </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</header>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script>
+	$('#loginBtn').click(function() {
+		// 서버 요청
+		$('#loginForm').attr('action', '/ohnong/login');
+		$('#loginForm').submit();
+	})
+	
+	$('#joinBtn').click(function() {
+		// 서버 요청
+		location.href='join'
+	})
+</script>
+</div>
+</html>

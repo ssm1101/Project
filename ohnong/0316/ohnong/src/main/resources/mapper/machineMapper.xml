@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohnong.app.stock.mapper.MachineMapper">
+
+	<select id="getMachineListWithPaging" resultType="MachineVO">
+		select * from(
+			select rownum rn, a.* from(
+				select s.item_code,
+					   s.name,
+					   m.rental_no,
+					   m.rental_place,
+					   m.count,
+					   m.rental_price,
+					   m.rental_date,
+					   m.return_date,
+					   m.user_id
+					   
+				from subdivision s
+				join machineStatus m
+				  on (s.item_code = m.item_code)
+				  
+				where m.user_id = #{userId}
+				  and s.user_id = #{userId}
+			<if test="middleCatagori != null and middleCatagori !=''">
+				<if test="name != null and name != ''">
+					and s.middlecatagori = #{middleCatagori}
+					and s.name LIKE '%'||#{name}||'%'
+				</if>
+			</if>
+			<if test="startDate != null and startDate !=''">
+				<if test="endDate != null and endDate !=''">
+					and m.rental_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD')
+									  	  AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+				</if>
+			</if>
+		<![CDATA[
+				order by m.rental_no desc) a where rownum <= (#{pageNum} * #{amount})) b
+                                          	 where b.rn >= (#{pageNum} - 1) * #{amount}
+        ]]>
+	</select>
+	
+	<select id="getTotalCount" resultType="int">
+		select count(*)
+		from subdivision s
+		join machineStatus m
+		  on (s.item_code = m.item_code)
+		  
+		where m.user_id = #{userId}
+		  and s.user_id = #{userId}
+		<if test="middleCatagori != null and middleCatagori !=''">
+			<if test="name != null and name != ''">
+				and s.middlecatagori = #{middleCatagori}
+				and s.name LIKE '%'||#{name}||'%'
+			</if>
+		</if>
+		<if test="startDate != null and startDate !=''">
+			<if test="endDate != null and endDate !=''">
+				and m.rental_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD')
+								  	  AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+			</if>
+		</if>
+	</select>
+	
+	<update id="machineUpdate" parameterType="MachineVO">
+		DECLARE
+		BEGIN
+			update machineStatus
+			set count = #{count},
+				rental_place = #{rentalPlace},
+				rental_date = #{startDate},
+				return_date = #{endDate},
+				rental_price = #{rentalPrice}
+			where item_code = #{oldItemCode};
+			
+			update detail
+			set cash = #{count} * #{rentalPrice},
+				today = #{startDate}
+			where itemcode = #{oldItemCode};
+		END;
+	</update>
+	
+	<delete id="machineDelete" parameterType="String">
+		DECLARE
+		BEGIN
+			delete from machineStatus
+			where item_code = #{itemCode};
+			
+			delete from detail
+			where itemcode = #{itemCode};
+			
+			delete from subdivision
+			where item_code = #{itemCode};
+		END;
+	</delete>
+	
+	<delete id="machineReturn" parameterType="MachineVO">
+		DECLARE
+		BEGIN
+			delete from machineStatus
+			where item_code = #{itemCode};
+			
+			delete from subdivision
+			where item_code = #{itemCode};
+		END;
+	</delete>
+	
+	<insert id="machineInsert" parameterType="MachineVO">
+		DECLARE
+		BEGIN
+			insert into subdivision(item_code, name, middlecatagori, user_id)
+            values (sub_seq.nextval, #{name}, #{middleCatagori}, #{userId});
+            
+            insert into machineStatus(rental_no, rental_place, count, rental_price, rental_date, return_date, user_id, item_code)
+            values (machine_seq.nextval, #{rentalPlace}, #{count}, #{rentalPrice}, #{strDate}, #{eDate}, #{userId}, sub_seq.currval);
+            
+            insert into detail(detail_no, today, middlecategori, itemcode, detail, cash, user_id, maincategori, explation)
+            values (detail_seq.nextval, #{strDate}, #{middleCatagori}, sub_seq.currval, #{name}, #{count} * #{rentalPrice}, #{userId}, #{mainCatagori}, #{explation});
+		END;
+	</insert>
+	
+	<select id="getneighborListWithPaging" resultType="NeighborVO">
+
+		select no,
+			   item_code,
+			   item_name,
+			   rental_status,
+			   rental_count,
+			   rental_price,
+			   rental_period,
+			   manager,
+			   phone,
+			   rental_place
+		from neighborhoodrentallist
+		order by no desc
+
+	</select>
+	
+	<update id="neighborStatusUpdate" parameterType="NeighborVO">
+		update neighborhoodrentallist
+    	set rental_status = 'M',
+    		user_id = #{userId}
+    	where no = #{no}
+	</update>
+	
+	<update id="neighborStatusDisUpdate" parameterType="NeighborVO">
+		update neighborhoodrentallist
+    	set rental_status = 'Y',
+    		user_id = ''
+    	where no = #{no}
+	</update>
+	
+	<!-- #관리자용
+         우리 동네 농기계 - 조회  -->
+    <select id="neighborhoodRentalList" resultType="NeighborVO">
+        SELECT rownum rn, NEIGHBORHOODRENTALLIST.*
+		FROM NEIGHBORHOODRENTALLIST
+		ORDER BY NO
+    </select>
+    
+    <!-- 우리 동네 농기계 - 승인 -->
+    <update id="changeState">
+        update NEIGHBORHOODRENTALLIST
+        set rental_status = #{rentalStatus}
+        where no = #{no}
+    </update>
+    
+    <insert id="changeState2" parameterType="MachineVO">
+        insert into machineStatus (rental_no, rental_place, count, rental_price, rental_date, return_date, user_id, item_code)
+        values (machine_seq.nextval, #{rentalPlace}, #{count}, #{rentalPrice}, #{startDate}, #{endDate}, #{userId}, #{itemCode})
+    </insert>
+    
+    <!-- 우리 동네 농기계 - 수정 -->
+    <update id="rentalUpdate">
+        update NEIGHBORHOODRENTALLIST
+        set item_name = #{itemName},
+        	rental_count = #{rentalCount},
+        	rental_price = #{rentalPrice}, 
+        	rental_period = #{rentalPeriod},
+        	rental_place = #{rentalPlace},
+        	manager = #{manager},
+        	phone = #{phone} 
+        where no = #{no}
+    </update>
+    
+    <!-- 우리 동네 농기계 - 삭제 -->
+    <delete id="deleteRental" parameterType="Integer">
+        delete from NEIGHBORHOODRENTALLIST
+        where no = #{no}
+    </delete>
+    
+    <!-- 우리 동네 농기계 - 등록 -->
+    <insert id="insertRental" parameterType="NeighborVO">
+        declare
+        begin
+	        insert into subdivision (item_code, name, middlecatagori, user_id)
+	        values (sub_seq.nextval, #{itemName}, '농자재', #{userId});
+	        
+	        insert into NEIGHBORHOODRENTALLIST (no, item_code, item_name, rental_count, rental_price, rental_period, manager, phone, rental_place)
+	        values (neighbor_seq.nextval, sub_seq.currval, #{itemName}, #{rentalCount}, #{rentalPrice}, #{rentalPeriod}, #{manager}, #{phone}, #{rentalPlace});
+        end;
+    </insert>
+    
+    <select id="machineListWithMiddle" resultType="MachineVO">
+    	select s.item_code,
+       		   s.name,
+       		   m.rental_date
+       		   
+		from machineStatus m
+		right join subdivision s
+           on (m.item_code = s.item_code)
+                
+		where s.middlecatagori = #{middleCatagori}
+		  and s.user_id = #{userId}
+		<if test="name != null and name != ''">
+			and s.name = #{name}
+		</if>
+    </select>
+    
+    <select id="getCount" resultType="MachineVO">
+    	select rental_price, 
+    		   rental_place,
+    		   rental_date, 
+    		   item_code
+		from machineStatus
+		where user_id = #{userId}
+		  and item_code = (select item_code
+		                   from subdivision s
+		                   where s.user_id = #{userId}
+		                     and s.name = #{name})
+    </select>
+    
+	<update id="machinenotInsert" parameterType="MachineVO">
+		DECLARE
+		BEGIN
+			update machineStatus
+			set count = (select count
+			             from machineStatus m
+			             where user_id = #{userId}
+			               and item_code = (select item_code
+			                                from subdivision s
+			                                where user_id = #{userId}
+			                                  and s.middlecatagori = #{middleCatagori}
+			                                  and s.name = #{name}))
+			          + #{count},
+				rental_place = #{rentalPlace},
+                rental_price = #{rentalPrice},
+                return_date = #{endDate}
+                
+			where user_id = #{userId}
+			and item_code = (select item_code
+			                 from subdivision s
+			                 where user_id = #{userId}
+			                   and s.middlecatagori = #{middleCatagori}
+			                   and s.name = #{name});
+			                 
+			insert into detail(detail_no, today, middlecategori, itemcode, detail, cash, user_id, maincategori, explation)
+            values (detail_seq.nextval, #{startDate}, #{middleCatagori}, #{itemCode}, #{name}, #{count} * #{rentalPrice}, #{userId}, #{mainCatagori}, #{explation});
+		END;
+	</update>
+	
+	<insert id="machineInsertnotSubdivision" parameterType="MachineVO">
+		DECLARE
+		BEGIN
+            insert into machineStatus(rental_no, rental_place, count, rental_price, rental_date, return_date, user_id, item_code)
+            values (machine_seq.nextval, #{rentalPlace}, #{count}, #{rentalPrice}, #{startDate}, #{endDate}, #{userId}, #{itemCode});
+            
+            insert into detail(detail_no, today, middlecategori, itemcode, detail, cash, user_id, maincategori, explation)
+            values (detail_seq.nextval, #{startDate}, #{middleCatagori}, #{itemCode}, #{name}, #{count} * #{rentalPrice}, #{userId}, #{mainCatagori}, #{explation});
+		END;
+	</insert>
+	
+	<select id="submitMachineList" resultType="NeighborVO">
+		select *
+		from neighborhoodrentallist
+		where rental_status = 'M'
+		  and user_id = #{userId}
+		order by no desc
+	</select>
+
+</mapper>

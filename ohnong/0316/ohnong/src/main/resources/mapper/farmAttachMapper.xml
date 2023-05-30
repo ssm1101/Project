@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohnong.app.farm.mapper.FarmAttachMapper">
+
+    <insert id="insert">
+	insert into attach (uuid, upload_path, file_name, file_type, farm_name)
+	values (#{uuid}, #{uploadPath}, #{fileName}, #{fileType}, #{farmName})
+	</insert>
+    
+    <select id="findByBno" resultType="com.ohnong.app.farm.service.FarmAttachVO">
+	select * from attach where farm_name = #{farmName}
+	</select>
+</mapper>

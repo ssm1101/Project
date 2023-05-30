@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+ <mapper namespace="com.ohnong.app.journal.mapper.PrecedentJournaMapper">
+ 	
+ 	<select id="precedentCropList" resultType="PrecedentJournalVO">
+ 		SELECT DISTINCT NAME
+		FROM precedentjournal
+ 	</select>
+ 	
+ 	<select id="CropMaster" resultType="PrecedentJournalVO">
+ 		SELECT DISTINCT master_name
+		FROM precedentjournal
+		where name = #{cropName}
+		ORDER by master_name
+ 	</select>
+ 	
+ 	<select id="CropMasterPlan" resultType="PrecedentPlanVO">
+ 		SELECT *
+		FROM PRECEDENTPLAN
+		where master_name = #{cropMaster}
+ 	</select>
+ 	
+ 	<select id="CropMasterPlanList" resultType="PrecedentJournalVO">
+ 		SELECT *
+		FROM precedentjournal
+		where master_name = #{cropMaster}
+ 	</select>
+ 	<select id="CropMasterListInfo" resultType="PrecedentJournalVO">
+	 	SELECT *
+		FROM precedentjournal
+		where master_name =#{cropMaster} AND plan_date =TO_DATE(#{planDate}, 'yyyy-MM-dd')
+	</select>
+ </mapper>

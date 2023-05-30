@@ -1,0 +1,396 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html
+  xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layoutMagement}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>oh-nong!</title>
+<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
+
+	<link rel="stylesheet" th:href="@{/css/default.css}" />
+	<link rel="stylesheet" th:href="@{/css/content.css}" />
+	<link rel="stylesheet" th:href="@{/css/button.css}" />
+	
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+<style>
+
+
+.pageInfo_area{
+    text-align: center;
+    width: 50%;
+}
+.pagination2{
+    list-style: none;
+    display: inline-block;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.pagination2 li {
+    display: inline;
+    text-align: center;
+}
+/*숫자*/ 
+.pagination2 a {
+    float: left;
+    display: block;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 5px 12px;
+    color: #96a0ad;
+    line-height: 1.5;
+}
+.pagefirst{
+    margin-right: 15px;
+}
+.pagelast{
+    margin-left: 15px;
+}
+.pagefirst:hover, .pagelast:hover, .arrowright:hover, .arrowleft:hover, .model .num:hover{
+    color:#2e9cdf;
+}
+.pagination2 .move.active{
+    cursor: default;
+    color: #ffffff;
+}
+.pagination2 .move:active{
+    outline: none;
+}
+.model .num {
+    margin-left: 3px;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    -moz-border-radius: 100%;
+    -webkit-border-redius:100%;
+    border-radius: 100%;
+}
+.model .num.active, .model .num:active{
+    background-color: #2e9cdf;
+    cursor: pointer;
+}
+.arrowleft{
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10ox solid blue;
+}
+
+ a.active {
+ 	cursor:default;
+ 	color:#ffffff; 	
+ }
+
+  
+  .search_area{
+    text-align:left;
+    margin-bottom:10px;
+  }
+  .search_area input{
+    height: 40px;
+    width: 250px;
+  }
+  .search_area button{
+    height: 40px;
+    width: 100px;
+  }
+   .search_area select{
+  	height: 30px;
+    width:150px;
+  }
+ 
+ 
+input:focus{
+    box-sizing: border-box;
+    border-radius: 10px;
+    outline: 3px solid gray;
+    border-radius: 10px;
+}
+
+select:focus{
+    border: 1px solid gray;
+    box-sizing: border-box;
+    border-radius: 10px;
+    outline: 3px solid gray;
+    border-radius: 10px;
+}
+</style>
+</head>
+<th:block layout:fragment="css"> </th:block>
+<th:block layout:fragment="script"> </th:block>
+<body class="nav-md">
+<div layout:fragment="contentMagement">
+<!-- page content -->
+<div class="right_col" role="main">
+	<div class="">
+		<div class="page-title">
+			<div class="title_left">
+				<h3><i class="fa fa-leaf"></i> Oh! Nong</h3>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+		<div class="row" style="display: block;">
+		<div class="col-md-12">
+			<div class="x_panel">
+				<div class="x_title">
+					<h2>공지사항<small>목록 조회</small></h2>
+						<ul class="nav navbar-right panel_toolbox">
+							<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"><i class="fa fa-wrench"></i></a>
+								<div class="dropdown-menu">
+									<a class="dropdown-item" href="#">공지사항</a> 
+									<a class="dropdown-item" href="#">오농식</a>
+									<a class="dropdown-item" href="#">오시는길</a>
+								</div>
+							</li>
+						</ul>
+					<div class="clearfix"></div>
+				</div>
+				<div class="x_content">
+						<p style="margin-bottom:5px;">* 전체 <span th:text=${pageMaker.total}></span> 건 | 현재페이지 <code><span th:text=${pageMaker.cri.pageNum}></span></code> / <span th:text=${pageMaker.realEnd}></span>  </p>
+						<div class="search_wrap">
+										<div class="search_area">
+											<select id="selectCategoery" name="type"  th:onchange="selectBoxChange(this.value)" style="height: 40px; margin-right: 5px;border-radius: 4px;">
+												<option value=""  th:selected="${pageMaker.cri.type == null?true:false }" >🔎 검색조건</option>
+												<option value="T" th:selected="${pageMaker.cri.type eq 'T'?true:false }">제목</option>
+												<option value="C" th:selected="${pageMaker.cri.type eq 'C'?true:false }">내용</option>
+												<option value="W" th:selected="${pageMaker.cri.type eq 'W'?true:false }">작성자</option>
+												<option value="TC" th:selected="${pageMaker.cri.type eq 'TC'?true:false }">제목+내용</option>
+												<option value="TW" th:selected="${pageMaker.cri.type eq 'TW'?true:false }">제목+작성자</option>
+												<option value="TCW" th:selected="${pageMaker.cri.type eq 'TCW'? true:false }">제목+내용+작성자</option>
+											</select>
+											<input type="text" name="keyword" th:value="${pageMaker.cri.keyword}" placeholder="검색하실 내용을 입력하세요..." style="margin-right: 5px;border-radius: 4px;">
+											<span class="input-group-btn"><button type="button" id="searchBtn" class="btn btn-secondary"  style="height: 40px;font-weight: bold;background-color:#2A3F54;border: none;border-radius: 4px; margin:0px 0px;">Search <i class="fa fa-search"></i></button></span>
+										</div>
+									</div>
+							<div class="table-responsive" style="height: 600px">
+								<table class="table table-striped jambo_table bulk_action">
+									<colgroup>
+										<col style="width: 10%;" />
+										<col style="width: 15%;" />
+										<col />
+										<col style="width: 10%;" />
+										<col style="width: 10%;" />
+										<col style="width: 10%;" />
+									</colgroup>
+									<thead>
+										<tr class="headings">
+											<th class="column-title">글 번호</th>
+											<th class="column-title">카테고리</th>
+											<th class="column-title">제목</th>
+											<th class="column-title">작성자</th>
+											<th class="column-title">등록일</th>
+											<th class="column-title">조회수</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="noticeInfo : ${noticeList}">
+											<td class=" " th:text="${noticeInfo.noticeNo}" />
+											<td class=" " th:text="${noticeInfo.noticeCategory}" />
+											<td class=" " ><a class="move" th:href="@{getNotice(noticeNo=${noticeInfo.noticeNo}, pageNum=${pageMaker.cri.pageNum},amount=${pageMaker.cri.amount},keyword=${pageMaker.cri.keyword },type=${pageMaker.cri.type})}" th:text="${noticeInfo.noticeTitle}"></a></td>
+											<td class=" " th:text="${noticeInfo.noticeWriter}" />
+											<td class=" " th:text="${#dates.format(noticeInfo.updateDate, 'yyyy-MM-dd')}" />
+											<td class=" " th:text="${noticeInfo.hitCnt}" />
+										</tr>
+									</tbody>
+								</table>
+									<div style="text-align: right;">
+										<button type="button" class="btn btn-round btn-info" th:onclick="location.href='noticeList'">새로고침 <i class="fa fa-repeat"></i></button>
+										
+										<button type="button"  id="regBtn"  class="btn btn-round btn-primary" 
+														 th:onclick="location.href='noticeRegister'" 
+														 th:if="${session.login?.grade} == '1'"  >등록<i class="fa fa-edit"></i>
+										</button>
+										
+										
+									</div>
+							
+								<div class="pageInfo_area" style="width:100%; text-align: center;">
+									<ul class="pagination2 model" th:each="page:${pageMaker}">
+										<th:block
+											th:with="start = ${page.startPage}, end = ${page.endPage} ">
+											<!-- 처음-->
+											<li class="pageInfo_btn"><a class="pagefirst" 
+												th:href="@{/noticeList?pageNum={page}&amount=10&keyword={keyword}(page = ${1},keyword = ${pageMaker.cri.keyword},type=${pageMaker.cri.type})}" 
+												th:text="'<<'"></a></li>
+											<!-- 이전 -->
+											<li class="pageInfo_btn" th:if="${page.prev}"><a
+												class="allowleft"
+												th:href="@{/noticeList?pageNum={page}&amount=10&keyword={keyword} (page = ${page.startPage-1}, keyword = ${pageMaker.cri.keyword},type=${pageMaker.cri.type})}"
+												th:text="'<'"></a></li>
+											<!-- 숫자 -->
+											<li class="pageInfo_btn"
+												th:with="start = ${page.startPage}, end = ${page.endPage}"
+												th:each="pageButton : ${#numbers.sequence(start, end)}">
+												<a class="num"
+												th:href="@{/noticeList?pageNum={page}&amount=10&keyword={keyword} (page = ${pageButton},keyword = ${pageMaker.cri.keyword},type=${pageMaker.cri.type})}"
+												th:text=${pageButton}
+												th:classappend="${pageMaker.cri.pageNum == pageButton ? 'active':'' }"></a>
+											</li>
+											<!-- 다음 -->
+											<li class="pageInfo_btn" th:if="${page.next}"><a
+												class="arrowright"
+												th:href="@{/noticeList?pageNum={page}&amount=10&keyword={keyword} (page = ${page.endPage+1},keyword = ${pageMaker.cri.keyword},type=${pageMaker.cri.type})}"
+												th:text="'>'"></a></li>
+											<!-- 끝 -->
+											<li class="pageInfo_btn"><a class="pagelast"
+												th:href="@{/noticeList?pageNum={page}&amount=10&keyword={keyword}(page = ${page.realEnd},keyword=${pageMaker.cri.keyword},type=${pageMaker.cri.type})}"
+												th:text="'>>'"> <span>끝</span></a></li>
+										</th:block>
+									</ul>
+								</div>
+							</div>
+							
+						<form id="moveForm" method="get">
+						  <input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum }">
+        				  <input type="hidden" name="amount" th:value="${pageMaker.cri.amount }">
+        				  <input type="hidden" name="keyword" th:value="${pageMaker.cri.keyword }"> 
+        				  <input type="hidden" name="type" th:value="${pageMaker.cri.type }">
+        				 </form> 
+						</div>
+						</div>
+					</div>
+				</div>
+		</div>
+</div>
+		<!-- /page content -->
+<script th:inline="javascript">
+	$(document).ready(function(){
+		
+		let result =  [[${result}]];
+		let Id = [[${session.login?.grade}]]
+		checkAlert(result);
+		
+		function checkAlert(result){
+			if(result === ''){
+				return;
+			}
+			if(result === "success"){
+				const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+                  Toast.fire({
+                    icon: 'success',
+                    title: '등록이 완료되었습니다.'
+                  })
+			}
+			if(result === "modify success"){
+				const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '수정이 완료되었습니다.'
+                  })
+			}
+			if(result === "delete success"){
+				const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+                  Toast.fire({
+                    icon: 'error',
+                    title: '삭제가 완료되었습니다.'
+                  })
+			}		
+		}	
+	});
+	
+	//jquery 소스
+	var selectBoxChange = function(value){
+		$("#selectCategoery").val(value);
+	}
+	
+	
+
+
+	let moveForm = $("#moveForm");
+
+	
+	$(".search_area button").on("click", function(e){
+		e.preventDefault();
+		
+		let type = $("#selectCategoery").val();
+		let keyword = $(".search_area input[name='keyword']").val();
+		
+		//let type = $(".search_area select").val();
+		//let keyword = $(".search_area input[name='keyword']").val();
+		
+		if(!type){
+			const Toast = Swal.mixin({
+                toast: true,
+                position: 'center-center',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener('mouseenter', Swal.stopTimer)
+                  toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+              })
+              Toast.fire({
+                icon: 'warning',
+                title: '검색 종류를 선택하세요.'
+              })
+			return false;
+		}
+		
+		if(!keyword){
+			const Toast = Swal.mixin({
+                toast: true,
+                position: 'center-center',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener('mouseenter', Swal.stopTimer)
+                  toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+              })
+              Toast.fire({
+                icon: 'warning',
+                title: '키워드를 입력하세요.'
+              })
+			return false;
+		}		
+		
+		moveForm.find("input[name='type']").val(type);
+		moveForm.find("input[name='keyword']").val(keyword);
+		moveForm.find("input[name='pageNum']").val(1);
+		moveForm.submit();
+		
+		//현재의 url경로의 매핑 메서드를 호출 
+	});
+
+</script>	
+</div>
+</body>
+</html>

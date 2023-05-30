@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layoutMain}">
+<head>
+<meta charset="UTF-8">
+</head>
+
+<th:block layout:fragment="css"></th:block>
+<th:block layout:fragment="script"></th:block>
+
+<div layout:fragment="contentMain">
+<header class="masthead">
+	<div class="text-center" style="color:black">
+		<div id="findPw" class="animate form login_form" style="width:30%; float:none; margin:0 auto">
+			<section class="login_content">
+				<form>
+					<h1>PW 찾기</h1>
+					<br>
+					<div>
+						<input type="text" class="form-control" placeholder="아이디" required="" />
+					</div>
+					<br>
+					<div>
+						<input type="password" class="form-control" placeholder="연락처" required="" />
+					</div>
+					<br>
+					<div>
+						<input type="password" class="form-control" placeholder="이메일" required="" />
+					</div>
+					<br>
+					<button type="button" class="btn btn-primary ">임시 비밀번호 발급</button>
+
+						<br /><br />
+
+						<div>
+							<h1>
+								<i class="fa fa-paw"></i> 오늘의 농가!
+							</h1>
+							<p>©hello. This is today's farmhouse. nice to meet you.
+							hello. This is today's farmhouse. nice to meet you.</p>
+						</div>
+				</form>
+			</section>
+		</div>
+	</div>
+</header>
+</div>
+</html>

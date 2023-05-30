@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohnong.app.customer.mapper.CustomerMapper">
+
+	<!-- 거래처 목록 -->
+	<select id="getcustomerList" parameterType="String" resultType="CustomerVO">
+		SELECT rownum rn, customer, customer_name, customer_tel, customer_addr,
+		account_name, bank_name, account_num, memo, regist_num,
+		middlecatagori, subdivision, manager_name, user_id, customer_id
+		FROM customer
+		WHERE user_id = #{userId}
+	</select>
+
+	<!-- 거래처 정보 -->
+	<select id="getAccountList" parameterType="String" resultType="CustomerVO">
+		SELECT *
+		FROM customer
+		WHERE user_id = #{userId}
+		AND customer = #{businessName}
+	</select>
+
+	<!-- 거래처 수정 -->
+	<update id="customerUpdate">
+		update customer
+		set customer = #{customer}, customer_name = #{customerName}, customer_tel
+		= #{customerTel}, customer_addr = #{customerAddr},
+		account_name = #{accountName}, bank_name = #{bankName}, account_num =
+		#{accountNum}, memo = #{memo}, regist_num = #{registNum},
+		middlecatagori = #{middlecatagori}, subdivision = #{subdivision},
+		manager_name = #{managerName}
+		where customer_id = #{customerId}
+	</update>
+
+	<!-- 거래처 등록 -->
+	<insert id="insertCustomer" parameterType="CustomerVO">
+		insert into customer
+		(CUSTOMER_ID, CUSTOMER, CUSTOMER_NAME, CUSTOMER_TEL, CUSTOMER_ADDR, ACCOUNT_NAME,
+		BANK_NAME, ACCOUNT_NUM, MEMO, REGIST_NUM,
+		USER_ID, MAINCATAGORI, MIDDLECATAGORI, SUBDIVISION, MANAGER_NAME)
+		values
+		(seq_customer_sequence.NEXTVAL,
+		#{customer},
+		#{customerName},
+		#{customerTel},
+		#{customerAddr},
+		#{accountName},
+		#{bankName},
+		#{accountNum},
+		#{memo},
+		#{registNum},
+		#{userId},
+		'작물',
+		#{middlecatagori},
+		#{subdivision},
+		#{managerName})
+	</insert>
+
+	<!-- 거래처 삭제 -->
+	<delete id="deleteCustomer" parameterType="Integer">
+		delete from customer where customer_id = #{customerId}
+	</delete>
+	
+	<!-- 거래처 중복 확인 -->
+	<select id="checkCustomer" resultType="int">
+		select count(*)
+		from customer
+		where
+		customer = #{customer} and user_id = #{userId}
+	</select>
+</mapper>

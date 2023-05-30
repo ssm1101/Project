@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layoutMagement}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>oh-nong!</title>
+<!-- jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+	#area {
+		color: #4EA61F !important;
+	}
+
+	#typeDv {
+			color: #F36A23 !important;
+	}
+		
+
+.pageInfo_area{
+    text-align: center;
+    width: 50%;
+}
+.pagination2{
+    list-style: none;
+    display: inline-block;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.pagination2 li {
+    display: inline;
+    text-align: center;
+}
+/*숫자*/ 
+.pagination2 a {
+    float: left;
+    display: block;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 5px 12px;
+    color: #96a0ad;
+    line-height: 1.5;
+}
+.pagefirst{
+    margin-right: 15px;
+}
+.pagelast{
+    margin-left: 15px;
+}
+.pagefirst:hover, .pagelast:hover, .arrowright:hover, .arrowleft:hover, .model .num:hover{
+    color:#2e9cdf;
+}
+.pagination2 .move.active{
+    cursor: default;
+    color: #ffffff;
+}
+.pagination2 .move:active{
+    outline: none;
+}
+.model .num {
+    margin-left: 3px;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    -moz-border-radius: 100%;
+    -webkit-border-redius:100%;
+    border-radius: 100%;
+}
+.model .num.active, .model .num:active{
+    background-color: #2e9cdf;
+    cursor: pointer;
+}
+.arrowleft{
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10ox solid blue;
+}
+
+ a.active {
+ 	cursor:default;
+ 	color:#ffffff; 	
+ }
+
+  
+  .search_area{
+    text-align:center;
+  }
+  .search_area input{
+    height: 30px;
+    width: 250px;
+  }
+  .search_area button{
+    height: 30px;
+    width: 100px;
+  }
+   .search_area select{
+  	height: 30px;
+    width:150px;
+  }
+</style>
+</head>
+<th:block layout:fragment="css"></th:block>
+<th:block layout:fragment="script"></th:block>
+<body class="nav-md">
+<div layout:fragment="contentMagement">
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+               <h3 style="color:black;"><i class="fa fa-leaf"></i> Oh! Nong</h3>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        
+ 		 <div class="row">
+              <div class="col-md-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                        <h2>청년 사례  <small>글</small></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <div class="dropdown-menu" >
+                            <a class="dropdown-item" href="#">Settings 1</a>
+                            <a class="dropdown-item" href="#">Settings 2</a>
+                          </div>
+                      </li>
+                     </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+                  <table class="table table-striped jambo_table bulk_action">
+                  		<colgroup>
+							<col style="width: 5%;" />
+							<col style="width: 5%;" />
+							<col />
+							<col />
+							<col style="width: 15%;" />
+							<col style="width: 25%;" />
+						</colgroup>
+						<thead>
+							<tr class="headings" >
+								<th class="column-title">지역1</th>
+								<th class="column-title">지역2</th>
+								<th class="column-title">농가명</th>
+								<th class="column-title" >제목</th>
+								<th class="column-title">종류</th>
+								<th class="column-title">출처</th>
+							</tr>
+						</thead>
+						<tbody id="context">
+						</tbody>
+					</table>
+                      <div class="row" id="context2">
+                      </div>
+                      <!-- /.row -->
+                  </div>
+                </div>
+              </div>
+            </div>
+        
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" >
+	<div class="modal-dialog modal-lg modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="myModalLabel" style="float: left;">청년사례 글</h4>
+				<button type="button" class="close" data-dismiss="modal">
+					<span>×</span>
+				</button>
+			</div>
+			<div class="modal-body" id="modalbody" style="height: 700px;">
+				<!-- <iframe width="100%" height="100%" src="${youth.bbsInfo08}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe> -->
+				<iframe id="iframe" width="100%" height="100%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"  autoplay="1" allowfullscreen></iframe>
+			</div>
+			
+		</div>
+	</div>
+</div>
+<!-- insert modal -->
+ <script>
+ //청년농영상,02 : 청년농소개,03 : 기술우수사례,
+ 		var you1URL = 'https://rda.go.kr/young/api/youthList?serviceKey=Y70LFIN25U9RD0R86238Y6ZI8H4TV80JI3FNW9J1&sCode=01&typeDv=json';
+ 		
+        var url = 'https://rda.go.kr/young/api/youthList?serviceKey=Y70LFIN25U9RD0R86238Y6ZI8H4TV80JI3FNW9J1&sCode=01&typeDv=json&rowCnt=10';
+ 		    
+ 		
+ 		   function ajaxCmm(url, type, callback) {
+				$('#context').empty();
+				$.ajax({
+					url: url, // 접속주소
+					type: 'GET', //데이터전송방식
+					success: function (data, status, xr) {
+						return callback(data);
+					},
+					error: function (xhr, status, error) {
+						let context = `<div style="height:500px; padding:20px text-align:center;"><img src="/ohnong/images/eroor.png" style="width:80%; height:80%; margin-left:150px; margin-top:100px;"></img></div>`;
+						$('#context').append(context);
+					}
+				});
+			};
+			
+			//처음 로딩시
+			ajaxCmm(url ,'GET',callback )
+ 		    
+       function callback(datas){
+    	   youth_list = datas.youth_list
+                youth_list.forEach(function(youth,index,array){
+                    if(youth.bbsInfo08 != null){
+                    var iframeUrl = youth.bbsInfo08;
+                    	
+                	let context = `    
+                		<tr>
+							<td>${youth.area1Nm}</td>
+							<td>${youth.area2Nm}</td>
+							<td>${youth.bbsInfo03}</td>
+							<td><a href="#" onclick="iframeFnc('${iframeUrl}')">${youth.title}</a></td>
+							<td>${youth.bbsInfo04}</td>
+							<td>${youth.bbsInfo07}</td>
+						</tr> `
+                    $('#context').append(context);
+					}
+                })
+                paging = datas.youth_paging
+                showPaging(paging);
+         } 
+        
+        function iframeFnc(data){
+				$('#myModal').modal("show");
+				$('#iframe').attr('src', data);
+        }
+ 		
+ 		// 페이징
+			function showPaging(data){
+				
+				var beginRow = data.beginRow // 시작row 0
+				var currentPage = data.currentPage // 현재페이지 1
+				var lastPage = 7 // 마지막 전체페이징 237
+				var pagePerRow = data.pagePerRow // 페이지당 목록 1페이지당 20
+				var pageSize = data.pageSize // 페이징 사이즈 1~10
+				var startPage = data.startPage // 시작 페이징 1
+				var endPage =  7  // 끝 페이징 10
+				//var totalCount = 123; // data.totalCount  // 목록 조회
+				
+				
+				var prev = startPage!= 1;
+				var next = lastPage > endPage;
+				
+				
+				var str ="<td colspan='6'><div class='pageInfo_area' style='width:100%; text-align: center;'><ul class='pagination2 model'>";
+				if(prev){
+					str += "<li class='pageInfo_btn'><a class='allowleft num ' href='"+(startPage -1 )+"'>이전 </a></li>";
+				}
+				
+				for(var i = startPage; i <= endPage; i++){
+					var active = currentPage == i ? "active":"";
+					str += "<li class='pageInfo_btn  '><a class='num "+active+"' href='"+i+"'>"+i+"</a></li>"
+				}
+					
+				if(next){
+					str += "<li class='pageInfo_btn'><a class='arrowright num ' href='"+(endPage +1 )+"'>다음 </a></li>";
+				}
+				
+				str += "</ul></div></td>";
+				
+				$('#context').append(str);
+			}
+ 		
+			$('#context').on('click','.num',function(e){
+				e.preventDefault();
+				
+				var targetPaging = $(this).attr('href')
+				if(targetPaging != undefined){
+					cp = "&cp="+targetPaging;
+				}
+				
+				resultURL = url + cp
+				ajaxCmm(resultURL,'GET',callback );
+			})
+			
+
+			
+</script>
+</div>
+</body>
+</html>

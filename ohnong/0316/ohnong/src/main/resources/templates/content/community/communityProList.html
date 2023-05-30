@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layoutMagement}">
+  <head>
+   <title> oh-nong!</title>
+   <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/default.css}" />
+   <link rel="stylesheet" th:href="@{/css/content.css}" />
+   <link rel="stylesheet" th:href="@{/css/button.css}" />
+<style>
+   .pageInfo_area{
+    text-align: center;
+    width: 50%;
+}
+.pagination2{
+    list-style: none;
+    display: inline-block;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.pagination2 li {
+    display: inline;
+    text-align: center;
+}
+/*숫자*/ 
+.pagination2 a {
+    float: left;
+    display: block;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 5px 12px;
+    color: #96a0ad;
+    line-height: 1.5;
+}
+.pagefirst{
+    margin-right: 15px;
+}
+.pagelast{
+    margin-left: 15px;
+}
+.pagefirst:hover, .pagelast:hover, .arrowright:hover, .arrowleft:hover, .model .num:hover{
+    color:#2e9cdf;
+}
+.pagination2 .move.active{
+    cursor: default;
+    color: #ffffff;
+}
+.pagination2 .move:active{
+    outline: none;
+}
+.model .num {
+    margin-left: 3px;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    -moz-border-radius: 100%;
+    -webkit-border-redius:100%;
+    border-radius: 100%;
+}
+.model .num.active, .model .num:active{
+    background-color: #2e9cdf;
+    cursor: pointer;
+}
+.arrowleft{
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10ox solid blue;
+}
+
+ a.active {
+ 	cursor:default;
+ 	color:#ffffff; 	
+ }
+
+  
+  .search_area{
+    text-align:center;
+  }
+  .search_area input{
+    height: 30px;
+    width: 250px;
+  }
+  .search_area button{
+    height: 30px;
+    width: 100px;
+  }
+   .search_area select{
+  	height: 30px;
+    width:150px;
+  }
+ .move:link {color: #2e9cdf; text-decoration: none; }
+ .move:visited {color:purple;,text-decoration: overline;}
+ .move:hover {color:#bbb;,text-decoration: underline;}
+ 
+ .x_content{
+	 width:100%; 
+	 text-align:center; 
+	 line-height:31px;
+ }
+ 
+ 
+ 
+</style>
+	</head>  
+    <!-- page content -->
+        
+     <div layout:fragment="contentMagement">
+		        <!-- page content -->
+        <div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h3>전문인에게 물어보세요</h3>
+              </div>
+
+              <div class="title_right">
+               
+              </div>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div class="row">
+                     
+              <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                		<p>* 전체 <span th:text=${pageMaker.total}></span> 건 | 현재페이지 [[${pageMaker.criteria.pageNum}]]</p>
+                  <div class="x_title">
+                   
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content" >
+                  	<div class="table-responsive" style="height: 700px">
+                    <table id="datatable-buttons" class="table table-striped jambo_table bulk_action">
+                    <colgroup>
+                     <col style="width: 5%;" />
+                     <col style="width: 10%;" />
+                     <col style="width: 20%;"/>
+                     <col style="width: 10%;" />
+                     <col style="width: 10%;" />
+                     <col style="width: 5%;" />
+                     <col style="width: 5%;" />
+                     <col style="width: 15%;" />
+                  </colgroup>
+                      <thead>
+                        <tr>
+                          <th  class="column-title">No.</th>
+                          <th class="column-title">카테고리</th>
+                          <th class="column-title">제목</th>
+                          <th class="column-title">작성자</th>
+                          <th class="column-title">등록일</th>
+                          <th class="column-title">조회수</th>
+                          <th class="column-title">추천수</th>
+                          <th class="column-title">답변유무</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                         <tr th:each="boardInfo : ${boardList}">
+                           <td th:text="${boardInfo.boardBno}"/>
+                           <td th:switch="${boardInfo.boardCategory}">
+                              <span th:case="A">노하우&팁</span>
+                              <span th:case="B">1:1문의</span>
+                              <span th:case="C">전문인에게 </span>
+                              <span th:case="D">잡담</span>
+                           </td>
+                           <td >
+                           <a th:href="@{/communityView(boardBno=${boardInfo.boardBno},pageNum=${pageMaker.criteria.pageNum},userId=${session.logoin?.userId},col='E')}" th:text="${boardInfo.boardTitle}"></a></td>
+                			<td th:text="${boardInfo.userId}"/>
+                			<td th:text="${#dates.format(boardInfo.boardRegdate,'yyyy-MM-dd')}"/> 
+                			<td th:text="${boardInfo.boardHitcount}"/>
+                			<td th:text="${boardInfo.boardLike}"/>
+                			<td th:if="${boardInfo.adminrep > 0}"><p class="btn btn-secondary btn-sm">답변완료</p></td>
+                			<td th:if="${boardInfo.adminrep == 0}"><p class="btn btn-info btn-sm">답변없음</p></td>
+                      </tr>
+                  </tbody>
+                    </table>
+                   
+                                     <!-- 페이징 -->
+                <!-- 페이징 -->
+               <div class="pageInfo_area" style="width:100%; text-align: center; disiplay:inline-block; margin-top: 50px;"> 
+            	<ul class="pagination2 model" th:each="page:${pageMaker}">
+					<th:block
+						th:with="start = ${page.startPage}, end = ${page.endPage} ">
+						<!-- 처음-->
+						<li class="pageInfo_btn"><a class="pagefirst" 
+							th:href="@{/communityPro?pageNum={page}&amount=10&category={category}&col=E(page= ${1},category=${pageMaker.criteria.category})}" 
+							th:text="'<<'"></a></li>
+						<!-- 이전 -->
+						<li class="pageInfo_btn" th:if="${page.prev}"><a
+							class="allowleft"
+							th:href="@{/communityPro?pageNum={page}&amount=10&category={category}&col=E (page=${page.startPage-1},category=${pageMaker.criteria.category})}"
+							th:text="'<'"></a></li>
+						<!-- 숫자 -->
+						<li class="pageInfo_btn"
+							th:with="start = ${page.startPage}, end = ${page.endPage} "
+							th:each="pageButton : ${#numbers.sequence(start, end)}">
+							<a class="num"
+							th:href="@{/communityPro?pageNum={page}&amount=10&category={category}&col=E (page = ${pageButton},category=${pageMaker.criteria.category})}"
+							th:text=${pageButton}
+							th:classappend="${pageMaker.criteria.pageNum == pageButton ? 'active':'' }"></a>
+						</li>
+						<!-- 다음 -->
+						<li class="pageInfo_btn" th:if="${page.next}"><a
+							class="arrowright"
+							th:href="@{/communityPro?pageNum={page}&amount=10&category={category}&col=E (page = ${page.endPage+1},category=${pageMaker.criteria.category})}"
+							th:text="'>'"></a></li>
+						<!-- 끝 -->
+						<li class="pageInfo_btn"><a class="pagelast"
+							th:href="@{/communityPro?pageNum={page}&amount=10&category={category}(page = ${page.realEnd},category=${pageMaker.criteria.category})}"
+							th:text="'>>'"> <span>끝</span></a></li>
+					</th:block>
+				</ul>
+				</div>
+                   </div>
+                    </div>
+                </div>
+              </div>
+              </div>
+                 <!-- 페이징 -->      
+             </div>
+            </div>
+ <script>
+            
+        	//검색
+        	var selectBoxChange = function(value){
+        	
+        		$("#selectCategoery").val(value);
+        	}
+        	
+        	let moveForm = $("#moveForm");
+        	
+        	$(".search_area button").on("click", function(e){
+        		e.preventDefault();
+        		
+        		let type = $("#selectCategoery").val();
+        		let keyword = $(".search_area input[name='keyword']").val();
+        		
+        		
+        		console.log(type)
+        		console.log(keyword)
+        	
+        		if(!type){
+        			alert("검색 종류를 선택하세요.");
+        			return false;
+        		}
+        		
+        		if(!keyword){
+        			alert("키워드를 입력하세요.");
+        			return false;
+        		}		
+        		
+        		moveForm.find("input[name='type']").val(type);
+        		moveForm.find("input[name='keyword']").val(keyword);
+        		moveForm.find("input[name='pageNum']").val(1);
+        		moveForm.submit();
+        		//현재의 url경로의 매핑 메서드를 호출 
+        	});
+ 
+            
+            
+            </script>
+                   
+           
+           </div><!-- content div 끝 -->
+             
+        <!-- /page content -->	
+  </body>
+
+</html>

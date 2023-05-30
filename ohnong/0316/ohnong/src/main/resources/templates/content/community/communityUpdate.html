@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layoutMagement}">
+
+<head>
+ <title> oh-nong!</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<style>
+#editor {
+	/* border : 1px solid; */
+	width: 90%;
+	margin: 0 auto;
+}
+
+/* editor content 받을 div태그 스타일 추가. */
+#contents {
+	width: 50%;
+	height: 100px;
+	margin: 30px auto;
+	border: 1px solid;
+}
+
+/* input 숨겨준다 */
+input#check_btn{
+  display:none;
+  }
+
+input#check_btn + label{
+  cursor:pointer;
+ }
+
+input#check_btn + label > span{
+  vertical-align: middle;
+  padding-left: 5px;
+ }
+
+/* label:before에 체크하기 전 상태 CSS */
+input#check_btn + label:before{
+  content:"";
+  display:inline-block;
+  width:17px;
+  height:17px;
+  border:2px solid #1ABB9C;
+  border-radius: 4px;
+  vertical-align:middle;
+  }
+  
+/* label:before에 체크 된 상태 CSS */  
+input#check_btn:checked + label:before{
+  content:"";
+  background-color:#1ABB9C;
+  border-color:#1ABB9C;
+  /*background-image: url('check_btn.png');*/
+  background-repeat: no-repeat;
+  background-position: 50%;
+  }
+</style>
+
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<!-- jQuery UI CSS CDN -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
+<!-- codemirror CDN URL -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.css" />
+<!-- TOAST UI Editor CDN URL(CSS) -->
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+<!-- TOAST UI Editor CDN URL(JS) -->
+<script
+	src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<script src="https://uicdn.toast.com/editor/latest/i18n/ko-kr.min.js"></script>
+<link rel="stylesheet" th:href="@{/css/default.css}" />
+<link rel="stylesheet" th:href="@{/css/content.css}" />
+<link rel="stylesheet" th:href="@{/css/button.css}" />
+<meta charset="UTF-8">
+</head>
+
+
+
+<!-- page content -->
+<body class="nav-md">
+<div layout:fragment="contentMagement">
+	<!-- page content -->
+	<div class="right_col" role="main" style="font-weight:bold;">
+		<div class="">
+			<div class="page-title">
+				<div class="title_left">
+					<h3>커뮤니티 글 수정</h3>
+				</div>
+			<div class="clearfix"></div>
+
+			<div class="x_content">
+			<div class="row">
+				<table class="tb tb_row" style="border: 1px solid black;">
+							<colgroup>
+								<col style="width:15%;" /><col style="width:35%;" /><col style="width:15%;" /><col style="width:35%;" />
+							</colgroup>
+							
+							<tbody>
+								<tr>
+								<th>제목 <span class="es">필수 입력</span></th>
+								 	<td>
+									<input id="content-title"
+										class="resizable_textarea form-control"
+										th:value="${board.boardTitle}"></input>
+									</td>
+								<th>카테고리</th>
+									<td><select id="select" style="width: 200px;display:inline-block;" class="form-control" >
+											<option value="D">잡담</option>
+											<option value="A">노하우&팁</option>
+											<option value="B">1:1 문의</option>
+											<option value="C">전문인에게 물어보세요</option>
+										</select>
+									</td>	
+								</tr>
+								
+								<tr>
+									<th>작성자 <span class="es">dddd</span></th>
+									<td ><span th:text="${session.login?.userId}"></span></td>
+									<th>비밀글 선택</th>	
+									<td>
+									<input type="checkbox" id="check_btn" /> <label
+											for="check_btn"> 
+									</label>
+									</td>
+								</tr>
+								
+							
+							
+							<!-- TOAST UI Editor가 들어갈 div태그 -->
+							<tr>
+							<th>내용 <span class="es">필수 입력</span></th>
+							<td  colspan="4">
+								<!-- TOAST UI Editor가 들어갈 div태그 -->
+								<div id="editor" style="width:100%;"></div>
+
+								<input type="hidden" id="lastContent"
+									th:value="${board.boardContent}" />
+
+							
+							</td>
+							</tr>
+							</tbody>
+							</table>
+							</div>
+							
+							<div style="display: flex; justify-content: center; margin-top:10px">
+						
+							
+								<a class="btn btn-app" id="updateBtn"> <span
+									style="width: 25px; height: 25px; font-size: 13px;"
+									class="badge bg-blue"></span> <i class="fa fa-save"></i>
+									저장
+								</a>
+								<!--  a th:href="@{/community(pageNum=${pageMaker.criteria.pageNum})}"
+										class="btn btn-app">-->
+								<a class="btn btn-app" th:href="@{/community(pageNum=${param.pageNum},amount=10,keyword=${param.keyword},type=${param.type},category=${param.category})}"> <span
+									style="width: 25px; height: 25px; font-size: 13px;"
+									class="badge bg-blue"
+									></span> <i class="fa fa-repeat"></i>
+									목록으로
+								</a>
+								
+						 </div>
+						
+						</div>
+						
+					<!--  hiddenform -->
+
+				<form id="insertColumn" action="" method="post"
+					enctype="multipart/form-data">
+					<!-- 로그인 유저아이디 <input type="hidden" name=mno value="${loginUser.memNo}"> -->
+					<input type="hidden" name="boardCategory" value=""> 
+					<input type="hidden" name="boardTitle" value=""> 
+					<input type="hidden" name="boardContent" value="">
+					<input type="hidden" name="boardBno" value="">
+					<input type="hidden" name="noshow" value="">
+					<input type="hidden" name="pageNum" th:value="${param.pageNum}">
+					<input type="hidden" name="amount" th:value="${param.amount}">
+					<input type="hidden" name="type" th:value="${param.type}">
+					<input type="hidden" name="keyword" th:value="${param.keyword}">
+					<input type="hidden" name="category" th:value="${param.category}">	
+					<input type="hidden" name="userId" th:value="${param.userId}">	
+
+				</form>
+
+<script>
+		
+	$(document).ready(function(){
+		
+		//카테고리 미리설정해놓기.
+		var selectedOp= "[[${board.boardCategory}]]";
+		
+		$('#select').val(selectedOp); 
+		
+		//비밀글 체크박스 값 미리 설정.
+		if("[[${board.noshow}]]" == 1){
+		    $("#check_btn").prop("checked", true);
+		}
+	
+	})
+	
+	
+	
+	
+	
+	
+	
+	
+	//에디터
+	 const onUploadImage2 = async(blob, callback) => {
+             const formData = new FormData();
+             formData.append("image", blob);
+             formData.append("uri", window.location.pathname);
+             
+	      $.ajax({
+               type: "post",
+               url: "/ohnong/image_upload.do",
+               async: true,
+               data: formData,
+               processData: false,
+               contentType: false,
+               success: function (data) {
+                 imageURL = data;
+                 callback(imageURL, "image");
+               },
+               error: function (request, status, error) {
+                 alert(request + ", " + status + ", " + error);
+               },
+             });
+           };
+
+	const editor2 = new toastui.Editor({
+		el: document.querySelector("#editor"),
+		height: "600px",
+		initialEditType: "wysiwyg",
+		initialValue: $('#lastContent').val(),
+		language: "ko-kr",
+		hooks: {
+			addImageBlobHook: onUploadImage2
+		}
+	});
+
+	
+	
+	//update
+	$('#updateBtn').on('click', function(){
+		
+		let boardTitle = $("#content-title").val();
+		let boardContent =  editor2.getMarkdown(); //에디터써서 콘텐츠안에 이미지 같이있음.
+		let boardCategory = $("#select").val();
+		let boardBno = "[[${board.boardBno}]]";
+	
+		let checkBox = $("#check_btn").is(":checked");
+		
+		if(checkBox == true){
+			var noshow= 1;
+		}else if(checkBox == false){
+			var noshow= 0;
+		}
+		
+		
+		if(editor2.getMarkdown()==''){
+			Swal.fire({
+                icon: 'warning',
+                title: '내용을 입력해주세요.'
+            });
+			return false;
+		}
+		
+		if(editor2.getMarkdown().length > 1499){
+			Swal.fire({
+                icon: 'warning',
+                title: "내용은 1500자 이내로 입력해주세요"
+            });
+			return false;
+		}
+		
+		if($("#content-title").val().length > 49){
+			Swal.fire({
+                icon: 'info',
+                title: "제목은 50자 이내로 입력해주세요"
+            });
+			return false;
+		}
+		
+		//등록
+
+	//변수에 담아서  form에 담기
+	$("#insertColumn").children().eq(0).attr("value", boardCategory);
+	$("#insertColumn").children().eq(1).attr("value", boardTitle);
+	$("#insertColumn").children().eq(2).attr("value", boardContent);
+	$("#insertColumn").children().eq(3).attr("value", boardBno);
+	$("#insertColumn").children().eq(4).attr("value", noshow);
+	//form submit하기
+	$("#insertColumn").attr("action", "communityUpdate.do").submit();
+})
+		
+</script>
+</div>
+<!-- /page content -->
+</div>
+</div>
+</div>
+</body>
+
+<!-- jQuery -->
+</html>

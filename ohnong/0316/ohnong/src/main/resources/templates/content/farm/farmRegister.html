@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/layoutMagement}">
+<head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+<meta charset="UTF-8">
+<title>oh-nong!</title>
+<style>
+.stepContainer {
+    overflow: hidden;
+}
+.input-file-button {
+  padding: 10px 25px;
+  height: 40px;
+  background-color:#ffc107;
+  border-radius: 4px;
+  color: black;
+  cursor: pointer;
+}
+</style>
+</head>
+</th:block>
+<th:block layout:fragment="script">
+</th:block>
+<div layout:fragment="contentMagement">
+
+    <div class="right_col" role="main">
+        <div class="">
+            <div class="page-title">
+                <div class="title_left">
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12 ">
+                  <h3 style="text-align:left"><b>📗 농가 등록</b></h3>
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li><a class="collapse-link"><i
+                                        class="fa fa-chevron-up"></i></a></li>
+                                <li class="dropdown"><a href="#" class="dropdown-toggle"
+                                    data-toggle="dropdown" role="button" aria-expanded="false"><i
+                                        class="fa fa-wrench"></i></a>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" href="#">Settings 1</a> <a
+                                            class="dropdown-item" href="#">Settings 2</a>
+                                    </div></li>
+                                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+
+                        <div class="x_content">
+                        <form class="form-horizontal form-label-left" name="form" th:role="form" th:action="@{farmRegister}" method="POST" enctype="multipart/form-data">
+                            <div id="wizard" class="form_wizard wizard_horizontal">
+                                <ul class="wizard_steps anchor">
+                                    <li><a href="#step-1" class="selected" isdone="1" rel="1">
+                                            <span class="step_no" ><b>1</b></span> <span class="step_descr" style="font-size: 17px; importent!">
+                                                <b>Step 1</b><br><small><b>필수 입력 사항</b></small>
+                                        </span>
+                                    </a></li>
+                                    <li><a href="#step-2" class="done" isdone="1" rel="2">
+                                            <span class="step_no" ><b>2</b></span> <span class="step_descr" style="font-size: 17px; importent!">
+                                                <b>Step 2</b><br><small><b>선택 입력 사항</b></small>
+                                        </span>
+                                    </a></li>
+                                    <li><a href="#step-3" class="disabled" isdone="0" rel="3">
+                                            <span class="step_no" ><b>3</b></span> <span class="step_descr" style="font-size: 17px; importent!">
+                                                <b>Step 3</b><br><small><b>가입 완료 / 안내</b></small>
+                                        </span>
+                                    </a></li>
+                                </ul>
+
+                                <div class="stepContainer" style="height: 350px;">
+                                    
+                                        <div id="step-1" class="content" style="display: block;">
+                                            <!-- 아이디 아이디 아이디 아이디 아이디 -->
+                                            <input type="hidden" id="userId" name="userId"
+                                                        class="form-control " th:value="${session.login.userId}">
+                                             <!-- 아이디 아이디 아이디 아이디 아이디 -->
+                                            <div style="margin: 0 250px;"><h2><b>✅필수 입력</b></h2></div>
+                                            <div class="form-group row">
+                                                <label class="col-form-label col-md-3 col-sm-3 label-align"
+                                                    for="farmName"><b>농가(상호명)</b> <span class="required">*</span>
+                                                </label>
+                                                <div class="col-md-6 col-sm-6 ">
+                                                    <input type="text" id="farmName" name="farmName"
+                                                        class="form-control ">
+                                                        
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-form-label col-md-3 col-sm-3 label-align"
+                                                    for="farmCeo"><b>대표명</b><span class="required">*</span>
+                                                </label>
+                                                <div class="col-md-6 col-sm-6 ">
+                                                    <input type="text" id="farmCeo" name="farmCeo"
+                                                        class="form-control ">
+                                                </div>
+                                            </div>
+
+                                            <!-- 첨부파일 처리 -->
+                                            <div class="form-group row">
+                                                <label for="farmDocument"
+                                                    class="col-form-label col-md-3 col-sm-3 label-align"><b>농지취득서</b><span
+                                                    class="required">*</span></label>
+                                                <div class="col-md-6 col-sm-4 " style="height: 40px;">
+                                                    <div class="panel-body">
+                                                        <div class="form-group uploadDiv">
+                                                        <label for="uploadFile" class="input-file-button"><b>파일 첨부</b></label>
+                                                            <input type="file" name="uploadFile" id="uploadFile" multiple style="display: none">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> 
+
+                                            <div class="form-group row">
+                                                <label for="farmAddr"
+                                                    class="col-form-label col-md-3 col-sm-3 label-align"><b>지역</b><span
+                                                    class="required">*</span></label>
+                                                <div class="col-md-6 col-sm-6 ">
+                                                <input type="hidden" name="farmAddr" id="farmAddr">
+                                                <input type="radio" name="radio" id="r1" value="대구" checked><b>대구</b>
+                                                <input type="radio" name="radio" id="r2" value="경북"><b>경북</b>
+                                                &nbsp;
+                                                    <span id="spanId">
+                                                    <select id="farmAddr1" th:onchange="changeSelect()" style="height: 37px; font-weight: bold">
+                                                        <option value="">지역 선택</option>
+                                                        <option th:value="대구-북구 ">북구</option>
+                                                        <option th:value="대구-동구 ">동구</option>
+                                                        <option th:value="대구-중구 ">중구</option>
+                                                        <option th:value="대구-서구 ">서구</option>
+                                                        <option th:value="대구-달서구 ">달서구</option>
+                                                        <option th:value="대구-수성구 ">수성구</option>
+                                                        <option th:value="대구-남구 ">남구</option>
+                                                        <option th:value="대구-달성군 ">달성군</option>
+                                                    </select>
+                                                    </span>
+                                                    <span id="spanId2">
+                                                    <select id="farmAddr2" th:onchange="changeSelect()" style="height: 37px; font-weight: bold">
+                                                        <option value="">지역 선택</option>
+                                                        <option th:value="경북-포항시 ">포항시</option>
+                                                        <option th:value="경북-경주시 ">경주시</option>
+                                                        <option th:value="경북-안동시 ">안동시</option>
+                                                        <option th:value="경북-김천시 ">김천시</option>
+                                                        <option th:value="경북-구미시 ">구미시</option>
+                                                        <option th:value="경북-영주시 ">영주시</option>
+                                                        <option th:value="경북-영천시 ">영천시</option>
+                                                        <option th:value="경북-상주시 ">상주시</option>
+                                                        <option th:value="경북-문경시 ">문경시</option>
+                                                        <option th:value="경북-경산시 ">경산시</option>
+                                                    </select>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-form-label col-md-3 col-sm-3 label-align"><b>재배면적</b>
+                                                    <span class="required">*</span>
+                                                </label>
+                                                <div class="col-md-6 col-sm-6 ">
+                                                    <input id="plantArea" name="plantArea" class="date-picker form-control"
+                                                        type="text" placeholder="평수 입력" value="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="middlecatagori"
+                                                    class="col-form-label col-md-3 col-sm-3 label-align"><b>대표
+                                                    작물</b><span class="required">*</span>
+                                                </label> 
+                                                    &nbsp;&nbsp;&nbsp;
+                                                    <select name="middlecatagori" id="middlecatagori" style="font-weight: bold">
+                                                        <option value="">분류 선택</option>
+                                                        <option th:value="곡류">곡류</option>
+                                                        <option th:value="콩류">콩류</option>
+                                                        <option th:value="구근류">구근류</option>
+                                                        <option th:value="채소류">채소류</option>
+                                                        <option th:value="과실류">과실류</option>
+                                                        <option th:value="종실류">종실류</option>
+                                                        <option th:value="버섯류">버섯류</option>
+                                                    </select>
+                                                &nbsp;    
+                                                <div class="col-md-5 col-sm-6 ">    
+                                                    <input id="subdivision" name="subdivision"
+                                                        class="date-picker form-control" type="text"
+                                                        placeholder="작물 입력" value="">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div id="step-2" class="content" style="display: none;">
+                                            <div style="margin: 0 250px;"><h2><b>✅선택 입력</b></h2></div>
+                                            <div class="form-group row">
+                                                <label for="farmDetailaddr"
+                                                    class="col-form-label col-md-3 col-sm-3 label-align"><b>상세주소</b>
+                                                    <span class="required">*</span>
+                                                </label>
+                                                <div class="col-md-6 col-sm-6 ">
+                                                    <input id="farmDetailaddr" name="farmDetailaddr"
+                                                        class="date-picker form-control" type="text">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="homepage"
+                                                    class="col-form-label col-md-3 col-sm-3 label-align"><b>홈페이지</b>
+                                                    <span class="required">*</span>
+                                                </label>
+                                                <div class="col-md-6 col-sm-6 ">
+                                                    <input id="homepage" name="homepage"
+                                                        class="date-picker form-control" type="text">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="registNum"
+                                                    class="col-form-label col-md-3 col-sm-3 label-align"><b>사업자등록번호</b>
+                                                    <span class="required">*</span>
+                                                </label>
+                                                <div class="col-md-6 col-sm-6 ">
+                                                    <input id="registNum" name="registNum"
+                                                        class="date-picker form-control" type="text">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="memo"
+                                                    class="col-form-label col-md-3 col-sm-3 label-align"><b>메모</b>
+                                                    <span class="required">*</span>
+                                                </label>
+                                                <div class="col-md-6 col-sm-6 ">
+                                                    <textarea id="memo"
+                                                        class="form-control" name="memo"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    
+
+                                    <div id="step-3" class="content" style="display: none;">
+                                        <h2 class="StepTitle" style="font-size: 25px"><b>✅등록 안내</b></h2>
+                                        <p style="font-size: 18px"><b>농가 등록 신청을 하시면 <span style="color:green">다음 날 정오 전까지(주말인 경우 제외)</span> 농가 등록 승인 여부 결정이 됩니다. 승인이 완료되면
+                                            홈페이지 내 다양한 기능을 이용할 수 있습니다. 감사합니다.</b></p>
+                                        <p><b>If you apply for farmhouse registration A decision on
+                                            whether to approve farmhouse registration will be made by
+                                            midnight today. Once approval is complete, you can use
+                                            various functions on the homepage. thank you.</b></p>
+                                <button id="submit" type="submit" class="btn btn-warning"><b>등록하기</b></button>
+                                    </div>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+                        <script>
+                        var userId = $('#userId').val();
+                        
+                        function validation() {
+                        	console.log('클릭');
+                        	
+                        	if($('#farmName').val() == '' || $('#farmCeo').val() == ''
+                        	|| $('#farmAddr').val() == '' || $('#plantArea').val() == '' 
+                        	|| $('#middlecatagori').val() == '' || $('#subdivision').val() == '') {
+                        		alert('입력값을 모두 적어주세요.');
+                        		return false;
+                            }
+                        	
+                        	if($('#uploadFile').val() == "") {
+                        		alert("첨부파일은 필수입니다!");
+                        	    $("#uploadFile").focus();
+                        	    return false;
+                        	}
+                        	
+                        	var farmName = $('#farmName').val();
+                        	
+                        	$.ajax({
+                                type : 'get',
+                                url : '/ohnong/checkFarm', // 서버 요청 url
+                                headers : {
+                                    'Content-Type' : 'application/json'
+                                },
+                                dataType : 'text', // 서버로부터 응답받을 데이터 형태 
+                                data : {"farmName" : farmName}, // 서버로 전송할 데이터. const id 
+                                async: false,
+                                success : function(result) { // 통신 성공 시 매개변수에 데이터 저장
+                                    console.log('통신 성공 ' + result);
+                                    if(result === 'available') {
+                                        true;
+                                    } else {
+                                    	const Toast = Swal.mixin({
+                                            toast: true,
+                                            position: 'center-center',
+                                            showConfirmButton: false,
+                                            timer: 3000,
+                                            timerProgressBar: true,
+                                            didOpen: (toast) => {
+                                              toast.addEventListener('mouseenter', Swal.stopTimer)
+                                              toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                            }
+                                          })
+                                          Toast.fire({
+                                            icon: 'warning',
+                                            title: '이미 등록된 농가입니다.'
+                                          })
+                                        false;
+                                    }
+                                },
+                                error : function(status, error) {
+                                    console.log('통신 실패');
+                                    console.log(status, error);
+                                }
+                                })
+                                
+                        	return true;
+                        }
+                        
+                        $(document).ready(function(e) {
+                        	
+                        	$('#spanId2').hide();
+                            $("input:radio[name=radio]").click(function(){
+                                if($("input[name=radio]:checked").val() == "대구"){
+                                    $('#spanId').show();
+                                    $('#spanId2').hide();
+                                }
+                                if($("input[name=radio]:checked").val() == "경북"){
+                                    $('#spanId').hide();
+                                    $('#spanId2').show();
+                                }
+                            })
+                            
+                            //// 파일 업로드 ////
+							// 파일 크기 지정, 확장자 제한
+							var regex = new RegExp("(.*?)\.(jpg|jpeg|png|gif|bmp|pdf)$");
+							var maxSize = 5242880; // 5MB
+
+                            // 파일 체크
+							function checkExtension(fileName, fileSize) {
+								if (fileSize > maxSize) {
+									alert('파일 사이즈 초과');
+									return false;
+								}
+								if (!regex.test(fileName)) {
+									alert('이미지 파일만 업로드 가능합니다.');
+									return false;
+								}
+								return true;
+							}
+
+                            // 첨부파일 선택 시 change 이벤트
+							$("input[type='file']").change(function () {
+
+                                console.log('c');
+                                
+                                var file = document.getElementById('uploadFile').files[0];
+                                var reader = new FileReader();
+
+                                console.log(file);
+                              
+                                if (file) {
+                                    reader.readAsDataURL(file);
+                                } 
+                            })
+                                                        
+                            // 재배 면적
+							const input = document.querySelector('#plantArea');
+							
+							input.addEventListener('keyup', function(e) {
+							  let value = e.target.value;
+							  value = Number(value.replaceAll(',', ''));
+							  if(isNaN(value)) {
+							    input.value = 0;
+							  } else {
+							    const formatValue = value.toLocaleString('ko-KR');
+							    input.value = formatValue;
+							  }
+							})
+                        })
+                        
+                        function changeSelect() {
+                            var selectvalue = "";
+                            
+                            if($("input[name=radio]:checked").val() == "대구") {
+                                selectvalue = $('#farmAddr1').val();
+                            } else {
+                                selectvalue = $('#farmAddr2').val();
+                            }
+                            $('#farmAddr').val(selectvalue);
+                            
+                        }
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

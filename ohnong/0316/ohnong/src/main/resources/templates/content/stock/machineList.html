@@ -1,0 +1,1980 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layoutMagement}">
+<head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<meta charset="UTF-8">
+
+<style>
+
+.pageInfo_area{
+    text-align: center;
+    width: 50%;
+}
+.pagination2{
+    list-style: none;
+    display: inline-block;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.pagination2 li {
+    display: inline;
+    text-align: center;
+}
+/*숫자*/ 
+.pagination2 a {
+    float: left;
+    display: block;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 5px 12px;
+    color: #96a0ad;
+    line-height: 1.5;
+}
+.pagefirst{
+    margin-right: 15px;
+}
+.pagelast{
+    margin-left: 15px;
+}
+.pagefirst:hover, .pagelast:hover, .arrowright:hover, .arrowleft:hover, .model .num:hover{
+    color:#2e9cdf;
+}
+.pagination2 .move.active{
+    cursor: default;
+    color: #ffffff;
+}
+.pagination2 .move:active{
+    outline: none;
+}
+.model .num {
+    margin-left: 3px;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    -moz-border-radius: 100%;
+    -webkit-border-redius:100%;
+    border-radius: 100%;
+}
+.model .num.active, .model .num:active{
+    background-color: #2e9cdf;
+    cursor: pointer;
+}
+.arrowleft{
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10ox solid blue;
+}
+
+ a.active {
+ 	cursor:default;
+ 	color:#ffffff; 	
+ }
+
+  
+  .search_area{
+    text-align:center;
+  }
+  .search_area input{
+    height: 30px;
+    width: 250px;
+  }
+  .search_area button{
+    height: 30px;
+    width: 100px;
+  }
+   .search_area select{
+  	height: 30px;
+    width:150px;
+  }
+ .move:link {color: #2e9cdf; text-decoration: none; }
+ .move:visited {color:purple;,text-decoration: overline;}
+ .move:hover {color:#bbb;,text-decoration: underline;}
+ 
+</style>
+</head>
+</th:block>
+<th:block layout:fragment="script">
+</th:block>
+<div layout:fragment="contentMagement">
+	<style type="text/css">
+	/* Chrome, Safari, Edge, Opera */
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+	  -webkit-appearance: none;
+	  margin: 0;
+	}
+	
+	/* Firefox  */
+	input[type='number'] {
+	  -moz-appearance: textfield;
+	}
+	
+	modal {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: none;
+	background-color: rgba(0, 0, 0, 0.4);
+	}
+	
+	.modal.show {
+		display: block;
+	}
+	
+	.modal_body {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 600px;
+		height: 300px;
+		/* padding: 40px; */
+		/* text-align: center; */
+		background-color: rgb(255, 255, 255);
+		border-radius: 10px;
+		box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+		transform: translateX(-50%) translateY(-50%);
+	}
+	
+	.m_head {
+		height: 15%;
+		padding: 10px;
+		display: flex;
+		justify-content: space-between;
+		background-color: #2A3F54;
+		border-top-left-radius: 10px;
+		border-top-right-radius: 10px;
+	}
+	
+	.m_body {
+		height: 70%;
+		padding: 20px;
+	}
+	
+	.m_footer {
+		height: 15%;
+		padding: 10px;
+		background-color: #2A3F54;
+		border-bottom-left-radius: 10px;
+		border-bottom-right-radius: 10px;
+		display: flex;
+		justify-content: end;
+	}
+	
+	.modal_title {
+		font-size: 18px;
+		color: gray;
+		font-weight: 500;
+	}
+	
+	.close_btn {
+		font-size: 20px;
+		color: rgb(139, 139, 139);
+		font-weight: 900;
+		cursor: pointer;
+	}
+	
+	.modal_label {
+		padding: 2px 0px 2px 0px;
+		background-color: skyblue;
+		width: 80px;
+		border-top: 2px solid black;
+		border-bottom: 2px solid black;
+		text-align: center;
+		color: black;
+		margin-top: 10px;
+		opacity: 0.7;
+		font-weight: bolder;
+	}
+	
+	.modal_btn {
+		width: 80px;
+		height: 30px;
+		border-radius: 5px;
+		text-align: center;
+		font-size: 14px;
+		font-weight: bolder;
+		padding-top: 5px;
+		margin-left: 5px;
+		font-family: sans-serif;
+		cursor: pointer;
+	}
+	
+	.cancle {
+		background-color: #343a40;
+		color: black;
+	}
+	
+	.save {
+		background-color: rgb(50, 77, 158);
+		color: white;
+	}
+	
+	.input_box {
+		width: 130px;
+		height: 25px;
+		vertical-align: middle;
+	}
+	
+	modal2 {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		display: none;
+		background-color: rgba(0, 0, 0, 0.4);
+	}
+	
+	.modal2.show2 {
+		display: block;
+	}
+	
+	.modal_body2 {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 600px;
+		height: 300px;
+		/* padding: 40px; */
+		/* text-align: center; */
+		background-color: rgb(255, 255, 255);
+		border-radius: 10px;
+		box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+		transform: translateX(-50%) translateY(-50%);
+	}
+	
+	.m_head2 {
+		height: 15%;
+		padding: 10px;
+		display: flex;
+		justify-content: space-between;
+		background-color: #b6f09c;
+		border-top-left-radius: 10px;
+		border-top-right-radius: 10px;
+	}
+	
+	.m_body2 {
+		height: 70%;
+		padding: 20px;
+	}
+	
+	.m_footer2 {
+		height: 15%;
+		padding: 10px;
+		background-color: #b6f09c;
+		border-bottom-left-radius: 10px;
+		border-bottom-right-radius: 10px;
+		display: flex;
+		justify-content: end;
+		opacity: 0.7;
+	}
+	
+	.modal_title2 {
+		font-size: 18px;
+		color: gray;
+		font-weight: 500;
+	}
+	
+	.close_btn2 {
+		font-size: 20px;
+		color: rgb(139, 139, 139);
+		font-weight: 900;
+		cursor: pointer;
+	}
+	
+	.modal_label2 {
+		padding: 2px 0px 2px 0px;
+		background-color: skyblue;
+		width: 80px;
+		border-top: 2px solid black;
+		border-bottom: 2px solid black;
+		text-align: center;
+		color: black;
+		margin-top: 10px;
+		opacity: 0.7;
+		font-weight: bolder;
+	}
+	
+	.modal_btn2 {
+		width: 80px;
+		height: 30px;
+		border-radius: 5px;
+		text-align: center;
+		font-size: 14px;
+		font-weight: bolder;
+		padding-top: 5px;
+		margin-left: 5px;
+		font-family: sans-serif;
+		cursor: pointer;
+	}
+	
+	.cancle2 {
+		background-color: white;
+		color: black;
+	}
+	
+	.save2 {
+		background-color: rgb(50, 77, 158);
+		color: white;
+	}
+	
+	.input_box2 {
+		width: 130px;
+		height: 25px;
+		vertical-align: middle;
+	}
+	
+	modal2 {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		display: none;
+		background-color: rgba(0, 0, 0, 0.4);
+	}
+	
+	.modal2.show2 {
+		display: block;
+	}
+	
+	.modal_body2 {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 600px;
+		height: 300px;
+		/* padding: 40px; */
+		/* text-align: center; */
+		background-color: rgb(255, 255, 255);
+		border-radius: 10px;
+		box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+		transform: translateX(-50%) translateY(-50%);
+	}
+	
+	.m_head2 {
+		height: 15%;
+		padding: 10px;
+		display: flex;
+		justify-content: space-between;
+		background-color: #2A3F54;
+		border-top-left-radius: 10px;
+		border-top-right-radius: 10px;
+	}
+	
+	.m_body2 {
+		height: 70%;
+		padding: 20px;
+		max-height: 100%;
+		overflow-y: auto;
+	}
+	
+	.m_footer2 {
+		height: 15%;
+		padding: 10px;
+		background-color: #b6f09c;
+		border-bottom-left-radius: 10px;
+		border-bottom-right-radius: 10px;
+		display: flex;
+		justify-content: end;
+		opacity: 0.7;
+	}
+	
+	.modal_title2 {
+		font-size: 18px;
+		color: gray;
+		font-weight: 500;
+	}
+	
+	.close_btn2 {
+		font-size: 20px;
+		color: rgb(139, 139, 139);
+		font-weight: 900;
+		cursor: pointer;
+	}
+	
+	.modal_label2 {
+		padding: 2px 0px 2px 0px;
+		background-color: skyblue;
+		width: 80px;
+		border-top: 2px solid black;
+		border-bottom: 2px solid black;
+		text-align: center;
+		color: black;
+		margin-top: 10px;
+		opacity: 0.7;
+		font-weight: bolder;
+	}
+	
+	.modal_btn2 {
+		width: 80px;
+		height: 30px;
+		border-radius: 5px;
+		text-align: center;
+		font-size: 14px;
+		font-weight: bolder;
+		padding-top: 5px;
+		margin-left: 5px;
+		font-family: sans-serif;
+		cursor: pointer;
+	}
+	
+	.cancle2 {
+		background-color: white;
+		color: black;
+	}
+	
+	.save2 {
+		background-color: rgb(50, 77, 158);
+		color: white;
+	}
+	
+	.input_box2 {
+		width: 130px;
+		height: 25px;
+		vertical-align: middle;
+	}
+	td {
+		font-weight: bold;
+	}
+	</style>
+	<!-- page content -->
+	<div class="right_col" role="main">
+		<div class="">
+			<div class="col-md-12 col-sm-12  ">
+				<!-- 검색기능 -->
+				<div class="x_panel">
+					<div class="x_title">
+						<h4 style="color:black;font-weight: bold;">📃 농기계 관리</h4>
+						<div class="clearfix"></div>
+					</div>
+					<div class="clearfix"></div>
+					<!--  
+						<div style="display: inline-block">
+							<p>농가이름
+							<input type="text" id="farmName" th:value="농가1" readonly>
+							</p>
+						</div>
+						<div style="display: inline-block">
+							<p>등록자
+							<input type="text" id="userName" th:value="user1" readonly>
+							</p>
+						</div>
+					-->
+					<div>
+						<form id="SearchForm" th:action="@{/machineList}" method="get" th:onSubmit="return checkSearch()">
+							<div style="display: inline-block">
+								<p><span style="font-weight: bold; color:black; font-size: 16px; margin-right: 10px;">품목</span>
+								<select th:name="middleCatagori" class="catagoriSelect" style="border-radius: 4px; height: 25px; font-weight: bold; color:black; margin-bottom: 10px;">
+									<option value="">분류선택</option>
+									<option th:value="농기계">농기계</option>
+								</select>
+							
+								<input type="text" name="name" placeholder="품목명" id="cropName"  style="border-radius: 4px; border: 1px solid black;height: 25px; margin-left: 10px; margin-right: 100px;"/>
+								</p>
+							</div>
+							
+							<div style="display: inline-block">  
+								<p><span style="font-weight: bold; color:black; font-size: 16px; margin-right: 10px;">등록기간</span>
+						    	<input name="startDate" type="date" id="startDate" style="border-radius: 4px; border: 1px solid black;height: 25px;padding: 0 10px;">
+							    <span style="font-weight: bold; color:black; font-size: 16px; margin-right: 10px;">&nbsp&nbspㅡ&nbsp&nbsp</span>
+							    <input name="endDate" type="date" id="endDate" style="border-radius: 4px; border: 1px solid black;height: 25px;padding: 0 10px;">
+								<input type="hidden" name="amount" th:value="${pageInfo.cri.amount }"/>
+								<input type="hidden" name="pageNum" th:value="${pageInfo.cri.pageNum }"/>
+								
+								<button id="searchSubmit" type="submit" class="btn btn-secondary btn-sm" style="border: none; font-weight: bold; color:white; background: #2A3F54; height: 25px; padding:0 15px; margin-left: 25px;">조회</button>
+								<button id="searchReset" type="reset" class="btn btn-secondary btn-sm" style="border: none; font-weight: bold; color:white; background: #2A3F54; height: 25px; padding:0 15px; margin-left: 5px;">초기화</button>
+								</p>
+						    </div>
+						</form>
+					</div>
+					
+					<!-- 테이블 -->
+					<div class="x_title">
+						<h5 style="color:black;font-weight: bold;">🐂 농기계 재고</h5>
+						<div class="clearfix"></div>
+					</div>
+
+					<div class="x_content">
+						<div class="table-responsive#">
+							<table class="table table-striped jambo_table bulk_action" style="table-layout:fixed;">
+								<colgroup>
+									<col style="display:none;width:0"/>
+									<col style="display:none;width:0" />
+									<col style="width: 10%;" />
+									<col style="width: 10%;" />
+									<col style="width: 5%;" />
+									<col style="width: 10%;" />
+									<col style="width: 10%;" />
+									<col style="width: 10%;" />
+									<col style="width: 30%;" />
+									<col style="width: 15%;" />
+								</colgroup>
+								<thead>
+									<tr class="headings">
+										<th style="display:none;"><input type="checkbox" id="check-all" class="flat"></th>
+										<th style="display:none;"class="column-title">장비코드</th>
+										<th class="column-title">장비이름</th>
+										<th class="column-title">대여수</th>
+										<th class="column-title">단위</th>
+										<th class="column-title">대여비</th>
+										<th class="column-title">대여날짜</th>
+										<th class="column-title">반납날짜</th>
+										<th class="column-title">반납장소</th>
+										<th class="column-title">수정/반납/삭제</th>
+										<th class="bulk-actions" colspan="7"><a class="antoo"
+											style="color: #fff; font-weight: 500;">Bulk Actions ( <span
+												class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+										</th>
+									</tr>
+								</thead>
+
+								<tbody>
+									<tr class="even pointer" th:each="machineInfo : ${machineList }">
+										<td style="display:none;" class="a-center"><input type="checkbox" class="flat"name="table_records"></td>
+										<td style="display:none;" th:text="${machineInfo.itemCode}"/>
+										<td style="vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${machineInfo.name}" th:text="${machineInfo.name}"/>
+										<td style="vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${#numbers.formatInteger(machineInfo.count, 0, 'COMMA')}" th:text="${#numbers.formatInteger(machineInfo.count, 0, 'COMMA')}"/>
+										<td style="vertical-align:middle" th:text="EA" />
+										<td style="vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="|${#numbers.formatInteger(machineInfo.rentalPrice, 0, 'COMMA')}원|" th:text="|${#numbers.formatInteger(machineInfo.rentalPrice, 0, 'COMMA')}원|"/>
+										<td style="vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${#dates.format(machineInfo.rentalDate,'yyyy-MM-dd')}" th:text="${#dates.format(machineInfo.rentalDate,'yyyy-MM-dd')}"/>
+										<td style="vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${#dates.format(machineInfo.returnDate,'yyyy-MM-dd')}" th:text="${#dates.format(machineInfo.returnDate,'yyyy-MM-dd')}"/>
+										<td style="vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${machineInfo.rentalPlace}" th:text="${machineInfo.rentalPlace}"/>
+										<td style="vertical-align:middle">
+											<button type="button" th:id="updateForm+${machineInfo.rentalNo}" th:onclick="updateForm([[${machineInfo.rentalNo}]])" class="btn btn-warning btn-sm">수정</button>
+											<button type="button" style="display: none;" th:id="update+${machineInfo.rentalNo}" th:onclick="update([[${machineInfo.rentalNo}]])" class="btn btn-warning btn-sm">완료</button>
+											<button type="button" style="display: none;" th:id="cancel+${machineInfo.rentalNo}" th:onclick="cancel([[${machineInfo.rentalNo}]])" class="btn btn-primary btn-sm">취소</button>
+											<button type="button" th:id="returnBtn+${machineInfo.rentalNo}" th:onclick="returnBtn([[${machineInfo.rentalNo}]])" class="btn btn-success btn-sm">반납</button>
+											<button type="button" th:id="deleteBtn+${machineInfo.rentalNo}" th:onclick="deleteBtn([[${machineInfo.rentalNo}]])" class="btn btn-danger btn-sm">삭제</button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							
+							<!-- 입고등록, 출고등록 -->
+							<div style="float: right;">
+								<button type="button" id="registration" class="btn btn-secondary btn-sm" style="border: none; font-weight: bold; color:white; background: #2A3F54; height: 30px; padding:0 15px; margin-left: 5px;">대여등록</button>
+								<button type="button" id="rentalList" class="btn btn-secondary btn-sm" style="border: none; font-weight: bold; color:white; background: #2A3F54; height: 30px; padding:0 15px; margin-left: 5px;">대여목록</button>
+							</div>
+							
+							<!--  페이징  -->
+								<div class="pageInfo_area" style="width:100%; text-align: center;">
+									<ul class="pagination2 model" th:each="page:${pageInfo}">
+										<th:block
+											th:with="start = ${page.startPage}, end = ${page.endPage} ">
+											
+											<!-- 이전 -->
+											<li class="pageInfo_btn" th:if="${page.prev}"><a
+												class="allowleft"
+												th:text="'<'"></a></li>
+											<!-- 숫자 -->
+											<li class="pageInfo_btn"
+												th:with="start = ${page.startPage}, end = ${page.endPage}"
+												th:each="pageButton : ${#numbers.sequence(start, end)}">
+												<a class="num"
+												th:text=${pageButton}
+												th:href="@{/machineList?pageNum={page}&amount=10 (page = ${pageButton},name = ${pageInfo.cri.name},middleCatagori=${pageInfo.cri.middleCatagori},startDate=${pageInfo.cri.startDate},endDate=${pageInfo.cri.endDate},warehouseCode=${pageInfo.cri.warehouseCode})}"
+												th:classappend="${pageInfo.cri.pageNum == pageButton ? 'active':'' }"></a>
+											</li>
+											<!-- 다음 -->
+											<li class="pageInfo_btn" th:if="${page.next}"><a
+												class="arrowright"
+												th:text="'>'"></a></li>
+											
+										</th:block>
+									</ul>
+								</div>
+							
+							<!-- 테이블 -->
+					<div class="x_title">
+						<h5 style="color:black;font-weight: bold;">🐂 대여신청 농기계 목록</h5>
+						<div class="clearfix"></div>
+					</div>
+
+					<div class="x_content">
+						<div class="table-responsive#">
+							<table class="table table-striped jambo_table bulk_action" style="table-layout:fixed;">
+								<colgroup>
+											<col style="display:none;width:0"/>
+											<col style="display:none;width:0" />
+											<col style="width: 13%;" />
+											<col style="width: 9%;" />
+											<col style="width: 8%;" />
+											<col style="width: 10%;" />
+											<col style="width: 9%;" />
+											<col style="width: 20%;" />
+											<col style="width: 12%;" />
+											<col style="width: 11%;" />
+											<col style="width: 8%;" />
+								</colgroup>
+								
+								<thead>
+									<tr class="headings">
+										<th style="display:none;;"><input type="checkbox" id="check-all" class="flat"></th>
+										<th style="display:none;padding:12px 0;"class="column-title">장비코드</th>
+										<th class="column-title">장비이름</th>
+										<th class="column-title">대여수량</th>
+										<th class="column-title">단위</th>
+										<th class="column-title">대여비</th>
+										<th class="column-title">대여기한</th>
+										<th class="column-title">대여장소</th>
+										<th class="column-title">담당자</th>
+										<th class="column-title">전화번호</th>
+										<th class="column-title">취소</th>
+										<th class="bulk-actions" colspan="7"><a class="antoo"
+											style="color: #fff; font-weight: 500;">Bulk Actions ( <span
+												class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+										</th>
+									</tr>
+								</thead>
+			
+								<tbody>
+									<tr class="even pointer" th:each="neighborInfo : ${submitMachine }">
+										<td style="display:none;" class="a-center"><input type="checkbox" class="flat"name="table_records"></td>
+										<td style="display:none;" th:text="${neighborInfo.itemCode}"/>
+										<td style="vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${neighborInfo.itemName}" th:text="${neighborInfo.itemName}"/>
+										<td style="vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${#numbers.formatInteger(neighborInfo.rentalCount, 0, 'COMMA')}" th:text="${#numbers.formatInteger(neighborInfo.rentalCount, 0, 'COMMA')}"/>
+										<td style="vertical-align:middle" th:text="EA" />
+										<td style="vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="|${#numbers.formatInteger(neighborInfo.rentalPrice, 0, 'COMMA')}원|" th:text="|${#numbers.formatInteger(neighborInfo.rentalPrice, 0, 'COMMA')}원|"/>
+										<td style="vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${neighborInfo.rentalPeriod} + 일" th:text="${neighborInfo.rentalPeriod} + 일"/>
+										<td style="vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${neighborInfo.rentalPlace}" th:text="${neighborInfo.rentalPlace}" />
+										<td style="vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${neighborInfo.manager}" th:text="${neighborInfo.manager}"/>
+										<td style="vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${neighborInfo.phone}" th:text="${neighborInfo.phone}"/>
+										<td>
+											<button type="button" th:id="unsubmit+${neighborInfo.no}" th:onclick="unsubmit([[${neighborInfo.no}]])" class="btn btn-danger btn-sm">신청취소</button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							
+							<form th:action="@{machineList }" id="actionForm" method="get">
+								<input type="hidden" name="pageNum" th:value="${pageInfo.cri.pageNum }">
+								<input type="hidden" name="amount" th:value="${pageInfo.cri.amount }">
+								<input type="hidden" name="name" th:value="${pageInfo.cri.name }">
+								<input type="hidden" name="middleCatagori" th:value="${pageInfo.cri.middleCatagori }">
+								<input type="hidden" name="startDate" th:value="${pageInfo.cri.startDate }">
+								<input type="hidden" name="endDate" th:value="${pageInfo.cri.endDate }"> 
+							</form>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /page content -->
+	<div class="modal" id="registrationModal">
+	    <div class="modal_body" style="height:317px;">
+	        <div class="m_head" style="height:15%">
+	            <div class="modal_title" style="color: white; font-weight: bolder">
+	                📃농기계 등록
+	            </div>
+	            <div class="close_btn" id="close_btn">X</div>
+	        </div>
+	
+	        <form id="insertMachineForm" th:action="@{/machineInsert}" method="POST" th:onSubmit="return Checkform()">
+	            <div class="m_body">
+	                
+	                <!--  
+	                <div style="display: flex; align-items: center;">
+	                    <label style="margin-bottom:0;">
+	                        <input type="radio" checked name="subject" value="0">신규등록
+	                    </label>
+	                    <label style="margin-bottom:0;">
+	                        <input type="radio" name="subject" value="1">기존품목
+	                    </label>
+	                </div>
+	                -->
+	
+	                <div style="display: flex; align-items: center;">
+	                    <div class="modal_label" style="display: inline-block;margin-top:0;margin-right:10px">
+	                        품목
+	                    </div>
+	                    <select th:name="middleCatagori" id="catagori" style="margin-top:0;margin-right:20px;">
+	                        <option value="">분류선택</option>
+	                        <option th:value="농기계" selected>농기계</option>
+	                    </select>
+	                
+	                    <div class="modal_label" style="display: inline-block;margin-top:0;margin-right:10px">
+	                        품목명
+	                    </div>
+	                    <input name="name" placeholder="품목명" type="text" id="name">
+	                    <select style="display:none;" name="name" id="existing"></select>
+	                    <input type="hidden" name="mainCatagori" value="농자재">
+	                    <input type="hidden" name="itemCode" id="modealItemCode">	
+	                </div>
+	
+	                <div style="display: flex; align-items: center;">
+	                    <div class="modal_label" style="display: inline-block;">
+	                        대여날짜
+	                    </div>
+	                    <input name="strDate" type="date" id="rentalDate" style="margin-top:10px;margin-left:10px;margin-right:20px;width: 175px;">
+	
+	                    <div class="modal_label" style="display: inline-block;">
+	                        반납날짜
+	                    </div>
+	                    <input name="eDate" type="date" id="returnDate" style="margin-top:10px;margin-left:10px;width: 175px;">
+	                </div>
+	
+	                <div style="display: flex; align-items: center;">
+	                    <div class="modal_label" style="display: inline-block;">
+	                        대여수
+	                    </div>
+	                    <input type="text" id="count" min="0" value=0 th:onkeyup="valueUpdate()" style="width:175px;margin-top:10px;margin-left:10px;margin-right:20px">
+	                    <input name="count" type="hidden" id="countHidden">
+	                    
+	                    <div class="modal_label" style="display: inline-block;">
+	                        대여비용
+	                    </div>
+	                    <input type="text" value=0 id="rentalPrice" min="0" th:onkeyup="valueUpdate()" style="width:175px;margin-top:10px;margin-left:10px;">
+	                    <input name="rentalPrice" type="hidden" id="rentalPriceHidden">
+	                </div>
+	
+	                <div style="display: flex; align-items: center;">
+	                    <div class="modal_label" style="display: inline-block;">
+	                        반납장소
+	                    </div>
+	                    <input name="rentalPlace" type="text" id="rentalPlace" style="margin-top:10px;margin-left:10px;width: 463px;">
+	                </div>
+	
+	                <div style="display: flex; align-items: center;">
+	                    <div class="modal_label" style="display: inline-block;">
+	                        상세내용
+	                    </div>
+	                    <input name="explation" type="text" id="explation" style="margin-top:10px;margin-left:10px;width: 463px;">
+	                </div>
+	                 
+	            </div>
+	    
+	            <div class="m_footer">
+	                <div class="btn btn-secondary" id="close_btn" th:onclick="resetModal()" style="padding-top: 2px;padding-left: 0px;padding-right: 0px;padding-bottom: 0px;width: 70px;height: 30px;">초기화</div>
+		            <button type="submit" id="submitInsert" style="background-color: #1ABB9C;border: none;height: 30px;width: 70px;padding-top: 3px;" class="btn btn-primary">저장</button>
+	            </div>
+	        </form> 
+	    </div>
+	</div>
+    <!-- insert modal -->
+	<div class="modal" id="releaseModal">
+	    <div class="modal_body2" style="width: 1150px;height: 565px;">
+	        <div class="m_head2" style="height: 8%;">
+	            <div class="modal_title2" style="color: white; font-weight: bolder">
+	                📃우리동네 농기계리스트
+	            </div>
+	            <div class="close_btn" id="close_btn2">X</div>
+	        </div>
+	
+	            <div class="m_body2" style="height: 475px;">
+	                
+		            <table class="table table-striped jambo_table bulk_action" style="table-layout:fixed;">
+						<colgroup>
+									<col style="display:none;width:0"/>
+									<col style="display:none;width:0" />
+									<col style="width: 13%;" />
+									<col style="width: 9%;" />
+									<col style="width: 8%;" />
+									<col style="width: 10%;" />
+									<col style="width: 9%;" />
+									<col style="width: 20%;" />
+									<col style="width: 12%;" />
+									<col style="width: 11%;" />
+									<col style="width: 8%;" />
+						</colgroup>
+						
+						<thead>
+							<tr class="headings">
+								<th style="display:none;;"><input type="checkbox" id="check-all" class="flat"></th>
+								<th style="display:none;padding:12px 0;"class="column-title">장비코드</th>
+								<th class="column-title">장비이름</th>
+								<th class="column-title">대여수량</th>
+								<th class="column-title">단위</th>
+								<th class="column-title">대여비</th>
+								<th class="column-title">대여기한</th>
+								<th class="column-title">대여장소</th>
+								<th class="column-title">담당자</th>
+								<th class="column-title">전화번호</th>
+								<th style="padding-left:20px;" class="column-title">대여신청</th>
+								<th class="bulk-actions" colspan="7"><a class="antoo"
+									style="color: #fff; font-weight: 500;">Bulk Actions ( <span
+										class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+								</th>
+							</tr>
+						</thead>
+	
+						<tbody>
+							<tr class="even pointer" th:each="neighborInfo : ${neighborList }">
+								<td style="padding:0 10px;display:none;" class="a-center"><input type="checkbox" class="flat"name="table_records"></td>
+								<td style="padding:0 10px;display:none;" th:text="${neighborInfo.itemCode}"/>
+								<td style="padding:0 10px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${neighborInfo.itemName}" th:text="${neighborInfo.itemName}"/>
+								<td style="padding:0 10px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${#numbers.formatInteger(neighborInfo.rentalCount, 0, 'COMMA')}" th:text="${#numbers.formatInteger(neighborInfo.rentalCount, 0, 'COMMA')}"/>
+								<td style="padding:0 10px;vertical-align:middle" th:text="EA" />
+								<td style="padding:0 10px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="|${#numbers.formatInteger(neighborInfo.rentalPrice, 0, 'COMMA')}원|" th:text="|${#numbers.formatInteger(neighborInfo.rentalPrice, 0, 'COMMA')}원|"/>
+								<td style="padding:0 10px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${neighborInfo.rentalPeriod} + 일" th:text="${neighborInfo.rentalPeriod} + 일"/>
+								<td style="padding:0 10px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${neighborInfo.rentalPlace}" th:text="${neighborInfo.rentalPlace}" />
+								<td style="padding:0 10px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${neighborInfo.manager}" th:text="${neighborInfo.manager}"/>
+								<td style="padding:0 10px;vertical-align:middle;text-overflow:ellipsis; overflow:hidden; white-space:nowrap;" th:title="${neighborInfo.phone}" th:text="${neighborInfo.phone}"/>
+								<td style="padding:0 10px;">
+									<th:block th:if="${neighborInfo.rentalStatus} == 'Y'">
+										<button style="width:70px;height:30px;font-size:12px;padding-left: 0px;padding-right:0px;padding-bottom:0px;margin-right:0px;margin-bottom: 5px;margin-top: 5px;color: white;" type="button" th:id="application+${neighborInfo.no}" th:onclick="application([[${neighborInfo.no}]])" class="btn btn-primary btn-sm">대여신청</button>
+									</th:block>
+									<th:block th:if="${neighborInfo.rentalStatus} == 'N'">
+										<button style="width:70px;height:30px;font-size:12px;padding-left: 0px;padding-right:0px;padding-bottom:0px;margin-right:0px;margin-bottom: 5px;margin-top: 5px;color: white;" type="button" class="btn btn-danger btn-sm">대여중</button>
+									</th:block>
+									<th:block th:if="${neighborInfo.rentalStatus} == 'M'">
+										<button style="width:70px;height:30px;font-size:12px;padding-left: 0px;padding-right:0px;padding-bottom:0px;margin-right:0px;margin-bottom: 5px;margin-top: 5px;color: white;" type="button" class="btn btn-warning btn-sm">승인대기중</button>
+									</th:block>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+	                 
+	            </div>
+	    
+	            <div class="m_footer" style="height:8%;">
+	            
+	            </div>
+	      </div>
+	</div>
+    
+    <!-- insert modal -->
+	<script>
+		$(document).ready(function(){
+			//페이징
+			let actionForm = $("#actionForm");
+			console.log(actionForm);
+		    $('.paginate_button a').on('click', function (e) {
+	        	actionForm.find('input[name="pageNum"]').val($(this).attr('href'))
+		    	e.preventDefault();
+		        actionForm.submit();
+	        })
+
+	        //검색
+	        //검색후 값 유지
+			$('.catagoriSelect').val('농기계');
+			$('#cropName').val('[[${param.name}]]');
+			$('#startDate').val('[[${param.startDate}]]');
+			$('#endDate').val('[[${param.endDate}]]');
+			
+	        let SearchForm = $("#SearchForm");
+		    $("#SearchForm > #searchSubmit").on("click", function(e){
+		    	let catagoriSelect = $(".catagoriSelect").val();
+				let name = $("#SearchForm input[name='name']").val();
+				let startDate = $("#startDate").val();
+				let endDate = $("#endDate").val();
+				
+		    	actionForm.find("input[name='middleCatagori']").val(catagoriSelect);
+				actionForm.find("input[name='name']").val(name);
+				actionForm.find("input[name='startDate']").val(startDate);
+				actionForm.find("input[name='endDate']").val(endDate);
+				actionForm.find("input[name='pageNum']").val(1);
+				e.preventDefault();
+				actionForm.submit();
+		    })
+		    
+		  	//모달 농기계대여등록
+			$('#registration').click(function(e){
+				e.preventDefault();
+				$('#registrationModal').modal();
+			});
+		    
+		  	//모달 hide
+		    $("#close_btn").click(function(){
+				$('#registrationModal').modal('hide');
+			});
+		  	
+		  	//농기계 대여등록 - 등록일 현재일 입력
+		  	document.querySelector('#rentalDate').value = new Date().toISOString().substring(0, 10);
+		  	
+		  	//모달 농기계대여리스트
+		  	$('#rentalList').click(function(e){
+		  		e.preventDefault();
+		  		$('#releaseModal').modal("show");
+		  		//$("#releaseModal").css("z-index", "1500");
+		  	});
+		  	
+		  	$('#close_btn2').click(function(){
+		  		$('#releaseModal').modal('hide');
+		  	})
+		  	
+			
+		});
+		
+		//검색값초기화
+		$("#searchReset").on('click', function(e){
+			e.preventDefault();
+			$("#catagoriSelect").val("");
+			$("#startDate").val("");
+			$("#endDate").val("");
+			$("#SearchForm input[name='name']").val("");
+			document.getElementById('searchSubmit').click();
+		})
+		
+		function checkSearch(){
+			let catagoriSelect = $(".catagoriSelect").val();
+			let name = $("#SearchForm input[name='name']").val();
+			
+			//분류만 선택시 알림
+			if(name){
+				if(!catagoriSelect){
+					const Toast = Swal.mixin({
+	                    toast: true,
+	                    position: 'center-center',
+	                    showConfirmButton: false,
+	                    timer: 500,
+	                    timerProgressBar: true,
+	                    didOpen: (toast) => {
+	                      toast.addEventListener('mouseenter', Swal.stopTimer)
+	                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+	                    }
+	                  })
+
+	                  Toast.fire({
+	                    icon: 'warning',
+	                    title: '분류를 선택하세요.'
+	                  })
+					return false;
+				}
+			}
+			
+			//날짜 둘다 입력 체크 + 시작일 > 종료일인경우 체크
+			var stDt = $('#startDate').val();
+		    var edDt = $('#endDate').val();
+		    
+		    if(stDt == '' && edDt != ''){
+		    	const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '시작일과 종료일을 입력하세요.'
+                  })
+		     	return false;
+		    } 
+		    
+		    if (stDt != '' && edDt == ''){
+		    	const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '시작일과 종료일을 입력하세요.'
+                  })
+			    return false;
+		    } 
+	    	
+		    if( Number(stDt.replace(/-/gi,"")) > Number(edDt.replace(/-/gi,"")) ){
+		    	const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '시작일이 종료일보다 클 수 없습니다.'
+                  })
+		     	return false;
+		    }
+		}
+		
+		/*
+		$("input[name='subject']").change(function(){
+			var test = $("input[name='subject']:checked").val();
+			let inserFormTag = document.querySelector('#insertMachineForm');
+			let priceTag = inserFormTag.querySelector('#rentalPrice');
+			let placeTag = inserFormTag.querySelector('#rentalPlace');
+			let itemCodeTag = inserFormTag.querySelector('#modealItemCode');
+			let startDateTag = inserFormTag.querySelector('#rentalDate');
+			let explationTag = inserFormTag.querySelector('#explation');
+			let countTag = inserFormTag.querySelector('#count');
+			
+			if(test == 0){
+				$('#name').attr('disabled', false);
+				$('#name').css('display', 'block');
+				$('#existing').attr('disabled', true);
+				$('#existing').css('display', 'none');
+				
+				$("#catagori").val('');
+				priceTag.value= 0;
+				placeTag.value = '';
+				itemCodeTag.value = '';
+				startDateTag.value= new Date().toISOString().substring(0, 10);
+				$('#rentalPriceHidden').val(0);
+				explationTag.value = '';
+				countTag.value = 0;
+			} else if(test == 1){
+				$('#name').attr('disabled', true);
+				$('#name').css('display', 'none');
+				$('#existing').attr('disabled', false);
+				$('#existing').css('display', 'block');
+				
+				$('#catagori').val('');
+				$('#existing').empty();
+				let optionTag = document.createElement('option');
+				optionTag.value = "";
+				optionTag.innerText = "-------품목명-------";
+				$('#existing').append(optionTag);
+				
+				$('#catagori').on('change', function(e){
+					let value = $('#catagori').val();
+					
+					if(!value){
+						$('#existing').empty();
+						priceTag.value= 0;
+						placeTag.value = '';
+						itemCodeTag.value = '';
+						startDateTag.value= new Date().toISOString().substring(0, 10);
+						$('#rentalPriceHidden').val(0);
+						explationTag.value = '';
+						countTag.value = 0;
+						
+						let optionTag = document.createElement('option');
+						optionTag.value = "";
+						optionTag.innerText = "-------품목명-------";
+						$('#existing').append(optionTag);
+					} else{
+						console.log(value);
+						
+						$.ajax({
+							type : 'get',
+							url : '/ohnong/machineListWithMiddle/' + value,
+							success : function(result){
+								console.log(result);
+								$('#existing').empty();
+								let optionTag = document.createElement('option');
+								optionTag.value = '';
+								optionTag.innerText = '-------품목명-------';
+								$('#existing').append(optionTag);
+								for(let i=0 ; i<result.length ; i++){
+									optionTag = document.createElement('option');
+									optionTag.value = result[i].name;
+									optionTag.innerText = result[i].name;
+									$('#existing').append(optionTag);
+								}
+								
+								$('#existing').on('change', function(e){
+										let name = $('#existing').val();
+										console.log(name);
+										
+										if(!name){
+											priceTag.value= 0;
+											placeTag.value = '';
+											itemCodeTag.value = '';
+											startDateTag.value= new Date().toISOString().substring(0, 10);
+											explationTag.value = '';
+											countTag.value = 0;
+											$('#rentalPriceHidden').val(0);
+										} else {
+											$.ajax({
+												type : 'get',
+												url : '/ohnong/getMachineCount/' + name,
+												success : function(result){
+													console.log(result);
+													
+													if(!result){
+														priceTag.value= 0;
+														placeTag.value = '';
+														itemCodeTag.value = '';
+														startDateTag.value= new Date().toISOString().substring(0, 10);
+														explationTag.value = '';
+														countTag.value = 0;
+														$('#rentalPriceHidden').val(0);
+													} else {
+														priceTag.value = result.rentalPrice;
+														placeTag.value = result.rentalPlace;
+														itemCodeTag.value = result.itemCode;
+														startDateTag.value = result.rentalDate;
+														explationTag.value = '';
+														countTag.value = 0;
+														$('#rentalPriceHidden').val(result.rentalPrice);
+													}
+												},
+												error : function(status, error){
+													console.log(status, error);
+												}
+											})
+										}
+										
+								})
+							},
+							error : function(status, error){
+								console.log(status, error);
+							}
+						})
+					}
+				})
+			}
+		});
+		*/
+		
+		$('#count').change(function(){
+			let count = Number($(this).val().replaceAll(',',''));
+			$('#countHidden').val(count);
+		});
+		
+		$('#rentalPrice').change(function(){
+			let price = Number($(this).val().replaceAll(',',''));
+			$('#rentalPriceHidden').val(price);
+		});
+		
+		//농기계등록 - 수량 단가 입력시 토탈금액 표시
+		function valueUpdate(){
+			let pCount = $('#count').val();
+			let pPrice = $('#rentalPrice').val();
+			
+			pCount = Number(pCount.replaceAll(',', ''));
+			pPrice = Number(pPrice.replaceAll(',', ''));
+		    
+			if(isNaN(pPrice)){
+		    	$('#rentalPrice').val(0);
+		    	const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '숫자만 입력가능합니다.'
+                  })
+		    } else {
+		    	let formatPrice = pPrice.toLocaleString('ko-KR');
+			    $('#rentalPrice').val(formatPrice);
+		    }
+			
+		    if(isNaN(pCount)){
+		    	$('#count').val(0);
+		    	const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '숫자만 입력가능합니다.'
+                  })
+		    }else {
+		    	let formatCount = pCount.toLocaleString('ko-KR');
+				$('#count').val(formatCount);
+		    }
+		    
+		}
+		
+		//농기계 대여등록 -모달창 초기화
+		function resetModal(){
+			$('#insertMachineForm')[0].reset();
+			$('#count').val(0);
+			$('#countHidden').val(0);
+			$('#rentalPrice').val(0);
+			$('#rentalPriceHidden').val(0);
+			document.querySelector('#rentalDate').value = new Date().toISOString().substring(0, 10);
+		}
+		
+		function check(name, middle){
+			var checkName = '';
+			
+			$.ajax({
+				type : 'get',
+				url : '/ohnong/findSubdivision/' + name + '/' + middle,
+				async : false,
+				success : function(result){
+					console.log(result);
+					checkName = result;
+				},
+				error : function(status, error){
+					console.log(status, error);
+				}
+			})
+			return checkName;
+		}
+		
+		//종묘등록 - submit시 입력값 체크
+		function Checkform(){
+			let formTag = document.querySelector('#insertMachineForm');
+			let name = formTag.querySelector('#name').value;
+			let middle = insertMachineForm.middleCatagori.value;
+			console.log(name);
+			
+			if(insertMachineForm.rentalPlace.value == ""){
+				const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '반납장소를 입력하세요.'
+                  })
+				return false;
+			}
+			if(insertMachineForm.middleCatagori.value == "") {
+				const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '분류를 선택해주세요.'
+                  })
+		        return false;
+		    }
+			if(insertMachineForm.strDate.value == "") {
+		        const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '대여일을 입력해주세요.'
+                  })
+		        return false;
+		    }
+			if(insertMachineForm.eDate.value == "") {
+		        const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '반납일을 입력해주세요.'
+                  })
+		        return false;
+		    }
+			if(insertMachineForm.countHidden.value == "") {
+		        const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '대여수를 입력해주세요.'
+                  })
+		        return false;
+		    }
+			if(insertMachineForm.rentalPriceHidden.value == "") {
+		        const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '대여비용 입력해주세요.'
+                  })
+		        return false;
+		    }
+			var rentalDt = $('#rentalDate').val();
+		    var returnDt = $('#returnDate').val();
+		    
+		    if( Number(rentalDt.replace(/-/gi,"")) > Number(returnDt.replace(/-/gi,"")) ){
+		     	const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center-center',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.addEventListener('mouseenter', Swal.stopTimer)
+                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                  })
+
+                  Toast.fire({
+                    icon: 'warning',
+                    title: '시작일이 종료일보다 클 수 없습니다.'
+                  })
+		     	return false;
+		    }
+		    if($("input[name='subject']:checked").val() == "0"){
+				if(!name){
+					const Toast = Swal.mixin({
+	                    toast: true,
+	                    position: 'center-center',
+	                    showConfirmButton: false,
+	                    timer: 500,
+	                    timerProgressBar: true,
+	                    didOpen: (toast) => {
+	                      toast.addEventListener('mouseenter', Swal.stopTimer)
+	                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+	                    }
+	                  })
+
+	                  Toast.fire({
+	                    icon: 'warning',
+	                    title: '품목명을 입력해주세요.'
+	                  })
+					return false;
+				} else{
+					let checkName = check(name, middle);
+					if(checkName != "notFound"){
+						const Toast = Swal.mixin({
+		                    toast: true,
+		                    position: 'center-center',
+		                    showConfirmButton: false,
+		                    timer: 500,
+		                    timerProgressBar: true,
+		                    didOpen: (toast) => {
+		                      toast.addEventListener('mouseenter', Swal.stopTimer)
+		                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+		                    }
+		                  })
+
+		                  Toast.fire({
+		                    icon: 'warning',
+		                    title: '이미 등록된 품목입니다.'
+		                  })
+						return false;
+					}
+				}
+			}
+			if($("input[name='subject']:checked").val() == "1"){
+				if($('#existing').val() == ""){
+					const Toast = Swal.mixin({
+	                    toast: true,
+	                    position: 'center-center',
+	                    showConfirmButton: false,
+	                    timer: 500,
+	                    timerProgressBar: true,
+	                    didOpen: (toast) => {
+	                      toast.addEventListener('mouseenter', Swal.stopTimer)
+	                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+	                    }
+	                  })
+
+	                  Toast.fire({
+	                    icon: 'warning',
+	                    title: '품목명을 선택해주세요.'
+	                  })
+					return false;
+				}
+			}
+			if(!insertMachineForm.explation.value){
+				insertMachineForm.explation.value = " ";
+			}
+			
+			const Toast = Swal.mixin({
+                toast: true,
+                position: 'center-center',
+                showConfirmButton: false,
+                timer: 500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener('mouseenter', Swal.stopTimer)
+                  toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+              })
+
+              Toast.fire({
+                icon: 'success',
+                title: '등록 되었습니다.'
+              })
+		}
+		
+		//테이블 수정,삭제
+		let updateFormBtn, updateBtn, trTag, itemCodeTag, itemNameTag, rentalPlaceTag,
+			countTag, unitTag, priceTag, rentalDateTag, returnDateTag;
+		let itemCode, itemName, count, price, priceOr, countOr, selectTag, inpPrice,
+			rentalDate, returnDate, rentalPlace;
+		let inpCount, inpItemName, inpItemCode, inpRentalDate, inpReturnDate, inpRentalPlace;
+		let pageNum = [[${pageInfo.cri.pageNum}]];
+		
+		//수정폼으로 전환
+		function updateForm(rentalNo){
+			updateFormBtn = document.getElementById('updateForm' + rentalNo);
+	    	updateFormBtn.style.display = 'none';
+	    	
+	    	deleteBtn = document.getElementById('deleteBtn' + rentalNo);
+	    	deleteBtn.style.display = 'none';
+	    	
+	    	returnBtn = document.getElementById('returnBtn' + rentalNo);
+	    	returnBtn.style.display = 'none';
+	    	
+	    	updateBtn = document.getElementById('update' + rentalNo);
+	    	updateBtn.style.display = 'inline-block';
+	    	
+	    	cancelBtn = document.getElementById('cancel' + rentalNo);
+	    	cancelBtn.style.display = 'inline-block';
+	    	
+	    	trTag = updateFormBtn.parentElement.parentElement;
+	    	checkBoxTag = trTag.childNodes[1];
+	    	itemCodeTag = trTag.childNodes[3];
+	    	itemNameTag = trTag.childNodes[5];
+	    	countTag = trTag.childNodes[7];
+	    	unitTag = trTag.childNodes[9];
+	    	priceTag = trTag.childNodes[11];
+	    	rentalDateTag = trTag.childNodes[13];
+	    	returnDateTag = trTag.childNodes[15];
+	    	rentalPlaceTag = trTag.childNodes[17];
+			
+	    	fetch("/ohnong/warehouseList/" + "[[${session.login.userId}]]")
+		   	.then(resolve => resolve.json())
+		   	.then(result => {
+		   		//Code
+		   		itemCode = itemCodeTag.textContent;
+		   		//Count
+		   		count = countTag.textContent;
+		   		countOr = countTag.textContent;
+		   		countTag.innerHTML = '';
+		   		
+		   		inpCount = document.createElement('input');
+		   		inpCount.setAttribute("id","co");
+		   		inpCount.addEventListener('input', function(){
+		   			let co = $('#co').val();
+		   			co = Number(co.replaceAll(',',''));
+		   			if(isNaN(co)){
+		   				$('#co').val(count);
+		   				const Toast = Swal.mixin({
+		                    toast: true,
+		                    position: 'center-center',
+		                    showConfirmButton: false,
+		                    timer: 500,
+		                    timerProgressBar: true,
+		                    didOpen: (toast) => {
+		                      toast.addEventListener('mouseenter', Swal.stopTimer)
+		                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+		                    }
+		                  })
+
+		                  Toast.fire({
+		                    icon: 'warning',
+		                    title: '숫자만 입력가능합니다.'
+		                  })
+		   			} else {
+		   				let formatCo = co.toLocaleString('ko-KR');
+		   				$('#co').val(formatCo);
+		   			}
+		   		});
+		   		
+		   		inpCount.value = count;
+		   		inpCount.style.width = '100%';
+		   		countTag.append(inpCount);
+		   		//Price
+		   		price = priceTag.textContent;
+		   		priceOr = priceTag.textContent;
+		   		priceTag.innerHTML = '';
+		   		price = price.replaceAll('원','');
+		   		
+		   		pPrice = document.createElement('p');
+		   		pPrice.innerHTML = '&nbsp원';
+		   		inpPrice = document.createElement('input');
+		   		inpPrice.setAttribute("id","pr");
+		   		inpPrice.addEventListener('input', function(){
+		   			let pr = $('#pr').val();
+		   			pr = Number(pr.replaceAll(',', ''));
+		   			if(isNaN(pr)){
+		   				$('#pr').val(price);
+		   				const Toast = Swal.mixin({
+		                    toast: true,
+		                    position: 'center-center',
+		                    showConfirmButton: false,
+		                    timer: 500,
+		                    timerProgressBar: true,
+		                    didOpen: (toast) => {
+		                      toast.addEventListener('mouseenter', Swal.stopTimer)
+		                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+		                    }
+		                  })
+
+		                  Toast.fire({
+		                    icon: 'warning',
+		                    title: '숫자만 입력가능합니다.'
+		                  })
+		   			} else  {
+		   				let formatPr = pr.toLocaleString('ko-KR');
+			   			$('#pr').val(formatPr);
+		   			}
+		   		});
+		   		
+		   		inpPrice.value = price;
+		   		inpPrice.style.width = '80%';
+		   		pPrice.style.width = '10%';
+		   		pPrice.style.display = 'inline-block';
+		   		pPrice.style.marginBottom = '0';
+		   		priceTag.append(inpPrice);
+		   		priceTag.append(pPrice);
+		   		//RentalDateS
+		   		rentalDate = rentalDateTag.textContent;
+		   		rentalDateTag.innerHTML = '';
+		   		inpRentalDate = document.createElement('input');
+		   		inpRentalDate.type = 'date';
+		   		inpRentalDate.value = rentalDate;
+		   		inpRentalDate.style.width = '100%';
+		   		rentalDateTag.append(inpRentalDate);
+		   		//ReturnDate
+		   		returnDate = returnDateTag.textContent;
+		   		returnDateTag.innerHTML = '';
+		   		inpReturnDate = document.createElement('input');
+		   		inpReturnDate.type = 'date';
+		   		inpReturnDate.value = returnDate;
+		   		inpReturnDate.style.width = '100%';
+		   		returnDateTag.append(inpReturnDate);
+		   		//RentalPlace
+		   		rentalPlace = rentalPlaceTag.textContent;
+		   		rentalPlaceTag.innerHTML = '';
+		   		inpRentalPlace = document.createElement('input');
+		   		inpRentalPlace.value = rentalPlace;
+		   		inpRentalPlace.style.width = '100%';
+		   		rentalPlaceTag.append(inpRentalPlace);
+		   	})
+		   	.catch(reject => console.log(reject))
+	    }
+		
+		//취소
+		function cancel(rentalNo){
+			location.reload();
+			countTag.innerHTML = countOr;
+			priceTag.innerHTML = priceOr;
+			rentalDateTag.innerHTML = rentalDate;
+			returnDateTag.innerHTML = returnDate;
+			rentalPlaceTag.innerHTML = rentalPlace;
+	   		
+	   		updateFormBtn = document.getElementById('updateForm' + rentalNo);
+	    	updateFormBtn.style.display = 'inline-block';
+	    	returnBtn = document.getElementById('returnBtn' + rentalNo);
+	    	returnBtn.style.display = 'inline-block';
+	    	deleteBtn = document.getElementById('deleteBtn' + rentalNo);
+	    	deleteBtn.style.display = 'inline-block';
+	    	updateBtn = document.getElementById('update' + rentalNo);
+	    	updateBtn.style.display = 'none';
+	    	cancelBtn = document.getElementById('cancel' + rentalNo);
+	    	cancelBtn.style.display = 'none';
+		}
+		
+		//수정
+		function update(rentalNo){
+			let newCount = inpCount.value;
+			newCount = newCount.replaceAll(',','');
+			let newPrice = inpPrice.value;
+			newPrice = newPrice.replaceAll(',','');
+			let newRentalDate = inpRentalDate.value;
+			let newReturnDate = inpReturnDate.value;
+			let newRentalPlace = inpRentalPlace.value;
+			
+			$.ajax({
+				type : 'post',
+				url : '/ohnong/machineUpdate',
+				dataType : 'text',
+				data : {
+						"count" : newCount,
+						"oldItemCode" : itemCode,
+						"rentalPrice" : newPrice,
+						"startDate" : newRentalDate,
+						"endDate" : newReturnDate,
+						"rentalPlace" : newRentalPlace
+				},
+				success : function(data){
+					const Toast = Swal.mixin({
+	                    toast: true,
+	                    position: 'center-center',
+	                    showConfirmButton: false,
+	                    timer: 500,
+	                    timerProgressBar: true,
+	                    didOpen: (toast) => {
+	                      toast.addEventListener('mouseenter', Swal.stopTimer)
+	                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+	                    }
+	                  })
+
+	                  Toast.fire({
+	                    icon: 'success',
+	                    title: '수정 되었습니다.'
+	                  })
+					setTimeout(function(){location.reload()}, 500);
+				},
+				error : function(status, error){
+					console.log(status, error);
+				}
+			})
+		}
+		
+		//삭제
+		function deleteBtn(rentalNo){
+			let deleteBtn = document.getElementById('deleteBtn' + rentalNo);
+			let delTrTag = deleteBtn.parentElement.parentElement;
+			itemCodeTag = delTrTag.childNodes[3];
+			itemCode = itemCodeTag.textContent;
+			
+			Swal.fire({
+	            title: '삭제 하시겠습니까?',
+	            icon: 'warning',
+	            showCancelButton: true,
+	            confirmButtonColor: '#3085d6',
+	            cancelButtonColor: '#d33',
+	            confirmButtonText: '확인',
+	            cancelButtonText: '취소'
+	        }).then((result) => {
+	            if (result.isConfirmed) {
+					
+	            	$.ajax({
+						type : 'get',
+						url : "/ohnong/machineDelete/" + itemCode,
+						dataType : 'text',
+						success : function(data){
+							console.log(data);
+							if(data == 'success'){
+								delTrTag.remove();
+								const Toast = Swal.mixin({
+				                    toast: true,
+				                    position: 'center-center',
+				                    showConfirmButton: false,
+				                    timer: 500,
+				                    timerProgressBar: true,
+				                    didOpen: (toast) => {
+				                      toast.addEventListener('mouseenter', Swal.stopTimer)
+				                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+				                    }
+				                  })
+
+				                  Toast.fire({
+				                    icon: 'warning',
+				                    title: '삭제 되었습니다.'
+				                  })
+							} else if(data = 'fail'){
+								const Toast = Swal.mixin({
+				                    toast: true,
+				                    position: 'center-center',
+				                    showConfirmButton: false,
+				                    timer: 500,
+				                    timerProgressBar: true,
+				                    didOpen: (toast) => {
+				                      toast.addEventListener('mouseenter', Swal.stopTimer)
+				                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+				                    }
+				                  })
+
+				                  Toast.fire({
+				                    icon: 'warning',
+				                    title: '오류.'
+				                  })
+							}
+						},
+						error : function(status, error){
+							console.log(status, error);
+						}
+					})
+			    }
+		    })
+		}
+		
+		//반납
+		function returnBtn(rentalNo){
+			let deleteBtn = document.getElementById('returnBtn' + rentalNo);
+			let delTrTag = deleteBtn.parentElement.parentElement;
+			itemCodeTag = delTrTag.childNodes[3];
+			itemCode = itemCodeTag.textContent;
+			
+			Swal.fire({
+	            title: '반납 하시겠습니까?',
+	            icon: 'warning',
+	            showCancelButton: true,
+	            confirmButtonColor: '#3085d6',
+	            cancelButtonColor: '#d33',
+	            confirmButtonText: '확인',
+	            cancelButtonText: '취소'
+	        }).then((result) => {
+	            if (result.isConfirmed) {
+	            	$.ajax({
+						type : 'get',
+						url : "/ohnong/machineReturn/" + itemCode,
+						dataType : 'text',
+						success : function(data){
+							console.log(data);
+							if(data == 'success'){
+								delTrTag.remove();
+								const Toast = Swal.mixin({
+				                    toast: true,
+				                    position: 'center-center',
+				                    showConfirmButton: false,
+				                    timer: 500,
+				                    timerProgressBar: true,
+				                    didOpen: (toast) => {
+				                      toast.addEventListener('mouseenter', Swal.stopTimer)
+				                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+				                    }
+				                  })
+
+				                  Toast.fire({
+				                    icon: 'warning',
+				                    title: '반납처리되었습니다.'
+				                  })
+							} else if(data = 'fail'){
+								const Toast = Swal.mixin({
+				                    toast: true,
+				                    position: 'center-center',
+				                    showConfirmButton: false,
+				                    timer: 500,
+				                    timerProgressBar: true,
+				                    didOpen: (toast) => {
+				                      toast.addEventListener('mouseenter', Swal.stopTimer)
+				                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+				                    }
+				                  })
+
+				                  Toast.fire({
+				                    icon: 'warning',
+				                    title: '오류.'
+				                  })
+							}
+						},
+						error : function(status, error){
+							console.log(status, error);
+						}
+					})
+		   		}
+    		})
+		}
+		
+		//대여신청
+		function application(no){
+			let applicationBtn = document.getElementById('application' + no);
+			/*
+			let appTrTag = applicationBtn.parentElement.parentElement;
+			let appCode = appTrTag.childNodes[3].textContent;
+			let appName = appTrTag.childNodes[5].textContent;
+			let appCount = appTrTag.childNodes[7].textContent;
+			let appPrice = appTrTag.childNodes[11].textContent;
+			let appPlace = appTrTag.childNodes[13].textContent;
+			let appPeriod = appTrTag.childNodes[15].textContent;
+			
+			console.log(appCode);
+			console.log(appName);
+			console.log(appCount);
+			console.log(appPrice);
+			console.log(appPlace);
+			console.log(appPeriod);
+			appPeriod = appPeriod.replace('일', '');
+			console.log(appPeriod);
+			*/
+			
+			Swal.fire({
+	            title: '대여신청 하시겠습니까?',
+	            icon: 'warning',
+	            showCancelButton: true,
+	            confirmButtonColor: '#3085d6',
+	            cancelButtonColor: '#d33',
+	            confirmButtonText: '확인',
+	            cancelButtonText: '취소'
+	        }).then((result) => {
+	            if (result.isConfirmed) {
+	            	$.ajax({
+						type : 'post',
+						url : "/ohnong/neighborUpdate",
+						data : {
+							"no" : no,
+						},
+						dataType : 'text',
+						success : function(data){
+							console.log(data);
+							if(data == 'success'){
+								const Toast = Swal.mixin({
+				                    toast: true,
+				                    position: 'center-center',
+				                    showConfirmButton: false,
+				                    timer: 500,
+				                    timerProgressBar: true,
+				                    didOpen: (toast) => {
+				                      toast.addEventListener('mouseenter', Swal.stopTimer)
+				                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+				                    }
+				                  })
+
+				                  Toast.fire({
+				                    icon: 'warning',
+				                    title: '신청되었습니다.'
+				                  })
+								location.reload();
+							} else if(data = 'fail'){
+								const Toast = Swal.mixin({
+				                    toast: true,
+				                    position: 'center-center',
+				                    showConfirmButton: false,
+				                    timer: 500,
+				                    timerProgressBar: true,
+				                    didOpen: (toast) => {
+				                      toast.addEventListener('mouseenter', Swal.stopTimer)
+				                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+				                    }
+				                  })
+
+				                  Toast.fire({
+				                    icon: 'warning',
+				                    title: '오류.'
+				                  })
+							}
+						},
+						error : function(status, error){
+							console.log(status, error);
+						}
+					})
+	            	
+				 }
+		    })
+		}
+		
+		function unsubmit(no){
+			let unsubmitBtm = document.getElementById('unsubmit' + no);
+			console.log(unsubmitBtm);
+			
+			Swal.fire({
+	            title: '신청을 취소하시겠습니까?',
+	            icon: 'warning',
+	            showCancelButton: true,
+	            confirmButtonColor: '#3085d6',
+	            cancelButtonColor: '#d33',
+	            confirmButtonText: '확인',
+	            cancelButtonText: '취소'
+	        }).then((result) => {
+	        	if (result.isConfirmed) {
+	        			
+	        		$.ajax({
+						type : 'post',
+						url : "/ohnong/neighborDisUpdate",
+						data : {
+							"no" : no,
+						},
+						dataType : 'text',
+						success : function(data){
+							console.log(data);
+							
+							if(data == 'success'){
+								const Toast = Swal.mixin({
+				                    toast: true,
+				                    position: 'center-center',
+				                    showConfirmButton: false,
+				                    timer: 500,
+				                    timerProgressBar: true,
+				                    didOpen: (toast) => {
+				                      toast.addEventListener('mouseenter', Swal.stopTimer)
+				                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+				                    }
+				                  })
+
+				                  Toast.fire({
+				                    icon: 'warning',
+				                    title: '취소되었습니다.'
+				                  })
+								location.reload();
+							} else if(data = 'fail'){
+								const Toast = Swal.mixin({
+				                    toast: true,
+				                    position: 'center-center',
+				                    showConfirmButton: false,
+				                    timer: 500,
+				                    timerProgressBar: true,
+				                    didOpen: (toast) => {
+				                      toast.addEventListener('mouseenter', Swal.stopTimer)
+				                      toast.addEventListener('mouseleave', Swal.resumeTimer)
+				                    }
+				                  })
+
+				                  Toast.fire({
+				                    icon: 'warning',
+				                    title: '오류.'
+				                  })
+							}
+						},
+						error : function(status, error){
+							console.log(status, error);
+						}
+					})
+	        	
+		   	 	}
+		    })
+	        
+		}
+	</script>
+</div>
+
+
+

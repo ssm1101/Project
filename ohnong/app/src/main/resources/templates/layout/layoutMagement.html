@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" href="images/favicon.ico" type="image/ico" />
+
+    <title>Gentelella Alela!</title>
+
+    <!-- Bootstrap -->
+    <link href="bootstrap_magement/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="bootstrap_magement/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="bootstrap_magement/vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="bootstrap_magement/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+	
+    <!-- bootstrap-progressbar -->
+    <link href="bootstrap_magement/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+    <!-- JQVMap -->
+    <link href="bootstrap_magement/vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
+    <!-- bootstrap-daterangepicker -->
+    <link href="bootstrap_magement/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="bootstrap_magement/build/css/custom.min.css" rel="stylesheet">
+  </head>
+  
+  	<body class="nav-md">
+      <div class="container body">
+        <div class="main_container">
+  		  <!-- <th:block th:replace="fragment/sidebar" :: sidebarMagementFragment></th:block>  -->
+		  <aside th:replace="fragment/sidebarMagement :: sidebarMagementFragment"></aside>
+		  <header th:replace="fragment/headerMagement :: headerMagementFragment"></header>
+		  <div layout:fragment="contentMagement"></div>
+		  <footer th:replace="fragment/footerMagement :: footerMagementFragment"></footer>
+		</div>
+	  </div>
+	  <!-- jQuery -->
+    <script src="bootstrap_magement/vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="bootstrap_magement/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- FastClick -->
+    <script src="bootstrap_magement/vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="bootstrap_magement/vendors/nprogress/nprogress.js"></script>
+    <!-- Chart.js -->
+    <script src="bootstrap_magement/vendors/Chart.js/dist/Chart.min.js"></script>
+    <!-- gauge.js -->
+    <script src="bootstrap_magement/vendors/gauge.js/dist/gauge.min.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="bootstrap_magement/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <!-- iCheck -->
+    <script src="bootstrap_magement/vendors/iCheck/icheck.min.js"></script>
+    <!-- Skycons -->
+    <script src="bootstrap_magement/vendors/skycons/skycons.js"></script>
+    <!-- Flot -->
+    <script src="bootstrap_magement/vendors/Flot/jquery.flot.js"></script>
+    <script src="bootstrap_magement/vendors/Flot/jquery.flot.pie.js"></script>
+    <script src="bootstrap_magement/vendors/Flot/jquery.flot.time.js"></script>
+    <script src="bootstrap_magement/vendors/Flot/jquery.flot.stack.js"></script>
+    <script src="bootstrap_magement/vendors/Flot/jquery.flot.resize.js"></script>
+    <!-- Flot plugins -->
+    <script src="bootstrap_magement/vendors/flot.orderbars/js/jquery.flot.orderBars.js"></script>
+    <script src="bootstrap_magement/vendors/flot-spline/js/jquery.flot.spline.min.js"></script>
+    <script src="bootstrap_magement/vendors/flot.curvedlines/curvedLines.js"></script>
+    <!-- DateJS -->
+    <script src="bootstrap_magement/vendors/DateJS/build/date.js"></script>
+    <!-- JQVMap -->
+    <script src="bootstrap_magement/vendors/jqvmap/dist/jquery.vmap.js"></script>
+    <script src="bootstrap_magement/vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+    <script src="bootstrap_magement/vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="bootstrap_magement/vendors/moment/min/moment.min.js"></script>
+    <script src="bootstrap_magement/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+
+    <!-- Custom Theme Scripts -->
+    <script src="bootstrap_magement/build/js/custom.min.js"></script>
+	</body>
+	
+</html>

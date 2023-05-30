@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>cropNo</th>
+                <th>userId</th>
+                <th>itemCode</th>
+                <th>registDate</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="cropInfo : ${cropList}">
+                <td th:text="${cropInfo.cropNo}"/>
+                <td th:text="${cropInfo.userId}"/>
+                <td th:text="${cropInfo.itemCode}"/>
+                <td th:text="${cropInfo.registDate}"/>
+            </tr>
+        </tbody>
+    </table>
+    
+    <p th:text="${cropList}"></p>
+    <p th:text="${cropList[0].userId}"></p>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/layoutMain}">
+<head>
+<meta charset="UTF-8">
+<title>oh-nong!</title>
+</head>
+
+<th:block layout:fragment="css"></th:block>
+<th:block layout:fragment="script"></th:block>
+
+<div layout:fragment="contentMain">
+<header class="masthead" style="padding-top: 80px !important">
+    <div class="text-center" style="color:black">
+        <div id="findId" class="animate form login_form" style="width:30%; float:none; margin:0 auto">
+            <section class="login_content">
+                <form>
+                    <h1 style="background: linear-gradient(to right top, #cafcd6,#035c2f );color: transparent;-webkit-background-clip: text;">ID 찾기</h1>
+                    <br>
+                    <div>
+                        <input type="text" class="form-control" id="userName" name="userName" placeholder="이름" />
+                    </div>
+                    
+                    <br>
+                    <div>
+                        <input type="text" class="form-control" id="birth" name="birth" placeholder="생년월일 (8자리 입력)" />
+                    </div>
+                    <br>
+                    <button type="button" class="btn btn-primary" id="findId2" style="font-weight: bold">찾 기</button>
+                    <br><br>
+                    <p id="findId3"></p>
+					<hr>
+                    <div>
+                        <a class="reset_pass" href="login" style="text-decoration: none; color:#aaaaaa">로그인</a>
+                        &nbsp;&nbsp;&nbsp; 
+                        <a class="reset_pass" href="findPw" style="text-decoration: none; color:#aaaaaa">PW 찾기</a>
+                    </div>
+
+                        <br>
+
+                        <div>
+                             <h1 style="background: linear-gradient(to right top, #cafcd6,#035c2f );color: transparent;-webkit-background-clip: text;">Oh - Nong</h1>
+                        </div>
+                </form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script>
+$(document).ready(function () { 
+    $("#findId2").on("click", function() {
+        var userName = $('input[name="userName"]').val();
+        var birth = $('input[name="birth"]').val();
+        console.log(userName);
+        console.log(birth);
+        
+        $.ajax({
+            type : 'post',
+            url : '/ohnong/findId', // 서버 요청 url
+            dataType : 'text', // 서버로부터 응답받을 데이터 형태 
+            data : {"userName" : userName, "birth" : birth}, // 서버로 전송할 데이터. const id 
+            success : function(checkId) { // 통신 성공 시 매개변수에 데이터 저장
+                console.log('통신 성공 ' + checkId);
+                if(checkId != null) {
+                    $('#findId3').html('<b style="font-size: 18px; color: green">[&nbsp;찾으시는 아이디는 {&nbsp;&nbsp;' + checkId + '&nbsp;&nbsp;}입니다.&nbsp;]</b>');
+                }
+                if(checkId == 'false') {
+                    $('#findId3').html('<b style="font-size: 18px; color: red">[&nbsp;해당하는 회원정보가 없습니다.&nbsp;]</b>');
+                }
+            },
+            error : function(status, error) {
+                console.log('통신 실패');
+                console.log(status, error);
+            }
+        })      
+    })
+})
+</script>
+            </section>
+        </div>
+    </div>
+</header>
+</div>
+</html>

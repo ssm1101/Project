@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/layoutMagement}">
+<head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<meta charset="UTF-8">
+<title>oh-nong!</title>
+<style>
+.left-box {
+  float: left;
+  width: 50%;
+}
+.right-box {
+  float: right;
+  width: 50%;
+}
+.form-control {
+   width: 170%
+}
+</style>
+</head>
+</th:block>
+<th:block layout:fragment="script">
+</th:block>
+<div layout:fragment="contentMagement">
+
+    <div class="right_col" role="main">
+        <div class="">
+            <div class="page-title">
+                <div class="title_left">
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12 ">
+                <h3 style="text-align:left"><b>🏕 농가 수정</b></h3>
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li><a class="collapse-link"><i
+                                        class="fa fa-chevron-up"></i></a></li>
+                                <li class="dropdown"><a href="#" class="dropdown-toggle"
+                                    data-toggle="dropdown" role="button" aria-expanded="false"><i
+                                        class="fa fa-wrench"></i></a>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" href="#">Settings 1</a> <a
+                                            class="dropdown-item" href="#">Settings 2</a>
+                                    </div></li>
+                                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <div class="col-md-9 col-sm-9 ">
+                                <form name="form" th:role="form" th:action="@{farmMod}" method="POST" style="width:120%">
+                                <!-- 아이디 아이디 아이디 아이디 아이디 -->
+                                    <input type="hidden" id="userId" name="userId"
+                                    class="form-control " th:value="${session.login.userId}">
+                                <!-- 아이디 아이디 아이디 아이디 아이디 -->
+                                    <table>
+                                        <tbody>
+                                            <tr th:each="farmInfo : ${farmInfo}">
+                                            <div class='left-box'>
+                                            <div style="margin: 0 70px;"><h5><b>✅필수 입력란</b></h5></div>
+                                            <br>
+                                                <div class="field item form-group">
+                                                    <label class="col-form-label col-md-3 col-sm-3 label-align"><span style="color:red; font-size: 15px;">✔</span><b>농가명</b><span
+                                                        class="required">*</span></label>
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <input class="form-control"
+                                                            th:value="${farmInfo.farmName}" id="farmName" name="farmName" />
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <div class="field item form-group">
+                                                    <label class="col-form-label col-md-3 col-sm-3 label-align"><span style="color:red; font-size: 15px;">✔</span><b>대표명</b><span
+                                                        class="required">*</span></label>
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <input class="form-control"
+                                                            th:value="${farmInfo.farmCeo}" id="farmCeo" name="farmCeo" />
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <div class="field item form-group">
+                                                    <label class="col-form-label col-md-3 col-sm-3 label-align"><span style="color:red; font-size: 15px;">✔</span><b>지역</b><span
+                                                        class="required">*</span></label>
+                                                    <div class="col-md-6 col-sm-6 ">
+                                                    <input class="form-control optional" type="hidden"
+                                                            th:value="${farmInfo.farmAddr}" id="farmAddr" name="farmAddr" />
+                                                <input type="radio" name="radio" id="r1" value="대구">대구
+                                                <input type="radio" name="radio" id="r2" value="경북">경북
+                                                &nbsp;
+                                                    <span id="spanId">
+                                                    <select id="farmAddr1" th:onchange="changeSelect()" style="height: 37px">
+                                                        <option value="">지역 선택</option>
+                                                        <option th:value="대구-북구" th:selected="'대구-북구' == ${farmInfo.farmAddr}">북구</option>
+                                                        <option th:value="대구-동구" th:selected="'대구-동구' == ${farmInfo.farmAddr}">동구</option>
+                                                        <option th:value="대구-중구" th:selected="'대구-중구' == ${farmInfo.farmAddr}">중구</option>
+                                                        <option th:value="대구-서구" th:selected="'대구-서구' == ${farmInfo.farmAddr}">서구</option>
+                                                        <option th:value="대구-달서구" th:selected="'대구-달서구' == ${farmInfo.farmAddr}">달서구</option>
+                                                        <option th:value="대구-수성구" th:selected="'대구-수성구' == ${farmInfo.farmAddr}">수성구</option>
+                                                        <option th:value="대구-남구" th:selected="'대구-남구' == ${farmInfo.farmAddr}">남구</option>
+                                                        <option th:value="대구-달성군" th:selected="'대구-달성군' == ${farmInfo.farmAddr}">달성군</option>
+                                                    </select>
+                                                    </span>
+                                                    <span id="spanId2">
+                                                    <select id="farmAddr2" th:onchange="changeSelect()" style="height: 37px">
+                                                        <option value="">지역 선택</option>
+                                                        <option th:value="경북-포항시" th:selected="'경북-포항시' == ${farmInfo.farmAddr}">포항시</option>
+                                                        <option th:value="경북-경주시" th:selected="'경북-경주시' == ${farmInfo.farmAddr}">경주시</option>
+                                                        <option th:value="경북-안동시" th:selected="'경북-안동시' == ${farmInfo.farmAddr}">안동시</option>
+                                                        <option th:value="경북-김천시" th:selected="'경북-김천시' == ${farmInfo.farmAddr}">김천시</option>
+                                                        <option th:value="경북-구미시" th:selected="'경북-구미시' == ${farmInfo.farmAddr}">구미시</option>
+                                                        <option th:value="경북-영주시" th:selected="'경북-영주시' == ${farmInfo.farmAddr}">영주시</option>
+                                                        <option th:value="경북-영천시" th:selected="'경북-영천시' == ${farmInfo.farmAddr}">영천시</option>
+                                                        <option th:value="경북-상주시" th:selected="'경북-상주시' == ${farmInfo.farmAddr}">상주시</option>
+                                                        <option th:value="경북-문경시" th:selected="'경북-문경시' == ${farmInfo.farmAddr}">문경시</option>
+                                                        <option th:value="경북-경산시" th:selected="'경북-경산시' == ${farmInfo.farmAddr}">경산시</option>
+                                                    </select>
+                                                    </span>
+                                                </div>
+                                                </div>
+                                                <br>
+                                                <div class="field item form-group">
+                                                    <label class="col-form-label col-md-3 col-sm-3 label-align"><span style="color:red; font-size: 15px;">✔</span><b>재배면적(평)</b><span
+                                                        class="required">*</span></label>
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <input class="form-control" type="text"
+                                                            th:value="${farmInfo.plantArea}" id="plantArea" name="plantArea" />
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <div class="field item form-group">
+                                                    <label class="col-form-label col-md-3 col-sm-3 label-align"><span style="color:red; font-size: 15px;">✔</span><b>대표 작물</b><span
+                                                        class="required">*</span></label>
+                                                    <div class="col-md-2 col-sm-6">
+	                                                   <select name="middlecatagori" style="height: 37px">
+	                                                        <option value="">분류 선택</option>
+	                                                        <option th:value="곡류" th:selected="'곡류' == ${farmInfo.middlecatagori}">곡류</option>
+	                                                        <option th:value="콩류" th:selected="'콩류' == ${farmInfo.middlecatagori}">콩류</option>
+	                                                        <option th:value="구근류" th:selected="'구근류' == ${farmInfo.middlecatagori}">구근류</option>
+	                                                        <option th:value="채소류" th:selected="'채소류' == ${farmInfo.middlecatagori}">채소류</option>
+	                                                        <option th:value="과실류" th:selected="'과실류' == ${farmInfo.middlecatagori}">과실류</option>
+	                                                        <option th:value="종실류" th:selected="'종실류' == ${farmInfo.middlecatagori}">종실류</option>
+	                                                        <option th:value="버섯류" th:selected="'버섯류' ==  ${farmInfo.middlecatagori}">버섯류</option>
+	                                                    </select>
+	                                                 </div>
+	                                                 <div>
+                                                        <input class="form-control" style="width: 465px"
+                                                            th:value="${farmInfo.subdivision}" id="subdivision" name="subdivision" />
+                                                     </div>
+                                                </div>
+                                                </div>
+                                                <div class="right-box">
+                                                <div style="margin: 0 90px;"><h5><b>✅선택 입력란</b></h5></div>
+                                                <br>
+                                                <div class="field item form-group">
+                                                    <label class="col-form-label col-md-3 col-sm-3 label-align"><b>상세주소</b><span
+                                                        class="required">*</span></label>
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <input class="form-control" type="text"
+                                                            th:value="${farmInfo.farmDetailaddr}" name="farmDetailaddr" id="farmDetailaddr" />
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <div class="field item form-group">
+                                                    <label class="col-form-label col-md-3 col-sm-3 label-align"><b>홈페이지</b><span
+                                                        class="required">*</span></label>
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <input class="form-control" type="email"
+                                                            th:value="${farmInfo.homepage}" name="homepage" id="homepage" />
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <div class="field item form-group">
+                                                    <label class="col-form-label col-md-3 col-sm-3 label-align"><b>사업자번호</b><span
+                                                        class="required">*</span></label>
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <input class="form-control" type="text"
+                                                            th:value="${farmInfo.registNum}" name="registNum" id="registNum" />
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <div class="field item form-group">
+                                                    <label class="col-form-label col-md-3 col-sm-3 label-align"><b>메모</b><span
+                                                        class="required">*</span></label>
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <textarea class="form-control"
+                                                            th:text="${farmInfo.memo}" style="height:103px" name="memo" id="memo"></textarea>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                            </tr>
+                                        <tbody>
+                                    </table>
+                                <button id="submit" type='submit' class="btn btn-primary" style="position:relative; bottom:-10px; left: 670px"><b>수정하기</b></button>
+                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+                        <script>
+                        var userId = $('#userId').val();
+                        
+                        $(document).ready(function(e) {
+                        	// 지역
+                        	var farmAddr = $('#farmAddr').val().substr(0,2);
+                            console.log(farmAddr);
+                            if (farmAddr == "대구") {
+                            	$('#r1').prop('checked', true);
+                            	$('#spanId').show();
+                                $('#spanId2').hide();
+                            	
+                            } else if (farmAddr == "경북") {
+                            	$('#r2').prop('checked', true);
+                            	$('#spanId').hide();
+                                $('#spanId2').show();
+                            }
+                        	
+                            $("input:radio[name=radio]").click(function(){
+                                if($("input[name=radio]:checked").val() == "대구"){
+                                    $('#spanId').show();
+                                    $('#spanId2').hide();
+                                }
+                                if($("input[name=radio]:checked").val() == "경북"){
+                                    $('#spanId').hide();
+                                    $('#spanId2').show();
+                                }
+                            })
+                            
+                            // 재배 면적
+                            const input = document.querySelector('#plantArea');
+                            
+                            input.addEventListener('keyup', function(e) {
+                              let value = e.target.value;
+                              value = Number(value.replaceAll(',', ''));
+                              if(isNaN(value)) {
+                                input.value = 0;
+                              } else {
+                                const formatValue = value.toLocaleString('ko-KR');
+                                input.value = formatValue;
+                              }
+                            })
+                            
+                            // 유효성 검사
+                            $('#submit').click(function(e) {
+                            	if($('#farmName').val() == '' || $('#farmCeo').val() == ''
+                                    || $('#farmAddr').val() == '' || $('#plantArea').val() == '' 
+                                    || $('#middlecatagori').val() == '' || $('#subdivision').val() == '') {
+                            		const Toast = Swal.mixin({
+                                        toast: true,
+                                        position: 'center-center',
+                                        showConfirmButton: false,
+                                        timer: 2000,
+                                        timerProgressBar: true,
+                                        didOpen: (toast) => {
+                                          toast.addEventListener('mouseenter', Swal.stopTimer)
+                                          toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                        }
+                                      })
+
+                                      Toast.fire({
+                                        icon: 'info',
+                                        title: '입력값을 모두 적어주세요.'
+                                      })
+                                        return false;
+                                }
+                            })
+                        })
+                        
+                        function changeSelect() {
+                        	var selectvalue = "";
+                        	
+                        	if($("input[name=radio]:checked").val() == "대구") {
+                        		selectvalue = $('#farmAddr1').val();
+                        	} else {
+                        		selectvalue = $('#farmAddr2').val();
+                        	}
+                        	$('#farmAddr').val(selectvalue);
+                        }
+                        </script>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

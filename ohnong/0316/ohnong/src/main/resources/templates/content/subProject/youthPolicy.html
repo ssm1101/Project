@@ -1,0 +1,550 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html
+  xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layoutMagement}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>oh-nong!</title>
+<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
+<link rel="stylesheet" th:href="@{/css/default.css}" />
+	<link rel="stylesheet" th:href="@{/css/content.css}" />
+	<link rel="stylesheet" th:href="@{/css/button.css}" />
+<style>
+#divImg1{
+ float:left; margin-right:10px; 
+width:100%;
+height:150px;
+background: url(/ohnong/images/img-bg01.png)  no-repeat center center;
+ position: absolute;
+  bottom: 0px; left: 60px;"
+}
+#divImg2{
+float:left; margin-right:10px; 
+width:100%;
+height:150px;
+background: url(/ohnong/images/img-bg02.png)  no-repeat center center;
+ position: absolute;
+  bottom: 0px; left: 260px;"
+}
+#divImg3{
+float:left; margin-right:10px; 
+width:100%;
+height:150px;
+background: url(/ohnong/images/img-bg03.png)  no-repeat center center;
+ position: absolute;
+  bottom: 0px; left: 460px;"
+}
+
+#divImg4{
+ float:left; margin-right:10px; 
+width:100%;
+height:150px;
+background: url(/ohnong/images/bg-object01.png)  no-repeat center center;
+ position: absolute;
+  bottom: -30px; left: 50px;"
+}
+#divImg5{
+float:left; margin-right:10px; 
+width:100%;
+height:150px;
+background: url(/ohnong/images/bg-object02.png)  no-repeat center center;
+ position: absolute;
+  bottom: -30px; left: 250px;"
+}
+#divImg6{
+float:left; margin-right:10px; 
+width:100%;
+height:150px;
+background: url(/ohnong/images/bg-object03.png)  no-repeat center center;
+ position: absolute;
+  bottom: -30px; left: 460px;"
+}
+#imgeDiv4{
+	width:100%;
+	height:305px;
+
+	background: url(/ohnong/images/img-sub-banner06.png)  no-repeat center center;
+	background-size: cover
+}
+#imgeDiv3{
+	width:100%;
+	height:305px;
+	
+	background: url(/ohnong/images/img-sub-banner03.png)  no-repeat center center;
+	background-size: cover
+}
+
+#imgeDiv2{
+	width:100%;
+	height:305px;
+
+	background: url(/ohnong/images/img-sub-banner02.png)  no-repeat center center;
+	background-size: cover
+}
+
+#imgeDiv1{
+	width:100%;
+	height:305px;
+
+	background: url(/ohnong/images/img-sub-banner01.png)  no-repeat center center;
+	background-size: cover
+}
+.nav-link{
+	background-color:#FF9933;
+	opacity:0.9;
+}
+  
+	a:link { color: #3333333;}
+    a:hover { color: #F36A23; text-decoration: none;}
+    
+    .circle1{
+    background:url(/ohnong/images/ico-cir01.svg)  no-repeat center center;
+    }
+    .circle2{
+    background:url(/ohnong/images/ico-cir02.svg)  no-repeat center center;
+    }
+    .circle3{
+    background:url(/ohnong/images/ico-cir03.svg)  no-repeat center center;
+    }
+    .circle4{
+    background:url(/ohnong/images/ico-cir04.svg)  no-repeat center center;
+    }
+    .circle5{
+    background:url(/ohnong/images/ico-cir05.svg)  no-repeat center center;
+    }
+    .circle6{
+    background:url(/ohnong/images/ico-cir06.svg)  no-repeat center center;
+    }
+    
+    .cir02{
+    display: block;
+    width: 120px;
+    height: 120px;
+    border: 1px solid #383e60;
+    border-radius: 50%;
+    }
+ 
+</style>
+</head>
+
+<th:block layout:fragment="css"> </th:block>
+<th:block layout:fragment="script"> </th:block>
+
+<body class="nav-md">
+<div layout:fragment="contentMagement">
+<!-- page content -->
+	<div class="right_col" role="main">
+		<div class="">
+        	<div class="page-title">
+            	<div class="title_left">
+                	<h3 style="color:black;"><i class="fa fa-leaf"></i> Oh! Nong</h3>
+             	</div>
+            </div>
+         <div class="clearfix"></div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="x_panel">
+				<div class="x_title">
+					<h2><i class="fa fa-bars"></i> 청년정책 <small></small></h2>
+						<ul class="nav navbar-right panel_toolbox">
+							<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                      		<li class="dropdown">
+                        		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"><i class="fa fa-wrench"></i></a>
+                        		<div class="dropdown-menu" >
+                            		<a class="dropdown-item" href="#">Settings 1</a>
+                            		<a class="dropdown-item" href="#">Settings 2</a>
+                          		</div>
+                      		</li>
+	                    </ul>
+                    <div class="clearfix"></div>
+				</div>
+                <div class="x_content">
+                    <div class="col-sm-2 mail_list_column">
+                      <!-- required for floating -->
+                      <!-- Nav tabs -->
+                      <div class="nav nav-tabs flex-column  bar_tabs" id="v-pills-tab" role="tablist">
+                        <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab"><h4>청년농 영농정착 지원사업 🌾</h4></a>
+                        <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab"><h4>후계농업 경영인 육성사업 🧑‍</h4></a>
+                        <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab"><h4>귀농귀촌 지원사업 🚜</h4></a>
+                        <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab"><h4>청년농업인경쟁력제고사업 🗃️</h4></a>
+                      </div>
+            
+                    </div>
+
+                    <div class="col-sm-10 mail_view">
+                      <!-- Tab panes -->
+                     <!-- 1 -->
+					<div class="tab-content" id="v-pills-tabContent" >
+						<div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+							<div id="imgeDiv1" style=" position:relative;">
+								<p style="color: white; position: absolute; bottom: 40px; left: 40px;">
+									영농 창업초기 소득 불안정을 겪는 청년농업인의 영농정착을 지원하여<br>
+									젊고 유능한 인재의 농업 분야 진출을 촉진하기 위한 정책입니다.<br>
+									농지임대 · 창업자금 · 기술경영 교육과 컨설팅 등도 함께 연계 지원합니다.
+								</p>
+							</div>
+							<br>
+							<br>
+							<div>
+							<h3>선정규모 및 자격사항</h3>
+							<br><br>
+							<div style="width: 15%; height: 130px; float: left; ">
+								<p class="circle1 cir02"></p>
+							</div>
+							<div style="width: 30%; height: 130px; float: left; margin-right: 10px;">
+								<p style="vertical-align:center;"><strong>전국 4000명</strong></p>
+							</div>
+							<div style="width: 15%; height: 130px; float: left; ">
+								<p class="circle2 cir02"></p>
+							</div>
+							<div style="width: 30%; height: 130px; float: left;margin-right: 10px;">
+								<p><strong>만 18세 이상 ~ 만 40세 미만</strong></p>
+							</div>
+							
+							<div style="width: 15%; height: 130px; float: left;">
+								<p class="circle3 cir02"></p>
+							</div>
+							<div style="width: 30%; height: 130px; float: left;  margin-right: 10px;">
+								<p><strong>사업체 경영자,<br> 공공기관 및 회사의 상근 근로자 제외 <br> 선정 후 30일 이내 폐업 또는 퇴직예정자는 신청가능</strong></p>
+							</div>
+							
+							<div style="width: 15%; height: 130px; float: left; ">
+								<p class="circle4 cir02"></p>
+							</div>
+							<div style="width: 30%; height: 130px; float: left; margin-right: 10px;">
+								<p><strong>독립경영 3년 이하 (예비농업인 포함)<br> 농어업경영체법에 따른<br> 농업경영정보(경영주)등록일 기준으로 계산</strong></p>
+							</div>
+							<div style="width: 15%; height: 130px; float: left;">
+								<p class="circle5 cir02"></p>
+							</div>
+							<div style="width: 30%; height: 130px; float: left;  margin-right: 10px;">
+								<p><strong>건강보험료 등 일정소득 이상인 자는 신청 제외</strong></p>
+							</div>
+							</div>
+							<br>
+							<br>
+							
+						<div style="clear: both;">
+                         <h3>영농정착 지원금 지급개요 및 의무사항</h3>
+                         <br>
+                         <div>
+                        <div style="width:98%; height:150px; border:1px solid gray; float:left; margin:10px; padding:30px;position:relative;">
+                        	<p>1️⃣ </p>
+                        	<h2>지원 금액</h2><br>
+                        	<p>독립경영 기간에 따라 차등지급</p>
+                        	<div id="divImg1"><p  style="color: white; position: absolute; bottom: 60px; left: 570px; font-size:1.5em">[1년차] 100만원</p></div>
+							<div id="divImg2"><p  style="color: white; position: absolute; bottom: 60px; left: 570px; font-size:1.5em">[2년차] 100만원</p></div>
+							<div id="divImg3"><p  style="color: white; position: absolute; bottom: 60px; left: 570px; font-size:1.5em">[3년차] 90만원</p></div>                        
+                        
+                        </div>
+						<div style="width:48%; height:150px; border:1px solid gray; float:left;  margin:10px; padding:30px;">
+							<p>2️⃣ </p>
+							<h2>지급 기간</h2><br>
+                        	<p>최장 3년(최초선발 시 영농 경력에 따라 지급기간 차등)</p>
+						</div>
+						<div style="width:48%; height:150px; border:1px solid gray; float:left; margin:10px; padding:30px;">
+							<p>3️⃣ </p>
+							<h2>지급 방법</h2><br>
+                        	<p>신용·체크카드 발급 (영농자금 및 일반 가계자금으로 사용범위 제한)</p>
+						</div>
+						<div style="width:48%; height:150px; border:1px solid gray; float:left;  margin:10px; padding:30px;">
+							<p>4️⃣ </p>
+							<h2>지급 인원</h2><br>
+                        	<p>농업경영체(농업인, 농업법인) 당 1명 - 법인 공동대표일 경우 각각 지급</p>
+						</div>
+						<div style="width:48%; height:150px; border:1px solid gray; float:left;  margin:10px; padding:30px;">
+							<p>5️⃣ </p>
+							<h2>의무 사항</h2><br>
+                        	<p>의무교육, 재해보험 · 자조금 가입, 전업적 영농, 경영장부 기록,<br> 지원금 성실사용, 의무영농기간 준수 등</p>
+						</div>
+						</div>
+						<br>
+						<div style="clear: both;">
+						<br>
+                         <h3>신청방법 및 안내</h3>
+                         <br>
+                         <div style="width:23%; height:150px; float:left;  margin:10px; padding:30px;background-color: #F8F8F8; padding: 20px; text-align: center; ">
+								<img src="/ohnong/images/ico-info01.svg" width="60px" height="60px" style="width: 100%; text-align: center;">
+								<h2>사업신청</h2>
+								<p><a href="http://www.agrix.go.kr" target="_blank">www.agrix.go.kr</a></p>
+						</div>
+						<div style="width:23%; height:150px; float:left;  margin:10px; padding:30px;background-color: #F8F8F8; padding: 20px; text-align: center; ">
+								<img src="/ohnong/images/ico-info02.svg" width="60px" height="60px" style="width: 100%; text-align: center;">
+								<h2>대표번호</h2>
+								<p>1670-0255</p>
+						</div>
+						<div style="width:23%; height:150px; float:left;  margin:10px; padding:30px;background-color: #F8F8F8; padding: 20px; text-align: center; ">
+								<img src="/ohnong/images/ico-info03.svg" width="60px" height="60px" style="width: 100%; text-align: center;">
+								<h2>사업안내</h2>
+								<p><a href="http://cafe.naver.com/preyoungfarmer" target="_blank">cafe.naver.com/preyoungfarmer</a></p>
+						</div>
+						<div style="width:23%; height:150px; float:left;  margin:10px; padding:30px;background-color: #F8F8F8; padding: 20px; text-align: center; ">
+								<img src="/ohnong/images/ico-info04.svg" width="60px" height="60px" style="width: 100%; text-align: center;">
+								<h2>주관기관</h2>
+								<p>농림축산식품부</p>
+						</div>
+						</div>
+						</div>
+                        </div>
+                        
+                        <!-- 2 -->
+                        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel">
+                        	<div id="imgeDiv2" style=" position:relative;">
+									<p style="color: white; position: absolute; bottom: 40px; left: 40px;">
+									농업 발전을 이끌어 나갈 유망한 예비 농업인 및 농업경영인을 발굴하여<br>
+									일정기간 동안 자금 ·교육 ·컨설팅 등을 종합적으로 지원합니다.<br>
+									경영역량과 전문 기술을 갖춘 성공한 농업 CEO 리더로 도약하는 첫 걸음입니다.
+									</p>
+							</div>
+                         <div>
+                         <br>
+                         <br>
+							<h3>선정규모 및 자격사항</h3>
+							<br><br>
+							<div style="width: 15%; height: 130px; float: left; ">
+								<p class="circle1 cir02"></p>
+							</div>
+							<div style="width: 30%; height: 130px; float: left; margin-right: 10px;">
+								<p style="vertical-align:center;"><strong>전국 1,000명 (시도별 배정 인원에 따름)</strong></p>
+							</div>
+							<div style="width: 15%; height: 130px; float: left; ">
+								<p class="circle2 cir02"></p>
+							</div>
+							<div style="width: 30%; height: 130px; float: left;margin-right: 10px;">
+								<p><strong>만 18세 이상 ~ 만 50세 미만</strong></p>
+							</div>
+							
+							<div style="width: 15%; height: 130px; float: left;">
+								<p class="circle3 cir02"></p>
+							</div>
+							<div style="width: 30%; height: 130px; float: left;  margin-right: 10px;">
+								<p>
+									-농업계 학교(농고·농대 졸업생)<br>
+									-시장·군수·구청장 및 농식품부에서 인정한<br>
+									농업교육 기관에서 관련교육을 이수한 사람<br>
+									<small>사업지침 별표2에 따라 교육 이수실적 평가점수 차등</small>
+								</p>
+							</div>
+							
+							<div style="width: 15%; height: 130px; float: left; ">
+								<p class="circle4 cir02"></p>
+							</div>
+							<div style="width: 30%; height: 130px; float: left; margin-right: 10px;">
+								<p>
+									영농 종사경력이 없거나 10년 이하<br>
+									<small>농어업경영체법에 따른 농업경영정보(경영주)등록한 시점부터 계산</small>
+								</p>
+							</div>
+							<div style="width: 15%; height: 130px; float: left;">
+								<p class="circle6 cir02"></p>
+							</div>
+							<div style="width: 30%; height: 130px; float: left;  margin-right: 10px;">
+								<p>
+									병역미필자도 신청은 가능<br>
+									<small>21년도 산업기능요원 편입대상자가 아닌<br> 병역미필자의 후계농 자금 대출은 군 복무 완료 후 신청 가능</small>
+								</p>
+							</div>
+							</div>
+							<br>
+							
+                         <div style="clear:both;">
+                         
+                         <h3>영농정착 지원금 지급개요 및 의무사항</h3>
+                            <br>
+                         <div>
+                      
+						<div style="width:48%; height:200px; border:1px solid gray; float:left;  margin:10px; padding:30px;">
+							<p>1️⃣ </p>
+							<h2>창업기반 조성비용</h2><br>
+							<p>
+                        	세대당 최대 3억원 정책자금 대출<br>
+							-주민등록등·초본 상 세대주 및 세대원 포함<br>
+							-가족관계증명서 상 부부는 한 세대로 간주<br>
+							-연 2%, 5년 거치 10년 분할상환<br>
+							-정책자금 사용 용도 중 기타자금의 경우 5천만원(가축입식의 경우 1억원)한도
+                        	</p>
+						</div>
+						<div style="width:48%; height:200px; border:1px solid gray; float:left; margin:10px; padding:30px;">
+							<p>2️⃣ </p>
+							<h2>농신보 보증지원</h2>
+							<br>
+							<p>
+                        	최대 90%까지 보증지원<br>
+							-주민등록등·초본 상 세대주 및 세대원 포함<br>
+							-연2%,5년 거치 10년 분할상환<br>
+							-정책자금 사용 용도 중 기타자금의 경우 5천만원(가축입식의 경우 1억원)한도
+                        	</p>
+						</div>
+						<div style="width:48%; height:200px; border:1px solid gray; float:left;  margin:10px; padding:30px;">
+							<p>3️⃣ </p>
+							<h2>교육지원</h2><br>
+							<p>
+                        	역량강화 교육 프로그램 지원<br>
+							-농식품부 정책방향,회계 세무,경영진단,서면 컨설팅 및 영농성공 사례 공유
+                        	</p>
+                        	
+						</div>
+						<div style="width:48%; height:200px; border:1px solid gray; float:left;  margin:10px; padding:30px;">
+							<p>4️⃣ </p>
+							<h2>후계농경영인 추가 지원</h2><br>
+                        	<p>
+                        	후계농업경영인 중에서 선정된지 5년 이상의 사람을 우수후계농업경영반으로<br>
+							선발하여 정책자금 지원 (최대 2억원,1%,5년 거치 10년 상환)
+                        	</p>
+						</div>
+						</div>
+					
+						</div>
+						<br>
+						<div style="clear: both;">
+						<br>
+                         <h3>신청방법 및 안내</h3>
+                         <br>
+                         <div style="width:48%; height:150px; float:left;  margin:10px; padding:30px;background-color: #F8F8F8; padding: 20px; text-align: center; ">
+								<img src="/ohnong/images/ico-info01.svg" width="60px" height="60px" style="width: 100%; text-align: center;">
+								<h2>사업신청</h2>
+								<p><a href="http://www.agrix.go.kr" target="_blank">www.agrix.go.kr</a></p>
+						</div>
+						<div style="width:48%; height:150px; float:left;  margin:10px; padding:30px;background-color: #F8F8F8; padding: 20px; text-align: center; ">
+								<img src="/ohnong/images/ico-info04.svg" width="60px" height="60px" style="width: 100%; text-align: center;">
+								<h2>주관기관</h2>
+								<p>농림축산식품부</p>
+						</div>
+						<p  style="clear: both;">
+						- 시장·군수·구청장 (사업시행 기관)은 지역여건에 맞게 접수처 변경 가능<br>
+						- 후계농 사업기능요원은 배정명부를 보유하고 있는 영농정착지역(사업장) 또는 정착예정지역<br>
+							(사업장)의 주소지 관할 시 · 군 · 구에서 접수</p>
+						</div>
+                        </div>
+                        
+                        
+                        
+                        <!-- 3 -->
+                        <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                        	<div id="imgeDiv3" style=" position:relative;">
+									<p style="color: white; position: absolute; bottom: 40px; left: 40px;">
+										귀농귀촌을 희망하는 도시민들에게 농촌에 거주하며 일자리,생활 등을 체험하고<br> 
+										지역 주민과 교류하는 기회를 제공하여 성공적인 정착을 유도합니다.
+									</p>
+							</div>
+							<br><br>
+							<div>
+							<h3>선정규모 및 자격사항</h3>
+							<br><br>
+							<div style="width: 15%; height: 130px; float: left; ">
+								<p class="circle1 cir02"></p>
+							</div>
+							<div style="width: 30%; height: 130px; float: left; margin-right: 10px;">
+								<p style="vertical-align:center;"><strong>104개 시·군</strong></p>
+							</div>
+							<div style="width: 15%; height: 130px; float: left; ">
+								<p class="circle2 cir02"></p>
+							</div>
+							<div style="width: 30%; height: 130px; float: left;margin-right: 10px;">
+								<p>타 시 지역 거주 도시민(만 18세이상)</p>
+								<p><strong>신청 시·군 외 지역에 주민등록이 되어있는 자<br> 프로젝트 참여형은 만18세이상~만40세미만</strong></p>
+							</div>
+							
+							<div style="width: 15%; height: 130px; float: left;">
+								<p class="circle3 cir02"></p>
+							</div>
+							<div style="width: 30%; height: 130px; float: left;  margin-right: 10px;">
+								<p>최장 6개월간 주거 및 연수비(30만원) <br>및 연수프로그램 제공</p>
+								<p><strong>필수 프로그램 (월 15일) 이수 시 연수비 지원</strong></p>
+							</div>
+							
+							<div style="width: 15%; height: 130px; float: left; ">
+								<p class="circle4 cir02"></p>
+							</div>
+							<div style="width: 30%; height: 130px; float: left; margin-right: 10px;">
+								<p><strong>일자리 연계</strong></p>
+							</div>
+							</div>
+							<br><br>
+                         <div style="clear:both;">
+                         </div>
+                      <h3>지원 프로그램</h3>
+                         <br>
+                         <div>
+                        <div style="width:98%; height:150px; border:1px solid gray; float:left; margin:10px; padding:30px;position:relative;">
+                        	<p>1️⃣ </p>
+                        	<h2>참가자의 특성에 따라 구성</h2><br>
+                        	<p>* 귀농형, 귀촌형(1~6개월), 프로젝트참여형(3~6개월)</p>
+                        	<div  style=" position:relative;">
+                        	<div id="divImg4"><p  style="color: black; position: absolute; bottom: 60px; left: 500px; font-size:1.5em">귀농형</p></div>
+							<div id="divImg5"><p  style="color: black; position: absolute; bottom: 60px; left: 500px; font-size:1.5em">귀촌형</p></div>
+							<div id="divImg6"><p  style="color: black; position: absolute; bottom: 60px; left: 490px; font-size:1.5em">프로젝트 참여형</p></div>      
+							</div>
+                        </div>
+						</div>
+						<br>
+						<div>
+                        <h3>신청 방법</h3>
+							<br>
+							<div style="background-color: #F8F8F8; padding: 20px; text-align: center; ">
+								<img src="/ohnong/images/ico-info01.svg" width="60px" height="60px" style="width: 100%; text-align: center;">
+								<h2>사업신청</h2>
+								<p><a href="http://www.agrix.go.kr" target="_blank">www.agrix.go.kr</a></p>
+								<br>
+								<p>지역별 모집일정, 주요 프로그램 등 구체적인 내용은 귀농귀촌종합센터 홈페이지 농촌에서 살아보기 메뉴에서 확인 가능</p>
+							</div>
+						</div>
+						
+						
+						
+                        </div>
+                        
+                        
+                        <!-- 4 -->
+						<div class="tab-pane fade" id="v-pills-settings" role="tabpanel">
+							<div id="imgeDiv4" style=" position:relative;">
+									<p style="color: white; position: absolute; bottom: 40px; left: 40px;">
+										농촌진흥기관에서 개발된 신기술과 청년농업인들의 <br> 창의적 아이디어가 융복합되어 농산물의 고부가가치를 이끌어 낼 수 있는<br> 자율형 도단위 공모사업입니다.
+									</p>
+							</div>
+							<br>
+							<br>
+							<div>
+							<h3>지원 대상</h3>
+							<br>
+							<div style="width: 200px; height: 150px; float: left; margin-right: 10px;">
+								<p class="circle2 cir02"></p>
+							</div>
+								<div style="width: 200px; height: 150px; float: left;">
+									<p><strong>만 18세 이상 ~ 만 40세 미만</strong></p>
+									<p><small>사업시행년도 기준</small></p>
+								</div>
+							</div>
+							<br>
+							<div style="clear: both;">
+							<h3>사업 내용</h3>
+							<br>
+							<div style="padding: 20px; border: 1px solid; ">
+								<h2>개소당 50백만원 경상적 사업비 지원(자부담 10%)</h2><br>
+								<p>- 신제품 개발,가공 · 상품화,시페줌 제작,체험프로그램 개발 등 지원</p>
+								<p>- 브랜드 · 상품로고 제작, 앱 · 전자상거래 홈페이지 구축 등 유통 · 마케팅 개선 지원</p>
+								<p>- 창업아이템과 관련된 지식재산권 확보에 소요되는 비용 지원 등></p>
+							</div>
+							<br>
+							<h3>신청 방법</h3>
+							<br>
+							<div style="background-color: #F8F8F8; padding: 20px; text-align: center; ">
+								<img src="/ohnong/images/ico-info01.svg" width="60px" height="60px" style="width: 100%; text-align: center;">
+								<h2>사업신청</h2>
+								<p>시군농업기술센터 (7~8월중)</p>
+							</div>
+							</div>
+						</div>
+					</div>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                </div>
+              </div>
+         </div>
+     </div>
+ </div>
+            <!-- /page content -->
+</div>
+</body>
+</html>

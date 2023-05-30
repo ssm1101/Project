@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layoutMagement}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+<!-- TOAST UI Editor CDN URL(CSS) -->
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+<!-- TOAST UI Editor CDN URL(JS) -->
+<script
+	src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<script src="https://uicdn.toast.com/editor/latest/i18n/ko-kr.min.js"></script>
+
+	<link rel="stylesheet" th:href="@{/css/default.css}" />
+	<link rel="stylesheet" th:href="@{/css/content.css}" />
+	<link rel="stylesheet" th:href="@{/css/button.css}" />
+
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+<style>
+.ck-content {						/* ckeditor 높이 */
+    height: 300px;
+}
+</style>
+</head>
+
+<th:block layout:fragment="css"></th:block>
+<th:block layout:fragment="script"></th:block>
+<body class="nav-md">
+	<div layout:fragment="contentMagement">
+		<!-- page content -->
+		<div class="right_col" role="main">
+			<div class="">
+				<!-- 전체 내용 -->
+				<div class="page-title">
+					<!-- 제목 -->
+					<div class="title_left">
+						<h3>공지사항</h3>
+					</div>
+				</div>
+				
+				<div class="row" style="display: block;">
+				<div class="col-md-12">
+				<div class="x_panel">
+					<div class="x_title">
+						<h2 class="green">등록</h2>
+						<ul class="nav navbar-right panel_toolbox">
+							<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+							<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+								<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+									<a class="dropdown-item" href="#">Settings 1</a> 
+									<a class="dropdown-item" href="#">Settings 2</a>
+								</div>
+							</li>
+						</ul>
+						<div class="clearfix"></div>
+					</div>
+					<div class="x_content">
+						
+							<table class="tb tb_row" style="border: 1px solid black;">
+							<colgroup>
+								<col style="width:15%;" /><col style="width:35%;" /><col style="width:15%;" /><col style="width:35%;" />
+							</colgroup>
+							<tbody>
+								<tr>
+									<th scope="row">카테고리</th>
+									<td >
+										<select id="selectCategoery" name="noticeCategory" th:onchange="selectBoxChange(this.value);">
+											<option value=""  disabled>:: 선택 ::</option>
+											<option value="공지사항" >공지사항</option>
+											<option value="오시는길" >오시는길</option>
+											<option value="오농소개">오농소개</option>
+											<option value="기타" >기타</option>
+										</select>
+									</td>
+									<th scope="row">등록일</th>
+									<td colspan="3"><input type="DATE" id="regDate" name="regDate" th:value="${#dates.format(date)}" readOnly/></td>
+								</tr>
+								<tr>
+									<th>제목 <span class="es">필수 입력</span></th>
+									<td><input type="text" id="noticeTitle" name="noticeTitle" maxlength="50" placeholder="제목을 입력해 주세요." /></td>
+									<th>작성자 <span class="es">필수 입력</span></th>
+									<td colspan="3"><input type="text" id="noticeWriter" name="noticeWriter" maxlength="10" th:value="${session.login.userId}" readOnly/></td>
+								</tr>
+	
+								<tr>
+									<th>내용 <span class="es">필수 입력</span></th>
+									<td colspan="3">
+									<div id="editor" ></div>
+								</td>
+								</tr>
+							</tbody>
+						</table>
+						
+					
+					<br>
+					<form id="insertColumn" th:action="@{noticeRegister}" method="POST">
+						<input type="hidden" name="noticeTitle" value=""> 
+						<input type="hidden" name="noticeContent" value=""> 
+						<input type="hidden" name="noticeWriter" value="">
+						<input type="hidden" name="noticeCategory" value="">
+						<input type="hidden" name="regDate" value="">
+					</form>
+					<div style="text-align: center;">
+						<button type="button" class="btn btn-round btn-info" th:onclick="location.href='noticeList'" >목록 <i class="fa fa-repeat"></i></button>
+						<button type="button" onclick="submit()" class="btn btn-round btn-primary">저장 <i class="fa fa-edit"></i></button>
+						<button type="reset" class="btn btn-round btn-secondary">취소 <i class="fa fa-close"></i></button>
+					</div>
+			
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /page content -->
+		<script th:inline="javascript">
+
+		$("#regDate").val(new Date().toISOString().substring(0,10));
+		
+		//jquery 소스
+		var selectBoxChange = function(value){
+			$("#selectCategoery").val(value);
+		}
+		
+		<!-- 이미지업로드-->	
+        const onUploadImage = async (blob, callback) => {
+            const formData = new FormData();
+            formData.append("image", blob);
+            formData.append("uri", window.location.pathname);
+            
+		      $.ajax({
+              type: "post",
+              url: "/ohnong/image_upload.do",
+              async: true,
+              data: formData,
+              processData: false,
+              contentType: false,
+              success: function (data) {
+                imageURL = data;
+                callback(imageURL, "image");
+              },
+              error: function (request, status, error) {
+                alert(request + ", " + status + ", " + error);
+              },
+            });
+          };
+          
+          <!-- TOAST UI Editor 생성 JavaScript 코드 -->
+			const editor = new toastui.Editor({
+				el: document.querySelector("#editor"),
+				height: "600px",
+				initialEditType: "wysiwyg",
+				placeholder: "내용을 입력해주세요",
+				language: "ko-kr",
+				hooks: {
+					addImageBlobHook: onUploadImage
+				}
+			});
+
+			// editor.getHtml()을 사용해서 에디터 내용 수신
+			// document.querySelector('#contents').insertAdjacentHTML('afterbegin' ,editor.getHTML());
+			// 콘솔창에 표시
+			function submit(){
+				
+				let noticeTitle = $("#noticeTitle").val();
+				let noticeContent = editor.getMarkdown(); //에디터써서 콘텐츠안에 이미지 같이있음.
+				let noticeWriter = $("#noticeWriter").val();
+				let noticeCategory = $('#selectCategoery').val();
+				let regDate = $("#regDate").val();
+				
+				$("#insertColumn").children().eq(0).attr("value", noticeTitle);
+				$("#insertColumn").children().eq(1).attr("value", noticeContent);
+				$("#insertColumn").children().eq(2).attr("value", noticeWriter);
+				$("#insertColumn").children().eq(3).attr("value", noticeCategory);
+				$("#insertColumn").children().eq(4).attr("value", regDate);
+				
+				$("#insertColumn").attr("action", "noticeRegister").submit();
+			}
+        
+		
+		</script>
+		</div></div>
+	</div>
+</body>
+</html>

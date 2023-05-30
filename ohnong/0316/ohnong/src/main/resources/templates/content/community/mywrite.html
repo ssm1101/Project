@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layoutMagement}">
+  <head>
+   <title> oh-nong!</title>
+<meta charset="UTF-8">
+   <link rel="stylesheet" th:href="@{/css/default.css}" />
+   <link rel="stylesheet" th:href="@{/css/content.css}" />
+   <link rel="stylesheet" th:href="@{/css/button.css}" />
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+<style>
+   .pageInfo_area{
+    text-align: center;
+    width: 50%;
+}
+.pagination2{
+    list-style: none;
+    display: inline-block;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.pagination2 li {
+    display: inline;
+    text-align: center;
+}
+/*숫자*/ 
+.pagination2 a {
+    float: left;
+    display: block;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 5px 12px;
+    color: #96a0ad;
+    line-height: 1.5;
+}
+.pagefirst{
+    margin-right: 15px;
+}
+.pagelast{
+    margin-left: 15px;
+}
+.pagefirst:hover, .pagelast:hover, .arrowright:hover, .arrowleft:hover, .model .num:hover{
+    color:#2e9cdf;
+}
+.pagination2 .move.active{
+    cursor: default;
+    color: #ffffff;
+}
+.pagination2 .move:active{
+    outline: none;
+}
+.model .num {
+    margin-left: 3px;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    -moz-border-radius: 100%;
+    -webkit-border-redius:100%;
+    border-radius: 100%;
+}
+.model .num.active, .model .num:active{
+    background-color: #2e9cdf;
+    cursor: pointer;
+}
+.arrowleft{
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10ox solid blue;
+}
+
+ a.active {
+ 	cursor:default;
+ 	color:#ffffff; 	
+ }
+ 
+ 
+
+  
+  .search_area{
+    text-align:center;
+  }
+  .search_area input{
+    height: 30px;
+    width: 250px;
+  }
+  .search_area button{
+    height: 30px;
+    width: 100px;
+  }
+   .search_area select{
+  	height: 30px;
+    width:150px;
+  }
+ .move:link {color: #2e9cdf; text-decoration: none; }
+ .move:visited {color:purple;,text-decoration: overline;}
+ .move:hover {color:#bbb;,text-decoration: underline;}
+ .x_content{
+	 width:100%; 
+	 text-align:center; 
+	 line-height:31px;
+ }
+</style>
+	</head>  
+    <!-- page content -->
+        
+		     <div layout:fragment="contentMagement">
+				<div class="right_col" role="main">
+		   <div class="">
+		      <div class="page-title">
+		         <div class="title_left">
+		            <h3>Oh! Nong</h3>
+		              </div>
+		      </div>
+		      <div class="clearfix"></div>
+		      <div class="row" style="display: block;">
+		      <div class="col-md-12">
+		         <div class="x_panel">
+		            <div class="x_title">
+		  			<h2>내 정보 <small style="font-weight: bold;">내가 작성한 글</small></h2>
+		                  <ul class="nav navbar-right panel_toolbox">
+		                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+		                     <li class="dropdown">
+		                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+		                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+		                           <a class="dropdown-item" href="#">공지사항</a> 
+		                           <a class="dropdown-item" href="#">오농식</a>
+		                           <a class="dropdown-item" href="#">오시는길</a>
+		                        </div>
+		                     </li>
+		                  </ul>
+		               <div class="clearfix"></div>
+		            </div>
+		            <div class="x_content">
+		            <p style="text-align:left;">＊ 전체 <span th:text=${pageMaker.total}></span> 건 | 현재페이지 [[${pageMaker.criteria.pageNum}]]</p>
+		           <div style=" align-items:center; height: 50px; margin-top: 10px;">
+				 
+		           <!-- 카테고리별 분류 -->
+				  <div style=" margin-right:10px; height: 50px; float: left;">
+				    <select id="Category" name="type" th:onchange="categoryBoxChange(this.value)" class="btn btn-success dropdown-toggle" style="font-weight: bold; background-color:#2A3F54;border: none; " >
+				      <option value="" th:selected="${pageMaker.criteria.category == null?true:false }" >전체카테고리</option>
+				      <option value="A" th:selected="${pageMaker.criteria.category eq 'A'?true:false }">노하우 & 팁</option>
+				      <option value="B" th:selected="${pageMaker.criteria.category eq 'B'?true:false }">1:1문의</option>
+				      <option value="C" th:selected="${pageMaker.criteria.category eq 'C'?true:false }">전문인에게 물어봐</option>
+				      <option value="D" th:selected="${pageMaker.criteria.category eq 'D'?true:false }">잡담</option>
+				    </select>
+				  </div>
+					</div>
+					<form id="moveFormCategory" method="get" style="display:none;">
+						<input type="text" name="pageNum" th:value="${pageMaker.criteria.pageNum}">
+	        			<input type="text" name="amount" th:value="${pageMaker.criteria.amount}">
+	        			<input type="text" name="category" th:value="${pageMaker.criteria.category}"> 
+	        	    </form> 
+				<!-- 카테고리별 분류끝 --> 
+                    <div class="clearfix"></div>
+                  
+                  <div class="table-responsive" style="height: 700px">
+                    <table id="datatable-buttons" class="table table-striped jambo_table bulk_action" style="text-align:center;">
+                    <colgroup>
+                     <col style="width: 5%;" />
+                     <col style="width: 10%;" />
+                     <col style="width: 15%;"/>
+                     <col style="width: 10%;" />
+                     <col style="width: 10%;" />
+                     <col style="width: 5%;" />
+                     <col style="width: 5%;" />
+                  </colgroup>
+                  	 <thead>
+                        <tr>
+                          <th  class="column-title">No.</th>
+                          <th class="column-title">카테고리</th>
+                          <th class="column-title">제목</th>
+                          <th class="column-title">작성자</th>
+                          <th class="column-title">등록일</th>
+                          <th class="column-title">조회수</th>
+                          <th class="column-title">추천수</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      
+                      	<tr th:each="boardInfo : ${boardList}">
+                				<td th:text="${boardInfo.boardBno}"/>
+                				<td th:switch="${boardInfo.boardCategory}">
+                					<span th:case="A">노하우&팁</span>
+                					<span th:case="B">1:1문의</span>
+                					<span th:case="C">전문인에게 물어봅니다</span>
+                					<span th:case="D">잡담</span>
+                					 
+                				</td>
+                				<td> <!--비밀글+ 로그인 + 작성자. -->
+	                				<a th:if="${boardInfo.noshow==1} AND ${session.login !=null} AND (${session.login.userId} == ${boardInfo.userId}) AND ${boardInfo.exist==0}"  th:href="@{/communityView(boardBno=${boardInfo.boardBno},userId=${session.login?.userId},col='B')}" th:text="'(🔓비밀글)'+${boardInfo.boardTitle}"></a>
+	                				<a th:if="${boardInfo.noshow==1} AND ${session.login !=null} AND (${session.login.userId} == ${boardInfo.userId}) AND ${boardInfo.exist==5}"  th:href="@{/communityView(boardBno=${boardInfo.boardBno},userId=${session.login?.userId},col='B')}" th:text="'(🔓비밀글,블라인드 처리된 글입니다)'+${boardInfo.boardTitle}"></a>
+	                				<a th:if="${boardInfo.noshow==0} AND ${session.login !=null} AND (${session.login.userId} == ${boardInfo.userId}) AND ${boardInfo.exist==0}"  th:href="@{/communityView(boardBno=${boardInfo.boardBno},userId=${session.login?.userId},col='B')}" th:text="${boardInfo.boardTitle}"></a>
+	                				<a th:if="${boardInfo.noshow==0} AND ${session.login !=null} AND (${session.login.userId} == ${boardInfo.userId}) AND ${boardInfo.exist==5}"  th:href="@{/communityView(boardBno=${boardInfo.boardBno},userId=${session.login?.userId},col='B')}" th:text="'(📢블라인드 처리된 글입니다)'+${boardInfo.boardTitle}"></a>
+                				<td th:text="${boardInfo.userId}"/>
+                				<td th:text="${#dates.format(boardInfo.boardRegdate,'yyyy-MM-dd')}"/> 
+                				<td th:text="${boardInfo.boardHitcount}"/>
+                				<td th:text="${boardInfo.boardLike}"/>
+                		</tr>
+                	  </tbody>
+                    </table>
+                    	               <!-- 페이징 -->
+                 <div class="pageInfo_area" style="width:100%; text-align: center; disiplay:inline-block; margin-top: 50px;">            
+            	<ul class="pagination2 model" th:each="page:${pageMaker}">
+					<th:block
+						th:with="start = ${page.startPage}, end = ${page.endPage} ">
+						<!-- 처음-->
+						<li class="pageInfo_btn"><a class="pagefirst" 
+							th:href="@{/mywrite?pageNum={page}&amount=10&category={category}(page = ${1},category=${pageMaker.criteria.category})}" 
+							th:text="'<<'"></a></li>
+						<!-- 이전 -->
+						<li class="pageInfo_btn" th:if="${page.prev}"><a
+							class="allowleft"
+							th:href="@{/mywrite?pageNum={page}&amount=10&category={category} (page = ${page.startPage-1},category=${pageMaker.criteria.category})}"
+							th:text="'<'"></a></li>
+						<!-- 숫자 -->
+						<li class="pageInfo_btn"
+							th:with="start = ${page.startPage}, end = ${page.endPage} "
+							th:each="pageButton : ${#numbers.sequence(start, end)}">
+							<a class="num"
+							th:href="@{/mywrite?pageNum={page}&amount=10&category={category} (page = ${pageButton},category=${pageMaker.criteria.category})}"
+							th:text=${pageButton}
+							th:classappend="${pageMaker.criteria.pageNum == pageButton ? 'active':'' }"></a>
+						</li>
+						<!-- 다음 -->
+						<li class="pageInfo_btn" th:if="${page.next}"><a
+							class="arrowright"
+							th:href="@{/mywrite?pageNum={page}&amount=10&category={category} (page = ${page.endPage+1},category=${pageMaker.criteria.category})}"
+							th:text="'>'"></a></li>
+						<!-- 끝 -->
+						<li class="pageInfo_btn"><a class="pagelast"
+							th:href="@{/mywrite?pageNum={page}&amount=10&category={category}(page = ${page.realEnd},category=${pageMaker.criteria.category})}"
+							th:text="'>>'"> <span>끝</span></a></li>
+					</th:block>
+				</ul>
+				</div>
+                 <!-- 페이징 -->  
+                    
+                    
+                   </div>
+              
+     
+                </div>
+              </div>
+            </div>
+           </div>        
+         
+<script>
+
+			//비밀글 직접접근방지 alert메세지.
+			var msg = "[[${msg}]]";
+			
+			if(msg != ''){
+				 Swal.fire({
+		                icon: 'warning',
+		                title: msg
+		            });
+			}
+			
+        	//카테고리별 분류
+           	var categoryBoxChange= function(){
+        		
+        		
+        		let category =$("#Category  option:selected").val();
+        		
+        		let moveFormCategory = $("#moveFormCategory");
+        		
+         		console.log(category);	
+        		moveFormCategory.find("input[name='category']").val(category);
+        		moveFormCategory.find("input[name='pageNum']").val(1);
+        		moveFormCategory.submit();
+        		
+        	
+        			
+        	}
+        	
+        	
+      
+</script>
+   			</div>
+		
+           </div>
+           <!-- content div 끝 -->
+        </div>
+        <!-- /page content -->	
+  </body>
+
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html
+  xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layoutMagement}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>oh-nong!</title>
+<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
+
+<style>
+ select{
+ 	height: 50px;
+ 	width: 200px;
+	-webkit-appearance:none;
+    background: url(/ohnong/images/icon-search.gif) no-repeat right 6px center;
+    background-size: 10px 10px;
+    border: 1px solid #C4C4C4;
+    box-sizing: border-box;
+    border-radius: 10px;
+    padding: 12px 13px;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px;
+}
+select:focus{
+    border: 1px solid gray;
+    box-sizing: border-box;
+    border-radius: 10px;
+    outline: 3px solid gray;
+    border-radius: 10px;
+}
+option {
+  padding: 4px;
+  font-size: 14px;
+  color: #fff;
+  background: #272822;
+}
+</style>
+</head>
+
+<th:block layout:fragment="css"> </th:block>
+<th:block layout:fragment="script"> </th:block>
+
+<body class="nav-md">
+<div layout:fragment="contentMagement">
+	<!-- page content -->
+        <div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+            	<div class="title_left">
+					<h3 style="color:black;"><i class="fa fa-leaf"></i> Oh! Nong</h3>
+				</div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2>농가 가격 정보<small>도매시장 중도매인 상회에서 소상인 및 실수요자에게 판매하는 가격</small></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">Settings 1</a>
+                            <a class="dropdown-item" href="#">Settings 2</a>
+                          </div>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+					<div class="x_content" >
+						<div class="row">
+							<div class="col-md-12 col-sm-12">
+								<div class="x_panel">
+										<div>
+											<h3><i class="fa fa-bullhorn"></i> 이용안내</h3>
+											<div class="table" style="border:1px solid black; padding:20px; font-size:large; ">
+											<ul style="margin:0px">
+												<li style="color:red;">도매시장 중도매인 상회에서 소상인 및 실수요자에게 판매하는 가격입니다. </li>
+												<li>농산물 특성상 크기와 색상 등이 다양하고 저장기간, 기후변화에 따라 동일 등급에도 다소 차이가 있을 수 있음. </li>
+												<li>1개월전, 1년전, 평년 가격은 해당일자 <strong>기준 5일 이동평균</strong> 가격임. (이동평균은 해당일 기준 전후로 4~5일의 평균값) </li>
+												<li>평년은 5년간(금년 제외) 해당일에 대한 최고값과 최소값을 제외한 3년 평균값. (해당일 평균가격은 5일 이동평균값을 적용) </li>
+												<li>조사단위가 중량이 아닌 품목(포기, 개, 접, 마리 등)은 kg 단위 환산이 제공되지 않음. </li>
+												<li><strong>본 가격자료는 전국 주요 시장에서 조사된 도∙소매 평균가격으로 개별 판매처 및 산지, 브랜드, 규격 등에 따라 가격이 다를 수 있으므로<br> 실거래에 있어서 참고 자료로만 활용하여 주시기 바랍니다.</strong> </li>
+											</ul>
+											</div>
+										</div>
+										&nbsp
+											<h3><i class="fa fa-tasks"></i> 정보조회_조사일자 : [[${result.condition[0]}]]</h3>
+											<h2 style="width:50%;float:left;">📈 전일 대비 <span style="color:red;">상승</span> 폭이 큰 목록입니다.</h2>	
+											<h2 style="width:50%;float:left;">📉 전일 대비 <span style="color:blue; ">하락</span> 폭이 큰 목록입니다.</h2>
+											<div id="pdiv" class="table" style="border:1px solid black; padding:20px; font-size:large; width:50%; height:200px; float:left;	overflow: auto; background-color:#F7F9FA">
+											</div>
+											<div id="pdiv1" class="table" style="border:1px solid black; padding:20px; font-size:large; width:50%;height:200px; float:left; overflow: auto; background-color:#F7F9FA">
+											</div>
+										&nbsp
+										<h3><i class="fa fa-bar-chart-o"></i> 검색조건 </h3>
+										<div>
+											<table id="serachTbl" style="padding: 5px; text-align:center;" >
+													<colgroup>
+														<col style="width: 15%;" />
+														<col />
+														<col style="width: 10%;" />
+														<col />
+														<col style="width: 10%;" />
+														<col />
+													</colgroup>
+													<tr>
+													<th style="vertical-align:middle;">구분 (도/소매)</th>
+													<td>
+														<select name="searchCNmae" id="searchCNmae" onchange="com_child()">
+															<option value=""> ::선택하세요:: </option>
+														</select>
+													</td>
+													<th style="vertical-align:middle;">부류명</th>
+													<td>
+														<select name="searchBooRyu" id="searchBooRyu" onchange="com_child2()">
+															<option value=""> ::선택하세요:: </option>
+														</select>
+													</td>
+													<th style="vertical-align:middle; ">품목명</th>
+													<td>
+														<select name="searchProduct" id="searchProduct">
+															<option value=""> ::선택하세요:: </option>
+														</select>
+													</td>
+												</tr>
+											</table>
+											<span style="float:right;">(단위 : 원)</span>
+										<div id="show"></div>
+										</div>
+								</div>
+							</div>
+							<div id="context"></div>
+						</div>
+					</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /page content -->
+<script th:inline="javascript">
+
+	
+let priceList = [[${result.price}]]
+
+const titles =['구분','부류명','품목명','단위','당일','등락율','전일','1개월전','1년전']
+const columns =['product_cls_name','category_name','productName','unit','dpr1','value','dpr2','dpr3','dpr4']
+
+
+        // # 테이블의 헤더 부분 생성
+          function makeHead() {
+            let thead = document.createElement('thead');
+            let tr = document.createElement('tr');
+
+            // titles이 들어있는 배열. 매개값으로 함수가 들어감
+            titles.forEach(title => {
+                let th = document.createElement('th');
+                th.innerText = title;
+                tr.append(th);
+            });
+            thead.append(tr);
+            return thead;
+        }
+        // # 테이블의 바디 부분 생성
+        function makeBody(ary = []) { // 매개값이 배열임
+            let tbody = document.createElement('tbody');
+
+            // 건수만큼 tr로 생성
+            ary.forEach(center => { // 매개값 순서 : 요소, 인덱스, 배열
+                tbody.append(makeTr(center));
+            });
+            return tbody;
+        }
+        // # tr 생성
+        function makeTr(center = {}) { // 매개값이 객체임
+            let tr = document.createElement('tr');
+			
+            columns.forEach(field => {
+                let td = document.createElement('td');
+                
+            		
+               if(field == 'value') {
+                	let val = center.value
+                	let direction = center.direction;
+                	let iTag = document.createElement('i');
+                	let percent = document.createElement('span');
+                	percent.innerText = '%';
+                	
+                		if(direction == 1){
+                			iTag.classList.add('fa');
+    						iTag.classList.add('fa-long-arrow-up');
+    						iTag.setAttribute('style', 'color:red');
+                			td.setAttribute('style', 'color:red');
+                		} else if(direction == 0){
+                			iTag.classList.add('fa');
+    						iTag.classList.add('fa-long-arrow-down');
+    						iTag.setAttribute('style', 'color:blue');
+                			td.setAttribute('style', 'color:blue');
+                		} else if(direction == 2){}
+                		if(direction==1 && val > 4){
+                			let pTag = $('<p>')
+                			let pName = center.productName
+                			let cType = center.product_cls_name
+                			pTag.text(cType+"_"+pName +" " +'_전일과 ' + val +"% 차이가 있습니다.")
+                			$('#pdiv').append(pTag);
+                		}
+                		if(direction==0 && val > 4){
+                			let pTag = $('<p>')
+                			let pName = center.productName
+                			let cType = center.product_cls_name
+                			pTag.text(cType+"_"+pName +" " +'_전일과 ' + val +"% 차이가 있습니다.")
+                			$('#pdiv1').append(pTag);
+                		}
+                	td.innerText = center[field];
+                	td.append(percent)
+                	td.append(iTag)
+                	
+                }
+                else{
+                	td.innerText = center[field];
+                }
+                tr.append(td);
+            })
+            return tr;
+        }
+
+        let table;
+        let prices = []; 
+        let clsNameAry = [];
+        let booRyuAry = [];
+        let productAry = [];
+        let productAry100 = [];
+        let productAry200 = [];
+        let productAry300 = [];
+        let productAry400 = [];
+        let productAry500 = [];
+        let productAry600 = [];
+        
+        table = document.createElement('table');
+
+        prices = priceList;
+         // select option 추가하기
+         for (let price of prices) {
+             //배열. indexOf() 사용하여 값이 있는지 확인 후 option값 추가
+             if (clsNameAry.indexOf(price.product_cls_name) == -1) {
+            	 clsNameAry.push(price.product_cls_name);
+             }
+             if (booRyuAry.indexOf(price.category_name) == -1) {
+            	 booRyuAry.push(price.category_name);
+             }
+
+        	 if (productAry.indexOf(price.productName) == -1) {
+        		 if(price.category_code == '100'){
+        		 	productAry100.push(price.productName);
+        		 } else if(price.category_code == '200'){
+        			 productAry200.push(price.productName);
+        		 } else if(price.category_code == '300'){
+        			 productAry300.push(price.productName);
+        		 } else if(price.category_code == '400'){
+        			 productAry400.push(price.productName);
+        		 } else if(price.category_code == '500'){
+        			 productAry500.push(price.productName);
+        		 } else if(price.category_code == '600'){
+        			 productAry600.push(price.productName);
+        		 }
+        	}
+         }
+         
+         function com_parent(){
+        	    let opt = [];
+        	    opt.push(`<option value="" selected>:: 선택하세요 ::</option>`)
+        	    clsNameAry.forEach(data =>{
+        	        opt.push(`<option value="${data}">${data}</option>`);
+        	    });
+        	    document.getElementById("searchCNmae").innerHTML = opt.join("");
+        	}
+
+         function com_child(){
+             let opt = [];
+             let oneSel = document.getElementById("searchCNmae").value;
+             
+             if( oneSel == ""){
+            	 opt.push(`<option value="" selected>:: 선택하세요 ::</option>`)
+             } else if( oneSel == "도매"){
+            	 opt.push(`<option value="" selected>:: 선택하세요 ::</option>`)
+            	 booRyuAry.forEach(data =>{
+                       opt.push(`<option value="${data}">${data}</option>`);
+                   });
+             } else if( oneSel == "소매"){
+            	 opt.push(`<option value="" selected>:: 선택하세요 ::</option>`)
+            	 booRyuAry.forEach(data =>{
+               		 opt.push(`<option value="${data}">${data}</option>`);
+                    });
+                }
+             document.getElementById("searchBooRyu").innerHTML = opt.join("");
+             }
+         
+         function com_child2(){
+        	 let opt = [];
+        	 let towSel = document.getElementById("searchBooRyu").value;
+        	 
+        	 if( towSel == ""){
+        		 opt.push(`<option value="" selected>:: 선택하세요 ::</option>`)
+        	 } else if( towSel == "식량작물" ){
+        		 opt.push(`<option value="" selected>:: 선택하세요 ::</option>`)
+        			 productAry100.forEach(data =>{
+                         opt.push(`<option value="${data}">${data}</option>`);
+                     });
+        	} else if ( towSel == "채소류" ){
+        		opt.push(`<option value="" selected>:: 선택하세요 ::</option>`)
+        			 productAry200.forEach(data =>{
+                         opt.push(`<option value="${data}">${data}</option>`);
+                     });
+        	} else if ( towSel == "특용작물" ){
+        		opt.push(`<option value="" selected>:: 선택하세요 ::</option>`)
+        			 productAry300.forEach(data =>{
+                         opt.push(`<option value="${data}">${data}</option>`);
+                     });
+        	} else if ( towSel == "과일류" ){
+        		opt.push(`<option value="" selected>:: 선택하세요 ::</option>`)
+        			 productAry400.forEach(data =>{
+                         opt.push(`<option value="${data}">${data}</option>`);
+                     });
+        	} else if ( towSel == "축산물" ){
+        		opt.push(`<option value="" selected>:: 선택하세요 ::</option>`)
+        			 productAry500.forEach(data =>{
+                         opt.push(`<option value="${data}">${data}</option>`);
+                     });
+        	} else if ( towSel == "수산물" ){
+        		opt.push(`<option value="" selected>:: 선택하세요 ::</option>`)
+        			 productAry600.forEach(data =>{
+                         opt.push(`<option value="${data}">${data}</option>`);
+                     });
+        	}
+        	    document.getElementById("searchProduct").innerHTML = opt.join("");
+         }
+         
+         com_parent();
+
+         table.append(makeHead(), makeBody(prices));
+         table.classList.add('table');
+         table.classList.add('table-striped');
+         table.classList.add('jambo_table');
+         document.getElementById('show').append(table);
+
+         
+     	// 도/소매별 조회
+        document.getElementById('searchCNmae').addEventListener('change', function () {
+              document.querySelector('#show tbody').remove();
+              let searchCNmae = [];
+              let keyword = document.getElementById('searchCNmae').value;
+              for (let price of prices) {
+                  if (price.product_cls_name == keyword) {
+                 	 searchCNmae.push(price);
+                  }
+              }
+              document.querySelector('#show table').append(makeBody(searchCNmae));
+          });
+     	
+       	// 부류별 조회
+        document.getElementById('searchBooRyu').addEventListener('change', function () {
+             document.querySelector('#show tbody').remove();
+             let searchBooRyu = [];
+             let keyword1 = document.getElementById('searchCNmae').value;
+             let keyword2 = document.getElementById('searchBooRyu').value;
+             for (let price of prices) {
+            	 if (price.product_cls_name == keyword1) {
+            		 if(price.category_name == keyword2){
+            			 searchBooRyu.push(price);
+            		 }
+            	 }
+             }
+             document.querySelector('#show table').append(makeBody(searchBooRyu));
+         });
+      
+         // 품목별 조회
+         document.getElementById('searchProduct').addEventListener('change', function () {
+             document.querySelector('#show tbody').remove();
+             let searchProduct = [];
+             let keyword1 = document.getElementById('searchCNmae').value;
+             let keyword2 = document.getElementById('searchBooRyu').value;
+             let keyword3 = document.getElementById('searchProduct').value;
+             for (let price of prices) {
+            	 if (price.product_cls_name == keyword1) {
+            		 if(price.category_name == keyword2){
+            			 if(price.productName == keyword3){
+            				 searchProduct.push(price);
+            			 }
+            		 }
+            		 
+            	 }
+            	 
+             }
+             document.querySelector('#show table').append(makeBody(searchProduct));
+         });
+         
+</script>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohnong.app.main.mapper.MemberMapper">
+    
+    <insert id="insertMemberInfo" parameterType="MemberVO">
+    Insert into MEMBER (USER_ID,USER_PW,USER_NAME,BIRTH,USER_EMAIL,USER_ADDR,USER_TEL)
+    values (#{userId},#{userPw},#{userName},#{birth},#{userEmail},#{userAddr},#{userTel})
+    </insert>
+
+</mapper>

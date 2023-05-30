@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohnong.app.stock.mapper.HarvestMapper">
+
+	<select id="getHarvestList" resultType="HarvestVO">
+		select h.harvest_no,
+			   h.count,
+			   h.registe_date,
+			   h.crop_no,
+			   c.item_code,
+			   s.name,
+			   w.warehouse_name
+			   
+		from harvestStock h join crop c
+		  on (h.crop_no = c.crop_no)
+		join subdivision s
+		  on (c.item_code = s.item_code)
+		join warehouse w
+		  on (h.warehouse_code = w.warehouse_code)
+	</select>
+	
+	<select id="getHarvestListWithPaging" resultType="HarvestVO">
+		select * from(
+           select rownum rn, a.* from(
+              select h.harvest_no,
+              		 h.count,
+              		 h.registe_date,
+              		 h.crop_no,
+              		 c.item_code,
+              		 s.name,
+              		 w.warehouse_name,
+              		 h.warehouse_code
+              		 
+              from harvestStock h join crop c
+	            on (h.crop_no = c.crop_no)
+	          join subdivision s
+	            on (c.item_code = s.item_code)
+	          join warehouse w
+	            on (h.warehouse_code = w.warehouse_code)
+	            
+	        where h.user_id = #{userId}
+	    	<if test="warehouseCode != 0">
+	    		and h.warehouse_code = #{warehouseCode}
+	    	</if>
+	    	<if test="middleCatagori != null and middleCatagori !=''">
+	    		<if test="name != null and name != ''">
+	    			and s.middlecatagori = #{middleCatagori}
+        			and s.name LIKE '%'||#{name}||'%'
+	    		</if>
+	    	</if>
+	    	<if test="startDate != null and startDate !=''">
+	    		<if test="endDate != null and endDate !=''">
+	    			and registe_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD')
+	    								 AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+	    		</if>
+	    	</if>
+	    <![CDATA[
+        	order by h.harvest_no desc) a where rownum <= (#{pageNum} * #{amount})) b
+                                          where b.rn > (#{pageNum} - 1) * #{amount}
+		]]>
+	</select>
+	
+	<select id="getTotalCount" resultType="int">
+		select count(*)
+		
+		from harvestStock h join crop c
+		  on (h.crop_no = c.crop_no)
+		join subdivision s
+		  on (c.item_code = s.item_code)
+		join warehouse w
+		  on (h.warehouse_code = w.warehouse_code)
+		
+		where h.user_id = #{userId}
+		<if test="warehouseCode != 0">
+	    	and h.warehouse_code = #{warehouseCode}
+	    </if>
+    	<if test="middleCatagori != null and middleCatagori !=''">
+    		<if test="name != null and name != ''">
+    			and s.middlecatagori = #{middleCatagori}
+       			and s.name LIKE '%'||#{name}||'%'
+    		</if>
+    	</if>
+    	<if test="startDate != null and startDate !=''">
+    		<if test="endDate != null and endDate !=''">
+    			and h.registe_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD')
+    								   AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+    		</if>
+    	</if>
+	</select>
+	
+	<select id="getWarehouseList" parameterType="String" resultType="WarehouseVO">
+		select *
+		from warehouse
+		where user_id = #{userId}
+	</select>
+	
+	<update id="harvestUpdate" parameterType="HarvestVO">
+	    update harvestStock
+	    set count = #{count},
+	    	warehouse_code = #{warehouseCode}
+	    where harvest_no = #{harvestNo}
+	      and user_id = #{userId}
+	</update>
+	
+	<delete id="harvestDelete" parameterType="Integer">
+		delete from harvestStock
+		where harvest_no = #{harvestNo}
+	</delete>
+	
+	<select id="getCropList" resultType="HarvestVO">
+		select s.middlecatagori,
+			   c.item_code,
+			   s.name,
+			   c.crop_no,
+			   c.regist_date,
+			   c.user_id
+			   
+		from crop c
+		join subdivision s
+		  on (c.item_code = s.item_code)
+		  
+		where c.user_id = #{userId}
+		  and s.middlecatagori = #{middleCatagori}
+	</select>
+	
+	<insert id="harvestInsert" parameterType="HarvestVO">
+		DECLARE
+		BEGIN
+			insert into harvestStock(harvest_no, count, registe_date, user_id, crop_no, warehouse_code)
+			values(harvest_seq.nextval, #{count}, #{reDate} , #{userId}, #{cropNo}, #{warehouseCode});
+		<if test="defectiveCount > 0">
+			insert into defectiveStock(defective_no, defective_count, registe_date, user_id, crop_no, warehouse_code, explation)
+			values(defective_seq.nextval, #{defectiveCount}, #{reDate} , #{userId}, #{cropNo}, #{warehouseCode}, #{explation});
+		</if>
+		END;
+	</insert>
+	
+	<select id="getDefectiveListWithPaging" resultType="HarvestVO">
+		select * from(
+			select rownum rn, a.* from(
+				select h.defective_no,
+					   h.registe_date,
+					   h.crop_no,
+					   c.item_code,
+					   s.name,
+					   w.warehouse_name,
+					   h.warehouse_code,
+					   h.defective_Count,
+					   h.explation
+					   
+				from defectiveStock h
+				join crop c
+				  on (h.crop_no = c.crop_no)
+				join subdivision s
+				  on (c.item_code = s.item_code)
+				join warehouse w
+				  on (h.warehouse_code = w.warehouse_code)
+				  
+				where h.user_id = #{userId}
+				  and s.user_id = #{userId}
+	    	<if test="warehouseCode != 0">
+	    		and h.warehouse_code = #{warehouseCode}
+	    	</if>
+	    	<if test="middleCatagori != null and middleCatagori !=''">
+	    		<if test="name != null and name != ''">
+	    			and s.middlecatagori = #{middleCatagori}
+        			and s.name LIKE '%'||#{name}||'%'
+	    		</if>
+	    	</if>
+	    	<if test="startDate != null and startDate !=''">
+	    		<if test="endDate != null and endDate !=''">
+	    			and registe_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD')
+	    							 	 AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+	    		</if>
+	    	</if>
+	    <![CDATA[
+        	order by h.defective_no desc) a where rownum <= (#{pageNum} * #{amount})) b
+                                          	where b.rn > (#{pageNum} - 1) * #{amount}
+		]]>
+	</select>
+	
+	<select id="getDefectiveTotalCount" resultType="int">
+			select count(*)
+			
+			from defectiveStock h
+			join crop c
+			  on (h.crop_no = c.crop_no)
+			join subdivision s
+			  on (c.item_code = s.item_code)
+			join warehouse w
+			  on (h.warehouse_code = w.warehouse_code)
+			  
+			where h.user_id = #{userId}
+			  and s.user_id = #{userId}
+		<if test="warehouseCode != 0">
+	    		and h.warehouse_code = #{warehouseCode}
+	    	</if>
+	    	<if test="middleCatagori != null and middleCatagori !=''">
+	    		<if test="name != null and name != ''">
+	    			and s.middlecatagori = #{middleCatagori}
+        			and s.name LIKE '%'||#{name}||'%'
+	    		</if>
+	    	</if>
+	    	<if test="startDate != null and startDate !=''">
+	    		<if test="endDate != null and endDate !=''">
+	    			and h.registe_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD')
+	    							   	   AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+	    		</if>
+	    	</if>
+	</select>
+	
+	<update id="defectiveUpdate" parameterType="HarvestVO">
+	    update defectiveStock
+	    set defective_count = #{defectiveCount},
+	    	warehouse_code = #{warehouseCode},
+	    	explation = #{explation}
+	    where defective_no = #{defectiveNo}
+	      and user_id = #{userId}
+	</update>
+	
+	<delete id="defectiveDelete" parameterType="Integer">
+		delete defectiveStock
+		where defective_no = #{defectiveNo}
+	</delete>
+	
+	<select id="selectHarvestList" resultType="HarvestVO">
+		select c.crop_no,
+			   c.item_code,
+			   s.name,
+			   h.count,
+			   c.user_id,
+			   s.middlecatagori
+			   
+		from crop c
+		join (select crop_no,
+					 sum(count) count
+              from harvestStock
+              where user_id = #{userId}
+              group by crop_no) h
+		  on (c.crop_no = h.crop_no)
+		join subdivision s
+		  on (c.item_code = s.item_code)
+		  
+		where s.user_id = #{userId}
+		  and c.user_id = #{userId}
+		  and c.status = 1
+		  and s.middlecatagori = #{middleCatagori}
+	</select>
+	
+	<select id="selectHarvestListWithCrop" resultType="HarvestVO">
+		select c.crop_no,
+			   c.item_code,
+			   s.name,
+			   h.count,
+			   c.user_id,
+			   s.middlecatagori
+			   
+		from crop c
+		join (select crop_no,
+					 sum(count) count
+		      from harvestStock
+		      where user_id = #{userId}
+		      group by crop_no) h
+		  on (c.crop_no = h.crop_no)
+		join subdivision s
+		  on (c.item_code = s.item_code)
+		  
+		where s.user_id = #{userId}
+		  and c.user_id = #{userId}
+		  and c.status = 1
+		  and c.crop_no = #{cropNo}
+	</select>
+	
+	<select id="harvestCount" resultType="HarvestVO" parameterType="SalesVO">
+		select count
+		from harvestStock
+		WHERE crop_no = #{cropNo}
+		  and user_id = #{userId}
+		  and harvest_no = (SELECT MIN(harvest_no)
+		  					FROM harvestStock
+		  					where crop_no = #{cropNo})
+	</select>
+	
+	<update id="harvestRelease" parameterType="SalesVO">
+		update harvestStock
+    	set count = (SELECT count
+             		 FROM (
+	                       SELECT count
+	                               ,ROW_NUMBER() OVER(PARTITION BY crop_no ORDER BY harvest_no) AS rn
+	                       FROM harvestStock
+	                       where crop_no = #{cropNo}
+                                         		 	)
+             		 WHERE rn = 1) - #{amount}
+	    WHERE crop_no = #{cropNo}
+	      and user_id = #{userId}
+	      and harvest_no = (SELECT MIN(harvest_no)
+	      					FROM harvestStock
+	      					where crop_no = #{cropNo})
+	</update>
+	
+	<delete id="harvestDeleteByCropNo" parameterType="SalesVO">
+		delete from harvestStock
+		WHERE crop_no = #{cropNo}
+		  and user_id = #{userId}
+		  and harvest_no = (SELECT MIN(harvest_no)
+		  					FROM harvestStock
+		  					where crop_no = #{cropNo})
+	</delete>
+	
+	<insert id="salesInsert" parameterType="SalesVO">
+		insert into sales(no, this_day, middlecatagori, amount, unitprice, customer, user_id, crop_no, name)
+		values (sales_seq.nextval, #{today}, #{middleCatagori}, #{amount}, #{unitPrice}, #{customer}, #{userId}, #{cropNo}, #{name})
+	</insert>
+	
+	<select id="harvestListCount" resultType="HarvestVO">
+		select s.name,
+			   sum(h.count) AS count
+		from harvestStock h
+		join crop c
+		  on (c.crop_no = h.crop_no)
+		join subdivision s
+		  on (c.item_code = s.item_code)
+		  
+		where h.user_id = #{userId}
+		  and s.user_id = #{userId}
+		  and c.user_id = #{userId}
+		<if test="startDate != null and startDate !=''">
+    		<if test="endDate != null and endDate !=''">
+    			and h.registe_date BETWEEN TO_DATE(#{startDate, jdbcType=VARCHAR}, 'YYYY-MM-DD')
+    								   AND TO_DATE(#{endDate, jdbcType=VARCHAR}, 'YYYY-MM-DD')
+    		</if>
+    	</if>
+    	group by s.name
+	</select>
+	
+	<select id="defectListCount" resultType="HarvestVO">
+		select s.name,
+			   sum(h.defective_count) AS defectiveCount 
+		from defectiveStock h
+		join crop c
+		on(c.crop_no = h.crop_no)
+		join subdivision s
+		  on (c.item_code = s.item_code)
+
+		where h.user_id = #{userId}
+		  and s.user_id = #{userId}
+		  and c.user_id = #{userId}
+		<if test="startDate != null and startDate !=''">
+    		<if test="endDate != null and endDate !=''">
+    			and h.registe_date BETWEEN TO_DATE(#{startDate, jdbcType=VARCHAR}, 'YYYY-MM-DD')
+    								   AND TO_DATE(#{endDate, jdbcType=VARCHAR}, 'YYYY-MM-DD')
+    		</if>
+    	</if>
+		group by s.name
+	</select>
+</mapper>

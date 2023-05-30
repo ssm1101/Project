@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohnong.app.community.mapper.BoardLikeMapper">
+ 	
+<!-- 글 추천수 1올라감. -->
+<update id="updateLike" parameterType="int">
+update board
+set board_like=board_like+1
+where board_bno=#{boardBno} 	
+</update>
+
+<!-- 추천 취소 -->
+<update id="updateLikeCancle" parameterType="int">
+update board
+set board_like=board_like-1
+where board_bno=#{boardBno} 	
+</update>
+
+<!-- boardLike테이블에 추가  -->
+<insert id="insertLike" >
+insert into boardlike
+values(#{boardBno},#{userId})
+</insert>
+
+<!-- boardLike테이블에 삭제 -->
+<delete id="deleteLike">
+delete boardlike
+where board_bno=#{boardBno} and user_id=#{userId}
+</delete>
+
+<!--boardLike테이블에 있는지 확인 있으면 1, 없으면 0 -->
+<select id="likeCheck" resultType="int">
+select count(*) from boardlike 
+where board_bno=#{boardBno} and user_id=#{userId}	
+</select> 
+
+<!-- 내가 추천한 글 목록 -->
+<select id="getLikeBoard" resultType="com.ohnong.app.community.service.BoardVO">
+select * 
+from( select rownum rn, a.* 
+      from(select *
+		from board b join boardlike l
+		on b.board_bno = l.board_bno
+		where l.user_id=#{userId}
+		and b.exist=0
+		<if test="criteria.category != null and criteria.category !=''">
+           and board_category=#{criteria.category}
+		</if>
+<![CDATA[   order by b.board_bno desc) 
+            a where rownum <= #{criteria.pageNum} * #{criteria.amount}
+           )b
+where b.rn >= (#{criteria.pageNum}- 1) * #{criteria.amount}	
+]]>
+</select>
+
+<!-- 추천한 글 수  -->
+<select id="getLikeTotal" resultType="int">
+select count(*)
+from board b join boardlike l
+on b.board_bno = l.board_bno
+where l.user_id=#{userId}
+<if test="criteria.category != null and criteria.category !=''">
+         and b.board_category=#{criteria.category}
+</if>
+and b.exist=0
+</select>
+ 
+</mapper>

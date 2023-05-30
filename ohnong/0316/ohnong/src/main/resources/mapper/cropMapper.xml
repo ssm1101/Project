@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohnong.app.stock.mapper.CropMapper">
+
+    <!-- 작물 목록 -->
+    <select id="getcropList" parameterType="String" resultType="CropVO"> 
+        select rownum rn, c.*, s.name, s.middlecatagori
+		from crop c join subdivision s
+		on c.item_code = s.item_code
+		where c.user_id = #{userId} and status = 1
+    </select>
+    
+    <!-- 작물 수정 -->
+	<update id="cropUpdate">
+		update subdivision
+		set middlecatagori = #{middlecatagori}, name= #{name}
+		where user_id = #{userId} and item_code = #{itemCode}
+	</update>
+	
+	<!-- 작물 삭제(업데이트) -->
+	<delete id="deleteCrop" parameterType="Integer">
+		update crop 
+		set status = 0
+		where crop_no = #{cropNo}
+	</delete>
+	
+	<!-- 작물 등록 -->
+	<insert id="insertCrop" parameterType="CropVO">
+		declare
+        begin
+		insert into subdivision (item_code, name, middlecatagori, user_id)
+		values (sub_seq.nextval, #{name}, #{middlecatagori}, #{userId});
+		
+		insert into crop (crop_no, user_id, item_code, regist_date, status)
+		values (crop_seq.nextval, #{userId}, sub_seq.currval, sysdate, 1);
+		end;
+	</insert>
+	
+	<!-- 작물 중복 확인 -->
+	<select id="checkCrop" resultType="int">
+		select count(*)
+		from subdivision
+		where
+		name = #{name} and user_id = #{userId}
+	</select>
+	
+</mapper>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/layoutMain}">
+<head>
+<meta charset="UTF-8">
+<<<<<<< 0316/ohnong/src/main/resources/templates/content/main/modPw.html
+<style>
+	input::placeholder {
+		font-weight: bold;
+	}
+</style>
+=======
+<title>oh-nong!</title>
+>>>>>>> 0316/ohnong/src/main/resources/templates/content/main/modPw.html
+</head>
+
+<th:block layout:fragment="css"></th:block>
+<th:block layout:fragment="script"></th:block>
+
+<div layout:fragment="contentMain">
+<header class="masthead" style="padding-top: 80px !important">
+    <div class="text-center" style="color:black">
+        <div id="modPw" class="animate form login_form" style="width:30%; float:none; margin:0 auto">
+            <section class="login_content">
+                <form name="form" th:role="form" th:action="@{modPw}" method="POST">
+                    <h1 style="background: linear-gradient(to right top, #cafcd6,#035c2f );color: transparent;-webkit-background-clip: text;">PW 변경</h1>
+                    <input type="hidden" id="userId" name="userId" th:value="${session.login.userId}">
+                    <br>
+                    <div>
+                        <input type="password" class="form-control" id="userPw2" name="userPw2" placeholder="새 비밀번호 (문자, 숫자, 기호를 조합하여 10자 이상 입력)" required="" />
+                    	<span style="position: absolute; right:15px; top:7px;" onclick="hideshow()" >
+			                 	<i id="slash" class="fa fa-eye-slash"></i>
+			                    <i id="eye" class="fa fa-eye"></i>
+			            </span>
+                    </div>
+                    <p id="pwChk"></p>
+                    <br>
+                    
+                    <div>
+                        <input type="password" class="form-control" id="userPw" name="userPw" placeholder="새 비밀번호 확인" required="" />
+                    </div>
+                    <p id="pwChk2"></p>
+                    <br>
+                    <button type="submit" class="btn btn-primary " style="font-weight: bold;">변경</button>
+
+                        <br /><br />
+						<hr>
+                        <div>
+                            <h1 style="background: linear-gradient(to right top, #cafcd6,#035c2f );color: transparent;-webkit-background-clip: text;">Oh - Nong</h1>
+                        </div>
+                </form>
+            </section>
+        </div>
+    </div>
+    
+    <script>
+    function hideshow(){
+        var password = document.getElementById("userPw2");
+        var slash = document.getElementById("slash");
+        var eye = document.getElementById("eye");
+        
+        if(password.type === 'password'){
+            password.type = "text";
+            slash.style.display = "block";
+            eye.style.display = "none";
+        }
+        else{
+            password.type = "password";
+            slash.style.display = "none";
+            eye.style.display = "block";
+        }
+
+    }
+    
+    $(document).ready(function () {
+		const getPwCheck = RegExp(/([a-zA-Z0-9].*[!,@,#,$,%,^,&,*,?,_,~])|([!,@,#,$,%,^,&,*,?,_,~].*[a-zA-Z0-9])/);
+        
+        // 비밀번호 입력값 유효성 검사
+        $('#userPw2').keyup(function() {
+            if(!getPwCheck.test($(this).val()) || $(this).val().length < 10 ) {
+                $(this).css('background-color', 'pink');
+                $('#pwChk').html('<b style="font-size: 14px; color: red">[문자, 숫자, 기호를 조합하여 10자 이상 입력하세요.]</b>');
+                false;
+            } else {
+                $(this).css('background-color', 'white');
+                $('#pwChk').html('<b style="font-size: 14px; color: green">[사용 가능한 비밀번호입니다.]</b>');
+                true;
+            }
+        })
+        
+        // 비밀번호 확인
+        $('#userPw').keyup(function() {
+            if($(this).val() === '') {
+                $(this).css('background-color', 'pink');
+                $('#pwChk2').html('<b style="font-size: 14px; color: red">[비밀번호 확인은 필수입니다.]</b>');
+                false;
+            } else if($(this).val() != $('#userPw2').val()) {
+                $(this).css('background-color', 'pink');
+                $('#pwChk2').html('<b style="font-size: 14px; color: red">[비밀번호가 일치하지 않습니다.]</b>');
+                false;
+            } else {
+                $(this).css('background-color', 'white');
+                $('#pwChk2').html('<b style="font-size: 14px; color: green">[비밀번호가 일치합니다.]</b>');
+                true;
+            }
+        })
+    	
+    })
+    
+    </script>
+</header>
+</div>
+</html>

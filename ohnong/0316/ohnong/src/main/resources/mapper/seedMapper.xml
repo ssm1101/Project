@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohnong.app.stock.mapper.SeedMapper">
+
+	<select id="getSeedListWithPaging" resultType="OtherVO">
+		select * from(
+           select rownum rn, a.* from(
+              select o.stock_no,
+              		 o.count,
+              		 o.price,
+              		 o.regist_date,
+              		 o.item_code,
+              		 s.name,
+              		 o.warehouse_code,
+              		 w.warehouse_name,
+              		 s.middlecatagori
+              		 
+              from subdivision s
+              join otherStock o
+             	on (s.item_code = o.item_code)
+              join warehouse w
+                on (o.warehouse_code = w.warehouse_code)
+                
+              where o.user_id = #{userId}
+                and s.middlecatagori = '종자'
+    		<if test="warehouseCode != 0">
+	    		and o.warehouse_code = #{warehouseCode}
+  			</if>
+	    	<if test="middleCatagori != null and middleCatagori !=''">
+	    		<if test="name != null and name != ''">
+	    			and s.middlecatagori = #{middleCatagori}
+        			and s.name LIKE '%'||#{name}||'%'
+	    		</if>
+	    	</if>
+	    	<if test="startDate != null and startDate !=''">
+	    		<if test="endDate != null and endDate !=''">
+	    			and o.regist_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD')
+	    								  AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+	    		</if>
+	    	</if>
+	    	or s.middlecatagori = '묘목'
+	    	<if test="warehouseCode != 0">
+	    		and o.warehouse_code = #{warehouseCode}
+  			</if>
+	    	<if test="middleCatagori != null and middleCatagori !=''">
+	    		<if test="name != null and name != ''">
+	    			and s.middlecatagori = #{middleCatagori}
+        			and s.name LIKE '%'||#{name}||'%'
+	    		</if>
+	    	</if>
+	    	<if test="startDate != null and startDate !=''">
+	    		<if test="endDate != null and endDate !=''">
+	    			and o.regist_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD')
+	    								  AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+	    		</if>
+	    	</if>
+        <![CDATA[
+              order by o.stock_no desc) a where rownum <= (#{pageNum} * #{amount})) b
+                                          where b.rn > (#{pageNum} - 1) * #{amount}
+        ]]>
+	</select>
+	
+	<select id="getTotalCount" resultType="int">
+		select count(*)
+		
+	    from subdivision s join otherStock o
+	      on (s.item_code = o.item_code)
+	    join warehouse w
+	      on (o.warehouse_code = w.warehouse_code)
+	      
+	    where o.user_id = #{userId}
+	      and s.middlecatagori = '종자'
+        <if test="warehouseCode != 0">
+	   		and o.warehouse_code = #{warehouseCode}
+	   	</if>
+	   	<if test="middleCatagori != null and middleCatagori !=''">
+   		  	<if test="name != null and name != ''">
+	   			and s.middlecatagori = #{middleCatagori}
+      			and s.name LIKE '%'||#{name}||'%'
+   		 	</if>
+   	  	</if>
+   	 	<if test="startDate != null and startDate !=''">
+   		 	<if test="endDate != null and endDate !=''">
+	   			and o.regist_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD')
+	   								  AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+   		 	</if>
+   	 	</if>
+   	 	or s.middlecatagori = '묘목'
+   	 	<if test="warehouseCode != 0">
+    		and o.warehouse_code = #{warehouseCode}
+ 			</if>
+    	<if test="middleCatagori != null and middleCatagori !=''">
+    		<if test="name != null and name != ''">
+    			and s.middlecatagori = #{middleCatagori}
+       			and s.name LIKE '%'||#{name}||'%'
+    		</if>
+    	</if>
+    	<if test="startDate != null and startDate !=''">
+    		<if test="endDate != null and endDate !=''">
+    			and o.regist_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD')
+    								  AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+    		</if>
+    	</if>
+	</select>
+	
+	<update id="seedUpdate" parameterType="OtherVO">
+		DECLARE
+        BEGIN
+		    update otherStock
+		    set count = #{count},
+		    	warehouse_code = #{warehouseCode},
+		    	price = #{price}
+		    where stock_no = #{stockNo};
+		    
+            update detail
+            set cash = #{count} * #{price}
+            where itemcode = #{oldItemCode}
+              and user_id = #{userId};
+		END;
+	</update>
+	
+	<delete id="seedDelete" parameterType="OtherVO">
+		DECLARE
+        BEGIN
+			delete from otherStock
+			where stock_no = #{stockNo};
+			
+			delete from detail
+			where itemcode = #{itemCode};
+			
+			delete from subdivision
+			where item_code = #{itemCode};
+		END;
+	</delete>
+	
+	<select id="findSubdivision" resultType="OtherVO">
+		select *
+		from subdivision
+		where name = #{name}
+		  and middlecatagori = #{middleCatagori}
+		  and user_id = #{userId}
+	</select>
+	
+	<select id="seedListWithMiddle" resultType="OtherVO">
+		select o.item_code,
+			   s.name
+		from otherStock o join subdivision s
+		  on (o.item_code = s.item_code)
+		where s.middlecatagori = #{middleCatagori}
+	<if test="name != null and name !=''">
+		and s.name = #{name}
+	</if>
+		and o.user_id = #{userId}
+		and s.user_id = #{userId}
+	</select>
+	
+	<insert id="seedInsert" parameterType="OtherVO">
+		DECLARE
+        BEGIN
+            insert into subdivision(item_code, name, middlecatagori, user_id)
+            values (sub_seq.nextval, #{name}, #{middleCatagori}, #{userId});
+        
+            insert into otherStock(stock_no, count, price, regist_date, user_id, item_code, warehouse_code)
+        	values (other_seq.nextval, #{count}, #{price}, #{reDate}, #{userId}, sub_seq.currval, #{warehouseCode});
+            
+            insert into detail(detail_no, today, middlecategori, itemcode, detail, cash, user_id, maincategori, explation)
+            values (detail_seq.nextval, #{reDate}, #{middleCatagori}, sub_seq.currval, #{name}, #{count} * #{price}, #{userId}, #{mainCatagori}, #{explation});
+        END;
+	</insert>
+	
+	<update id="seednotInsert" parameterType="OtherVO">
+		DECLARE
+		BEGIN
+            update otherStock
+			set count = (select count
+			             from otherStock o
+			             where user_id = #{userId}
+			               and item_code = (select item_code
+			                                from subdivision s
+			                                where user_id = #{userId}
+			                                  and s.middlecatagori = #{middleCatagori}
+			                                  and s.name = #{name}))
+			          + #{count},
+			      price = #{price}
+			where user_id = #{userId}
+			  and item_code = (select item_code
+			                   from subdivision s
+			                   where user_id = #{userId}
+			                     and s.middlecatagori = #{middleCatagori}
+			                     and s.name = #{name});
+			                 
+			insert into detail(detail_no, today, middlecategori, itemcode, detail, cash, user_id, maincategori, explation)
+            values (detail_seq.nextval, #{reDate}, #{middleCatagori}, #{itemCode}, #{name}, #{count} * #{price}, #{userId}, #{mainCatagori}, #{explation});
+		END;
+	</update>
+	
+	<select id="getCount" resultType="OtherVO">
+		select price, warehouse_code, item_code, regist_date
+		from otherStock
+		where user_id = #{userId}
+		  and item_code = (select item_code
+		                   from subdivision s
+		                   where s.user_id = #{userId}
+		                     and s.name = #{name})
+	</select>
+	
+</mapper>

@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohnong.app.community.mapper.BoardMapper">
+
+<!-- 검색... -->
+    <sql id="ComuCriteria">
+        <trim prefix="AND (" suffix= ")" prefixOverrides="OR">
+            <foreach item="type" collection="typeArr" >
+                <trim prefix="OR">
+                    <choose>
+                        <when test="type == 'T'.toString()">
+                            board_title like '%'||#{keyword}||'%' 
+                        </when>
+                        <when test="type == 'C'.toString()">
+                            board_CONTENT like '%'||#{keyword}||'%' 
+                        </when>
+                        <when test="type == 'W'.toString()">
+                            user_id like '%'||#{keyword}||'%' 
+                        </when>
+                    </choose>
+                </trim>
+            </foreach>
+        </trim>
+        
+    </sql>
+    
+    
+    <!-- 카테고리 -->
+    <sql id="CategoryCriteria">
+        <trim prefix="AND (" suffix= ")" prefixOverrides="OR">
+            <foreach item="category" collection="categoryArr" >
+                <trim prefix="OR">
+                    <choose>
+                        <when test="category == 'A'.toString()">
+                            board_category like '%'||#{category}||'%' 
+                        </when>
+                        <when test="category == 'B'.toString()">
+                            board_category  like '%'||#{category}||'%' 
+                        </when>
+                        <when test="category == 'C'.toString()">
+                            board_category  like '%'||#{category}||'%' 
+                        </when>
+                         <when test="category == 'D'.toString()">
+                            board_category  like '%'||#{category}||'%' 
+                        </when>
+                    </choose>
+                </trim>
+            </foreach>
+        </trim>
+    </sql>
+
+
+
+
+
+<!-- 커뮤니티게시판 가져오기 -->
+<select id="getAllBoardList" resultType="BoardVO">
+<![CDATA[
+select * 
+from(
+       select rownum rn, a.* 
+	   from(
+	         select *
+	         from board
+	         where exist=0
+]]>
+		 	<if test="keyword != null">
+                    <include refid="ComuCriteria"></include> 
+            </if>
+            
+            <if test="category != null">
+                    <include refid="CategoryCriteria"></include> 
+            </if>			
+<![CDATA[
+	      	order by board_bno desc
+	      	) 
+            a where rownum <= #{pageNum} * #{amount}
+      )b
+      where b.rn >= (#{pageNum}- 1) * #{amount}
+]]>
+</select>
+
+<!--커뮤니티 글  -->
+<select id="getTotal" resultType="int">
+	select count(*) from board
+	where exist = 0
+		<if test="keyword != null">
+              <include refid="ComuCriteria"></include> 
+        </if>
+        <if test="category != null">
+                <include refid="CategoryCriteria"></include> 
+        </if>	
+        and rownum>0	
+</select>
+
+<!-- 상세정보 가져오기. 일단 수동 get으로 -->
+<select id="getBoard" parameterType="int" resultType="BoardVO">
+	select * 
+	from board
+	where board_bno=#{boardBno,jdbcType=INTEGER}
+
+</select>
+
+<!-- 글쓰기 -->
+<insert id="insertCommu" parameterType="com.ohnong.app.community.service.BoardVO">
+insert into board ( BOARD_BNO,
+					BOARD_TITLE,
+					BOARD_CONTENT,
+					BOARD_REGDATE,
+					BOARD_UPLOADDATE,
+					BOARD_LIKE,
+					BOARD_HITCOUNT,
+					BOARD_CATEGORY,
+					USER_ID,
+					UUID,
+					EXIST,
+					NOSHOW,
+					ADMINREP)
+             values(board_bno_seq.nextval, 
+					#{boardTitle},
+					#{boardContent},
+					default,
+					default,
+					default, 
+					default, 
+					#{boardCategory,jdbcType=VARCHAR},
+					#{userId,jdbcType=VARCHAR}, 
+					'uuid', 
+					default,
+					#{noshow,jdbcType=INTEGER},
+					default)
+</insert>
+
+<!-- 글수정 -->
+<update id="updateCommu">
+update board
+set board_title=#{boardTitle,jdbcType=VARCHAR},
+	board_content=#{boardContent,jdbcType=VARCHAR},
+	board_uploaddate=sysdate,
+	board_category=#{boardCategory,jdbcType=VARCHAR},
+	noshow=#{noshow}
+where board_bno=#{boardBno}
+
+</update>
+
+<!-- 추천수 -->
+<update id="addHitCount">
+update board
+set board_hitcount=board_hitcount+1
+where board_bno=#{boardBno}
+</update>
+
+<!--글 삭제 -->
+<update id="deleteBoard">
+update board
+set exist=exist+1
+where board_bno=#{boardBno,jdbcType=INTEGER}
+</update>
+
+<!-- 전문인카테고리 리스트(추천수 10이상) -->
+<select id="proAnswerList" resultType="com.ohnong.app.community.service.BoardVO">
+select * 
+from(
+      select rownum rn, a.* 
+      from(
+      select *
+      from board
+      where exist=0
+      and board_category='C'
+<![CDATA[
+	  and board_like > 9
+	  order by board_bno desc
+     ) 
+     a where rownum <= #{pageNum} * #{amount}
+]]>
+)b
+where b.rn >= (#{pageNum}- 1) * #{amount}
+</select>
+
+<!-- 전문인 카테고리 글 수  -->
+<select id="getProTotal" resultType="int">
+select count(*) 
+from board
+where exist = 0 
+and board_category='C'
+<![CDATA[
+and board_like > 9
+]]>	
+<if test="keyword != null">
+     <include refid="ComuCriteria"></include> 
+</if>
+and rownum>0
+</select>
+
+<!-- 자기가 쓴 글 목록 -->
+<select id="getMyBoardList" resultType="com.ohnong.app.community.service.BoardVO">
+select * 
+from( select rownum rn, a.* 
+      from( select *
+            from board
+            where (exist=0 or exist=5)
+			and user_id=#{userId}
+		<if test="criteria.category != null and criteria.category !=''">
+            and board_category=#{criteria.category}
+		</if>
+<![CDATA[   order by board_bno desc) 
+            a where rownum <= #{criteria.pageNum} * #{criteria.amount}
+           )b
+where b.rn >= (#{criteria.pageNum}- 1) * #{criteria.amount}	
+]]>		
+</select>
+
+<!-- 내가 쓴 글 total -->
+<select id="getMyTotal" resultType="int">
+select count(*) 
+from board
+where (exist = 0 or exist =5) 
+<if test="criteria.category != null and criteria.category !=''">
+         and board_category=#{criteria.category}
+</if>
+and user_id=#{userId,jdbcType=VARCHAR}	
+</select>
+
+
+
+</mapper>

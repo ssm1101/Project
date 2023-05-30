@@ -1,0 +1,792 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layoutMagement}">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>oh-nong!</title>
+	<!-- jQuery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+	
+<style>
+		#area {
+			color: #4EA61F !important;
+		}
+
+		#typeDv {
+			color: #F36A23 !important;
+		}
+
+		#price {
+			color: #383e60;
+		}
+		
+ select{
+ 	height: 40px;
+ 	width: 180px;
+	-webkit-appearance:none;
+    background: url(/ohnong/images/icon-search.gif) no-repeat right 6px center;
+    background-size: 10px 10px;
+    border: 1px solid #C4C4C4;
+    box-sizing: border-box;
+    border-radius: 10px;
+    padding: 12px 13px;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px;
+}
+select:focus{
+    border: 1px solid gray;
+    box-sizing: border-box;
+    border-radius: 10px;
+    outline: 3px solid gray;
+    border-radius: 10px;
+}
+input:focus{
+    border: 1px solid gray;
+    box-sizing: border-box;
+    border-radius: 10px;
+    outline: 3px solid gray;
+    border-radius: 10px;
+}
+option {
+  padding: 4px;
+  font-size: 14px;
+  color: #fff;
+  background: #272822;
+}
+
+.pageInfo_area{
+    text-align: center;
+    width: 50%;
+}
+.pagination2{
+    list-style: none;
+    display: inline-block;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.pagination2 li {
+    display: inline;
+    text-align: center;
+}
+/*숫자*/ 
+.pagination2 a {
+    float: left;
+    display: block;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 5px 12px;
+    color: #96a0ad;
+    line-height: 1.5;
+}
+.pagefirst{
+    margin-right: 15px;
+}
+.pagelast{
+    margin-left: 15px;
+}
+.pagefirst:hover, .pagelast:hover, .arrowright:hover, .arrowleft:hover, .model .num:hover{
+    color:#2e9cdf;
+}
+.pagination2 .move.active{
+    cursor: default;
+    color: #ffffff;
+}
+.pagination2 .move:active{
+    outline: none;
+}
+.model .num {
+    margin-left: 3px;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    -moz-border-radius: 100%;
+    -webkit-border-redius:100%;
+    border-radius: 100%;
+}
+.model .num.active, .model .num:active{
+    background-color: #2e9cdf;
+    cursor: pointer;
+}
+.arrowleft{
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10ox solid blue;
+}
+
+ a.active {
+ 	cursor:default;
+ 	color:#ffffff; 	
+ }
+
+  
+  .search_area{
+    text-align:center;
+  }
+  .search_area input{
+    height: 30px;
+    width: 250px;
+  }
+  .search_area button{
+    height: 30px;
+    width: 100px;
+  }
+   .search_area select{
+  	height: 30px;
+    width:150px;
+  }
+		
+	</style>
+</head>
+<th:block layout:fragment="css"></th:block>
+<th:block layout:fragment="script"></th:block>
+<body class="nav-md">
+<div layout:fragment="contentMagement">
+<!-- page content -->
+<div class="right_col" role="main">
+	<div class="">
+		<div class="page-title">
+			<div class="title_left">
+				<h3 style="color:black;"><i class="fa fa-leaf"></i> Oh! Nong</h3>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="x_panel">
+						<div class="x_title">
+							<h2>사업 안내 </h2>
+							<ul class="nav navbar-right panel_toolbox">
+								<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"><i class="fa fa-wrench"></i></a>
+									<div class="dropdown-menu">
+										<a class="dropdown-item" href="#">Settings 1</a>
+										<a class="dropdown-item" href="#">Settings 2</a>
+									</div>
+								</li>
+							</ul>
+						<div class="clearfix"></div>
+					</div>
+
+					<div class="x_content">
+						<div class="row">
+							<div class="col-sm-3 mail_list_column">
+								<!-- 검색 조건  -->
+								<div style="padding:10px;">
+									<strong> <label for="l01"><i class="fa fa-random"></i> 유형 </label> </strong>
+									<div class="searchGroup">
+									
+										<button id="pol" class="btn btn-round btn-info" type="button">지원 사업 <i class="fa fa-reply"></i></button>
+										<button id="edu" class="btn btn-round btn-primary" type="button">교육 지원 <i class="fa fa-reply"></i></button>
+									</div>
+									<hr>
+											
+											<strong> <label for="l01"><i class="fa fa-location-arrow"></i> 진행 </label> </strong>
+											<div class="searchGroup">
+												<button id="stayBtn" class="btn btn-info btn-sm" type="button">진행 중 </button>
+												<button id="planBtn" class="btn btn-success btn-sm" type="button">예정 중 </button>
+												<!-- <button id="endBtn" class="btn btn-dark btn-sm" type="button">마감 됨</button> -->
+											</div>
+											<hr>
+											<strong> <label for="l01"><i class="fa fa-search"></i> 검색 </label></strong>
+											<div class="selectGroup">
+											<input type="text" id="searchinput" placeholder="검색하실 내용을 입력하세요.">
+											<button type="button" id="searchBtn" class="btn btn-sm btn-round btn-dark"> Search <i class="fa fa-search"></i></button>
+											</div>
+											<hr>
+											<div class="itemBox">
+												<strong> <label for="l01"><i class="fa fa-thumb-tack"></i> 지역 </label></strong>
+												<div class="selectGroup">
+													<select class="filterSelect" name="amount">
+														<option value="00" selected>전국</option>
+														<option value="11">서울특별시</option>
+														<option value="21">부산광역시</option>
+														<option value="22">대구광역시</option>
+														<option value="23">인천광역시</option>
+														<option value="24">광주광역시</option>
+														<option value="25">대전광역시</option>
+														<option value="26">울산광역시</option>
+														<option value="29">세종특별자치시</option>
+														<option value="31">경기도</option>
+														<option value="32">강원도</option>
+														<option value="33">충청북도</option>
+														<option value="34">충청남도</option>
+														<option value="35">전라북도</option>
+														<option value="36">전라남도</option>
+														<option value="37">경상북도</option>
+														<option value="38">경상남도</option>
+														<option value="39">제주특별자치도</option>
+													</select>
+												</div>
+											</div>
+											<hr>
+											<strong> <label for="l01"><i class="fa fa-sliders"></i> 기간 </label> </strong>
+											<div class="searchGroup">
+												<label><input type="radio" name="rdoDate0" value="0" checked /> 전체 </label> &nbsp
+												<label><input type="radio" name="rdoDate0" value="1" /> 1개월 </label> &nbsp
+												<label><input type="radio" name="rdoDate0" value="6" /> 6개월 </label> &nbsp
+												<label><input type="radio" name="rdoDate0" value="12" /> 1년 </label> &nbsp
+												<br>
+												<input type="date" name="day1" id="day1" /> ~ <input type="date" name="day2" id="day2" />
+											</div>
+											<br>
+										<button id="compose" class="btn btn-sm btn-dark btn-block"type="button" style="width:50%;"> RESET</button>
+										<hr>
+										<div >
+											<strong> <label for="l01"> 검색결과 </label></strong>
+											<div id="searchResult"></div>
+										</div>
+										</div>
+									</div>
+									<div class="col-sm-9 mail_view">
+										<p id="totalCnt"></p>
+										<div id="context"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<form action="getProject" method="POST" name="nameForm">
+			<input type="hidden" name="type" />
+			<input type="hidden" name="seq" />
+			<input type="hidden" name="policy" />
+			<input type="hidden" name="edu" />
+		</form>
+		<!-- /page content -->
+		<script>
+
+			var today = new Date();
+			today.setHours(0);
+			today.setMinutes(0);
+			today.setMilliseconds(0);
+			today.setSeconds(0);
+
+			var URL="";
+
+			var polURL = 'https://rda.go.kr/young/api/policyList?serviceKey=7E6NGU2QW69RZF04N97RB687E3X63501853H3GJK&rowCnt=10&typeDv=json';
+			var eduURL = 'https://rda.go.kr/young/api/eduList?serviceKey=7E6NGU2QW69RZF04N97RB687E3X63501853H3GJK&rowCnt=10&typeDv=json';
+			
+			var sd = ""; // 신청 시작일
+			var ed = ""; // 신청 마감일
+			var sKeyword = ""; // 키워드
+			var type = 'pol';
+			
+			
+
+			function ajaxCmm(url, type, callback) {
+				$('#context').empty();
+				$.ajax({
+					url: url, // 접속주소
+					type: 'GET', //데이터전송방식
+					success: function (data, status, xr) {
+						return callback(data);
+					},
+					beforeSend: function () {
+						var width = 0; var height = 0; var left = 0; var top = 0;
+						width = 50; height = 50;
+						top = ($(window).height() - height) / 2 + $(window).scrollTop();
+						left = ($(window).width() - width) / 2 + $(window).scrollLeft();
+
+						if ($("#div_ajax_load_image").length != 0) {
+							$("#div_ajax_load_image").css({
+								"top": top + "px", "left": left + "px"
+							});
+							$("#div_ajax_load_image").show();
+						}
+						else {
+							$('<div id="div_ajax_load_image" style="position:absolute; top:' + top + 'px; left:' + left + 'px; width:' + width + 'px; height:' + height + 'px; z-index:9999; filter:alpha(opacity=50); opacity:alpha*0.5; margin:auto; padding:0; "><img src="/ohnong/images/ajax_loader3.gif" style="width:100px; height:100px;"></div>')
+								.appendTo(document.body).show();
+						}
+					},
+					error: function (xhr, status, error) {
+						let context = `<div style="height:500px; padding:20px text-align:center;"><img src="/ohnong/images/eroor.png" style="width:80%; height:80%; margin-left:150px; margin-top:100px;"></img></div>`;
+						$('#context').append(context);
+					}, 
+					complete: function () {
+						$("#div_ajax_load_image").hide();
+					}
+				});
+			};
+			
+			// 지원사업
+			function polCallback(datas) {
+				if(datas.code != null){
+					$('#context').empty();
+					let context = `<div style="height:500px; padding:20px text-align:center;"><img src="/ohnong/images/eroor.png" style="width:80%; height:80%; margin-left:150px; margin-top:100px;"></img></div>`;
+				$('#context').append(context);
+
+				} else {
+				$('#context').empty();
+				
+				let totalCnt = datas.policy_paging.totalCount;
+				$('#context').append('<p>').text('전체 : '+totalCnt)
+				$('#context').append('<br>');
+				
+				policy_list = datas.policy_list;
+				policy_list.forEach(function (policy, index, array) {
+					var endDay = policy.applEdDt;
+					var Dday;
+					if (new Date(endDay) > today) {
+						Dday = Math.round((new Date(endDay) - today) / 1000 / 60 / 60 / 24); //초
+					} else if (new Date(endDay) == today) {
+						Dday = 'Day'
+					} else {
+						Dday = '마감됨';
+					}
+					let seq = policy.seq;
+					let i = `<i class="fa fa-map-marker"></i>`;
+					let context = $(`
+        			
+					<div class="col-md-5 policy" style="border: 1px solid #E0E5EE; height: 190px; padding:20px; margin:10px 15px;">
+						<div>
+							<div>
+								<span id="area">${policy.area1Nm == null ? '' : i+ policy.area1Nm}${policy.area2Nm == null ? '' : ' | ' + policy.area2Nm}</span>&nbsp&nbsp
+								<span id="typeDv"><i class="fa fa-file-text-o"></i>&nbsp${policy.typeDv == null ? '' : '지원사업'}</span>&nbsp&nbsp
+								<span id="price"><i class="fa fa-krw"></i>  ${policy.price == null ? '' : policy.price + ' (천원)'} </span>&nbsp&nbsp
+								<span id="price"><i class="fa fa-briefcase"></i> ${policy.totQuantity == null ? '' : '사업 수 : ' + policy.totQuantity}</span>
+								<span style="float:right; color:#ffc107;"><i class="fa fa-clock-o"></i>  D-${Dday} </sapn>
+							</div>
+							<br>
+							<span><i class="fa fa-group"></i> ${policy.eduTarget == null ? '' : policy.eduTarget} </span>
+							<a class="titlea" href="#" onclick="ahref(${seq},'pol')"><h2 style="color:#2e9cdf;"><i class="fa fa-info-circle"></i> ${policy.title == null ? '' : policy.title}</h2></a>
+							<hr>
+							<p><i class="fa fa-calendar"></i> ${policy.applStDt == null ? '' : policy.applStDt} ~ ${policy.applEdDt == null ? '' : policy.applEdDt} </p>
+						</div>
+					</div>`);
+					context.prop('policy', JSON.stringify(policy));
+					$('#context').append(context);
+				});
+				policy_paging = datas.policy_paging;
+				showPaging(policy_paging);
+			}
+			}
+			
+			//교육 사업 
+			function eduCallBack(datas) {
+				if(datas.code != null){
+					$('#context').empty();
+					let context = `<div style="height:500px; padding:20px text-align:center;"><img src="/ohnong/images/eroor.png" style="width:80%; height:80%; margin-left:150px; margin-top:100px;"></img></div>`;
+				$('#context').append(context);
+
+				} else {
+				$('#context').empty();
+
+				let totalCnt = datas.edu_paging.totalCount;
+				$('#context').append('<p>').text('전체 : '+totalCnt)
+				$('#context').append('<br>');
+				
+				
+				edu_list = datas.edu_list;
+				edu_list.forEach(function (edu, index, array) {
+					var endDay = edu.applEdDt;
+					var Dday;
+					if (new Date(endDay) > today) {
+						Dday = Math.round((new Date(endDay) - today) / 1000 / 60 / 60 / 24); //초
+					} else if (new Date(endDay) == today) {
+						Dday = 'Day'
+					} else {
+						Dday = '마감됨';
+					}
+					//let eduURL = 'https://rda.go.kr/young/api/eduView?serviceKey=7E6NGU2QW69RZF04N97RB687E3X63501853H3GJK';
+					let seq = edu.seq;
+					//eduURL = `getProject?seq=${seq}&type=edu`;
+					let i = `<i class="fa fa-map-marker"></i>`;
+					let context = $(`
+                <div class="col-md-5 edu" style="border: 1px solid #E0E5EE; height: 190px; padding:20px; margin:10px;">
+                   <div>
+                      <div>
+                         <span id="area">${edu.area1Nm == null ? '' : i+edu.area1Nm}&nbsp&nbsp${edu.area2Nm == null ? '' : ' | ' + edu.area2Nm}</span>
+                         <span id="typeDv"><i class="fa fa-file-text-o"></i> ${edu.typeDv == null ? '' : '교육'}</span>
+                         <span><i class="fa fa-pencil-square-o"></i> ${edu.eduMethod == null ? '' : edu.eduMethod}${edu.eduMethod2 == null ? '' : '_' + edu.eduMethod2}</span>
+                         <span style="float:right;  color:#ffc107;"><i class="fa fa-map-marker"></i>  D-${Dday} </sapn>
+                      </div>
+                      <br>
+                      <span><i class="fa fa-group"></i> ${edu.eduTarget == null ? '' : edu.eduTarget} </span>
+                      <a class="titlea"  href="#" onclick="ahref(${seq},'edu')"><h2 style="color:#2e9cdf;"><i class="fa fa-info-circle"></i> ${edu.title == null ? '' : edu.title}</h2></a>
+                      <hr>
+                      <p><i class="fa fa-calendar"></i> ${edu.applStDt == null ? '' : edu.applStDt} ~ ${edu.applEdDt == null ? '' : edu.applEdDt} </p>
+                   </div>
+                </div>`);
+					context.prop('edu', JSON.stringify(edu));
+					$('#context').append(context);
+				});
+				
+				edu_paging = datas.edu_paging;
+				showPaging(edu_paging);
+					
+			}
+			}
+
+
+			// 처음 로딩시 화면 - 지원사업
+			URL = polURL
+			ajaxCmm(URL, 'GET', polCallback);
+			
+			// btn event 1. 지원사업 조회
+			$("#pol").on('click', function () {
+				$("#pol").attr('class', 'btn btn-round btn-dark');
+				$("#edu").attr('class', 'btn btn-round btn-primary');
+				$("#stayBtn").attr('class', 'btn btn-info btn-sm');
+				$("#planBtn").attr('class', 'btn btn-success btn-sm');
+				
+				$('#searchResult').empty()
+				URL = polURL
+
+				ajaxCmm(URL, 'GET', polCallback);
+				
+				if(URL == eduURL){
+					$('#searchResult').append($('<p>').text('교육 지원'))
+				}else{
+					$('#searchResult').append($('<p>').text('지원 사업'))
+				}
+			});
+
+			// btn event 2. 교육안내 조회
+			$("#edu").on('click', function () {
+				$("#edu").attr('class', 'btn btn-round btn-dark');
+				$("#pol").attr('class', 'btn btn-round btn-info');
+
+				$("#stayBtn").attr('class', 'btn btn-info btn-sm');
+				$("#planBtn").attr('class', 'btn btn-success btn-sm');
+				
+				$('#searchResult').empty()
+				URL = eduURL;
+
+				ajaxCmm(URL, 'GET', eduCallBack);
+				
+				
+				if(URL == eduURL){
+					$('#searchResult').append($('<p>').text('교육 지원'))
+				}else{
+					$('#searchResult').append($('<p>').text('지원 사업'))
+				}
+			});
+
+			
+			// btn event 3. 마감된 정보 조회
+			$("#endBtn").on('click', function () {
+				$('#context').empty();
+				$('#searchResult').empty()
+
+				let year = today.getFullYear().toString(); // 년도
+				let month = today.getMonth()+1; // 월
+				if (month < 10) {
+					month.toString();
+					month = '0' + month;
+				}
+				var date=""
+				date = today.getDate();
+				if(date == 1){
+					date = '0'+date;
+					date.toString();
+				} else if(1 < date && date < 10) {
+					date = date-1;
+					date = '0'+date; // 날짜 var
+					date.toString();
+				} else {
+					date = today.getDate()-1
+					date.toString();
+				}
+				days = year + '-' + month + '-' + date;
+				ed = "&ed=" + days;
+				sd = "&sd=2000-01-01"
+				
+				if (URL == polURL){
+					
+					URL = polURL
+					
+					stayURL = URL + sd + ed;
+					ajaxCmm(stayURL, 'GET', polCallback);
+					
+				} else {
+					URL = eduURL
+					
+					endURL = URL + sd + ed;
+					ajaxCmm(endURL, 'GET', eduCallBack);
+				}
+				
+				if(URL == eduURL){
+					$('#searchResult').append($('<p>').text('교육 지원'))
+					$('#searchResult').append($('<p>').text('마감됨'))
+				}else{
+					$('#searchResult').append($('<p>').text('지원 사업'))
+					$('#searchResult').append($('<p>').text('마감됨'))
+				}
+			});
+
+			// btn event 4. 진행 중인 정보 조회
+			$("#stayBtn").on('click', function () {
+				
+				$("#planBtn").attr('class', 'btn btn-info btn-sm');
+				$("#stayBtn").attr('class', 'btn btn-dark btn-sm');
+				
+				$('#searchResult').empty()
+				$('#context').empty();
+
+				let year = today.getFullYear().toString(); // 년도
+				let month = today.getMonth() + 1; // 월
+				if (month < 10) {
+					month.toString();
+					month = '0' + month;
+				}
+				var date="";
+				date = today.getDate()+1; // 날짜 var
+				if(date < 10){
+					date.toString();
+					date = '0'+date;
+				}
+				days = year + '-' + month + '-' + date;
+				ed = "&ed=" + days;
+				sd = "&sd=2000-01-01"
+				
+				if (URL == polURL){
+					URL = polURL
+					
+					stayURL = URL +sd + ed;
+					
+					ajaxCmm(stayURL, 'GET', polCallback);
+					ed = "&ed=";
+				} else {
+					URL = eduURL
+					
+					stayURL = URL +sd + ed;
+					
+					ajaxCmm(stayURL, 'GET', eduCallBack);
+					ed = "&ed=";
+				}
+				
+				if(URL == eduURL){
+					$('#searchResult').append($('<p>').text('교육 지원'))
+					$('#searchResult').append($('<p>').text('진행 중'))
+				}else{
+					$('#searchResult').append($('<p>').text('지원 사업'))
+					$('#searchResult').append($('<p>').text('진행 중'))
+				}
+			});
+
+			// btn event 5. 예정된 정보 조회
+			$("#planBtn").on('click', function () {
+
+				$("#stayBtn").attr('class', 'btn btn-info btn-sm');
+				$("#planBtn").attr('class', 'btn btn-dark btn-sm');
+				
+				$('#searchResult').empty()
+				$('#context').empty();
+
+				let year = today.getFullYear().toString(); // 년도
+				let month = today.getMonth() + 1; // 월
+				if (month < 10) {
+					month.toString();
+					month = '0' + month;
+				}
+				var date ="";
+				date = today.getDate() + 1; // 날짜 var
+				if(date < 10){
+					date.toString();
+					date = '0'+date;
+				}
+				days = year + '-' + month + '-' + date;
+				sd = "&sd=" + days;
+				ed = "&ed=2030-12-31"
+				
+				if (URL == polURL){
+					URL = polURL
+					planURL = URL + sd+ ed;
+					ajaxCmm(planURL, 'GET', polCallback);
+					sd = "&sd=";
+				} else {
+					URL = eduURL
+					planURL = URL + sd+ ed;
+					
+					ajaxCmm(planURL, 'GET', eduCallBack);
+					sd = "&sd=";
+				}
+				if(URL == eduURL){
+					$('#searchResult').append($('<p>').text('교육 지원'))
+					$('#searchResult').append($('<p>').text('예정 중'))
+				}else{
+					$('#searchResult').append($('<p>').text('지원 사업'))
+					$('#searchResult').append($('<p>').text('예정 중'))
+				}
+			});
+
+
+			
+			$('#context').on('click','.num',function(e){
+				e.preventDefault();
+				
+				var targetPaging = $(this).attr('href')
+				search(targetPaging);
+			})
+			
+			// 검색기능
+			$("#searchBtn").on('click', function () {
+				search();
+			})
+			
+			function search(targetPaging){
+				$('#searchResult').empty()
+				let sval = "";
+				let cp ="";
+				let keyword="";
+				let sd ="";
+				let ed ="";
+				
+				if ($('#day1').val() != "" && $('#day2').val() != "") {
+					sd = "&sd=" + $('#day1').val()
+					ed = "&ed=" + $('#day2').val()
+				}
+				if ($('.filterSelect').val() != "") {
+					sval = "&search_area1=" + $('.filterSelect').val()
+				}
+				if ($('#searchinput').val() != "") {
+					keyword = "&search_keyword=" + $('#searchinput').val();
+				}
+				if(targetPaging != undefined){
+					cp = "&cp="+targetPaging;
+				}
+				
+				if(URL == polURL){
+					URL = polURL
+					let resultURL = URL + sd + ed + sval + keyword + cp;
+					ajaxCmm(resultURL, 'GET', polCallback);
+					keyword = "";
+					
+					$('#searchResult').append($('<p>').text('지원 사업'))
+					$('#searchResult').append($('<p>').text('검색값 : '+$('#searchinput').val()))
+					$('#searchResult').append($('<p>').text('검색일자 : ' + $('#day1').val()+' ~ '+$('#day2').val()))
+					
+				} else {
+					URL = eduURL
+					let resultURL = URL + sd + ed + sval + keyword + cp;
+					ajaxCmm(resultURL, 'GET', eduCallBack);
+					keyword = "";
+					
+					$('#searchResult').append($('<p>').text('교육 지원'))
+					$('#searchResult').append($('<p>').text('검색값 : '+$('#searchinput').val()))
+					$('#searchResult').append($('<p>').text('검색일자 : ' + $('#day1').val()+' ~ '+$('#day2').val()))
+				}
+			}
+			
+
+			//SLECT VALUE  
+			$('.filterSelect').on("change", function (e) {
+				let val = $(this).val();
+			})
+			// DATE VALUE
+			$("input[name=rdoDate0]").change(function () {
+				let today = new Date();
+				let year = today.getFullYear().toString(); // 년도
+				let month = today.getMonth() + 1; // 월
+				if (month < 10) {
+					month.toString();
+					month = '0' + month;
+				}
+				let date=""
+				date = today.getDate(); // 날짜 var
+				if(date < 10){
+					date.toString();
+					date = '0'+date;
+				}
+				days = year + '-' + month + '-' + date;
+
+				var v = $(this).val();
+				let d;
+				if (v == "0") {
+					$("#day1").val("");
+					$("#day2").val("");
+					return
+				}
+				else if (v == "1") { 
+					d = new Date(year, month - 2, date) 
+					}
+				else if (v == "6") { 
+					d = new Date(year, month - 7, date)
+					}
+				else if (v == "12") { 
+					d = new Date(year - 1, month - 1, date)
+					}
+				d = d.toISOString().substring(0, 10);
+				$("#day1").val(d)
+				$("#day2").val(days)
+			});
+
+			// compose 버튼 
+			$('#compose').on('click', function(){
+				$('#searchinput').val("");
+				$('#day1').val("");
+				$('#day2').val("");
+				$('.filterSelect').val("00");
+			    $("[name='rdoDate0']").val(['0']);
+			})
+			
+			
+			// a링크 > 상세 조회
+			function ahref(seq, type) {
+				
+				let policy1 = $(event.target).closest('.policy').prop('policy');
+				let edu1 = $(event.target).closest('.edu').prop('edu');
+				
+				if(policy1){
+					nameForm.seq.value = seq;
+					nameForm.type.value = type;
+					nameForm.policy.value = policy1;
+					nameForm.submit();
+				} else if(edu1) {
+					nameForm.seq.value = seq;
+					nameForm.type.value = type;
+					nameForm.edu.value = edu1;
+					nameForm.submit();
+				}
+				
+			}
+			
+			// 페이징
+			function showPaging(data){
+				
+				var beginRow = data.beginRow // 시작row 0
+				var currentPage = data.currentPage // 현재페이지 1
+				var lastPage = data.lastPage // 마지막 전체페이징 237
+				var pagePerRow = data.pagePerRow // 페이지당 목록 1페이지당 20
+				var pageSize = data.pageSize // 페이징 사이즈 1~10
+				var startPage = data.startPage // 시작 페이징 1
+				var endPage = data.endPage  // 끝 페이징 10
+				
+				var prev = startPage!= 1;
+				var next = lastPage > endPage;
+				
+				var str ="<div class='pageInfo_area' style='width:100%; text-align: center;'><ul class='pagination2 model'>";
+				if(prev){
+					str += "<li class='pageInfo_btn'><a class='allowleft num ' href='"+(startPage -1 )+"'>이전 </a></li>";
+				}
+				
+				for(var i = startPage; i <= endPage; i++){
+					var active = currentPage == i ? "active":"";
+					str += "<li class='pageInfo_btn  '><a class='num "+active+"' href='"+i+"'>"+i+"</a></li>"
+				}
+					
+				if(next){
+					str += "<li class='pageInfo_btn'><a class='arrowright num ' href='"+(endPage +1 )+"'>다음 </a></li>";
+				}
+				str += "</ul></div>";
+				$('#context').append(str);
+			}
+			
+			
+				
+			
+		</script>
+	</div>
+</body>
+</html>

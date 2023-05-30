@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohnong.app.stock.mapper.EquipmentMapper">
+
+	<select id="getEquipmentListWithPaging" resultType="EquipmentVO">
+		select * from(
+			select rownum rn, a.* from(
+				select e.equipment_no, 
+				       e.count, 
+				       e.equipment_price, 
+				       e.equipment_status,
+				       e.regist_date, 
+				       e.item_code, 
+				       s.name, 
+				       e.warehouse_code, 
+				       w.warehouse_name
+				 
+				  from subdivision s 
+				  join equipmentStatus e
+					on (s.item_code = e.item_code)
+				  join warehouse w
+					on (e.warehouse_code = w.warehouse_code)
+					
+				 where e.user_id = #{userId}
+				   and e.equipment_status = '양호'
+				<if test="warehouseCode != 0">
+					and e.warehouse_code = #{warehouseCode, jdbcType=INTEGER}
+				</if>
+				<if test="middleCatagori != null and middleCatagori !=''">
+					<if test="name != null and name != ''">
+						and s.middlecatagori = #{middleCatagori, jdbcType=VARCHAR}
+						and s.name LIKE '%'||#{name, jdbcType=VARCHAR}||'%'
+					</if>
+				</if>
+				<if test="startDate != null and startDate !=''">
+					<if test="endDate != null and endDate !=''">
+						and e.regist_date BETWEEN TO_DATE(#{startDate, jdbcType=VARCHAR},'YYYY-MM-DD')
+						                      AND TO_DATE(#{endDate, jdbcType=VARCHAR}, 'YYYY-MM-DD')
+					</if>
+				</if>
+	    <![CDATA[
+	              order by e.equipment_no desc) a where rownum <= (#{pageNum} * #{amount})) b
+	                                          	  where b.rn > (#{pageNum} - 1) * #{amount}
+	    ]]>
+	</select>
+	
+	<select id="getTotalCount" resultType="int">
+		select count(*)
+		
+		from subdivision s join equipmentStatus e
+			on(s.item_code = e.item_code)
+		join warehouse w
+			on(e.warehouse_code = w.warehouse_code)
+			
+		where e.user_id = #{userId}
+		  and e.equipment_status = '양호'
+		<if test="warehouseCode != 0">
+			and e.warehouse_code = #{warehouseCode}
+		</if>
+		<if test="middleCatagori != null and middleCatagori !=''">
+			<if test="name != null and name != ''">
+				and s.middlecatagori = #{middleCatagori}
+				and s.name LIKE '%'||#{name}||'%'
+			</if>
+		</if>
+		<if test="startDate != null and startDate !=''">
+			<if test="endDate != null and endDate !=''">
+				and e.regist_date BETWEEN TO_DATE(#{startDate},'YYYY-MM-DD')
+								  	  AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+			</if>
+		</if>
+	</select>
+	
+	<insert id="equipmentInsert" parameterType="EquipmentVO">
+		DECLARE
+	        BEGIN
+	            insert into subdivision(item_code, name, middlecatagori, user_id)
+	            values (sub_seq.nextval, #{name}, #{middleCatagori}, #{userId});
+	        	
+	        	insert into equipmentStatus(equipment_no, count, equipment_price, equipment_status, regist_date, user_id, item_code, warehouse_code)
+				values (equ_seq.nextval, #{count}, #{equipmentPrice}, #{equipmentStatus}, #{reDate}, #{userId}, sub_seq.currval, #{warehouseCode});
+				
+	            insert into detail(detail_no, today, middlecategori, itemcode, detail, cash, user_id, maincategori, explation)
+	            values (detail_seq.nextval, #{reDate}, #{middleCatagori}, sub_seq.currval, #{name}, #{count} * #{equipmentPrice}, #{userId}, #{mainCatagori}, #{explation});
+	        END;
+	</insert>
+
+	<update id="equipmentUpdate" parameterType="EquipmentVO">
+		DECLARE
+		BEGIN
+			update equipmentStatus
+			set count = #{count},
+				warehouse_code = #{warehouseCode},
+				equipment_price = #{equipmentPrice},
+				equipment_status = #{equipmentStatus}
+			where equipment_no = #{equipmentNo};
+		
+			update detail
+			set cash = #{count} * #{equipmentPrice}
+			where itemcode = #{itemCode}
+			  and user_id = #{userId};
+		END;
+	</update>
+
+	<delete id="equipmentDelete" parameterType="String">
+		DECLARE
+        BEGIN
+			delete from equipmentStatus
+			where item_code = #{itemCode};
+			
+			delete from detail
+			where itemcode = #{itemCode};
+			
+			delete from subdivision
+			where item_code = #{itemCode};
+		END;
+	</delete>
+	
+	<select id="equipmentListWithMiddle" resultType="EquipmentVO">
+		select e.item_code,
+      	 	   s.name
+      	 	   
+		from equipmentStatus e join subdivision s
+		  on (e.item_code = s.item_code)
+		  
+		where s.middlecatagori = #{middleCatagori}
+		  and equipment_status = '양호'
+		<if test="name != null and name != ''">
+			and s.name = #{name}
+		</if>
+		  and e.user_id = #{userId}
+		  and s.user_id = #{userId}
+		<if test="name != null and name != ''">
+			or equipment_status = '파손'
+			and s.name = #{name}
+			and e.user_id = #{userId}
+			and s.user_id = #{userId}
+		</if>
+	</select>
+	
+	<select id="getCount" resultType="EquipmentVO">
+		select equipment_price,
+			   warehouse_code, 
+			   item_code,
+			   regist_date
+			   
+		from equipmentStatus
+		
+		where user_id = #{userId}
+		  and item_code = (select item_code
+		                   from subdivision s
+		                   where s.user_id = #{userId}
+		                     and s.name = #{name})
+	</select>
+	
+	<update id="equipmentnotInsert" parameterType="EquipmentVO">
+		DECLARE
+		BEGIN
+            update equipmentStatus
+			set count = (select count
+			             from equipmentStatus e
+			             where user_id = #{userId}
+			               and item_code = (select item_code
+			                                from subdivision s
+			                                where user_id = #{userId}
+			                                  and s.middlecatagori = #{middleCatagori}
+			                                  and s.name = #{name}))
+			          + #{count},
+				equipment_status = #{equipmentStatus},
+				equipment_price = #{equipmentPrice}
+			where user_id = #{userId}
+			and item_code = (select item_code
+			                 from subdivision s
+			                 where user_id = #{userId}
+			                   and s.middlecatagori = #{middleCatagori} 
+			                   and s.name = #{name});
+			                 
+			insert into detail(detail_no, today, middlecategori, itemcode, detail, cash, user_id, maincategori, explation)
+	        values (detail_seq.nextval, sysdate, #{middleCatagori}, #{itemCode}, #{name}, #{count} * #{equipmentPrice}, #{userId}, #{mainCatagori}, #{explation});
+		END;
+	</update>
+	
+	<select id="getBreakEquipmentListWithPaging" resultType="EquipmentVO">
+				select e.equipment_no, 
+				       e.count, 
+				       e.equipment_price, 
+				       e.equipment_status,
+				       e.regist_date, 
+				       e.item_code, 
+				       s.name, 
+				       e.warehouse_code, 
+				       w.warehouse_name
+				 
+				  from subdivision s 
+				  join equipmentStatus e
+					on (s.item_code = e.item_code)
+				  join warehouse w
+					on (e.warehouse_code = w.warehouse_code)
+					
+				 where e.user_id = #{userId}
+				   and e.equipment_status = '파손'
+				<if test="warehouseCode != 0">
+					and e.warehouse_code = #{warehouseCode}
+				</if>
+				<if test="middleCatagori != null and middleCatagori !=''">
+					<if test="name != null and name != ''">
+						and s.middlecatagori = #{middleCatagori}
+						and s.name LIKE '%'||#{name}||'%'
+					</if>
+				</if>
+				<if test="startDate != null and startDate !=''">
+					<if test="endDate != null and endDate !=''">
+						and e.regist_date BETWEEN TO_DATE(#{startDate},'YYYY-MM-DD')
+						                      AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+					</if>
+				</if>
+				order by e.equipment_no desc
+	</select>
+	
+</mapper>

@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layoutMagement}">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>oh-nong!</title>
+<!-- jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+<style>
+#area {
+	color: #4EA61F !important;
+}
+
+#typeDv {
+	color: #F36A23 !important;
+}
+.modal-footer table th {
+	background-color:#eee;
+}
+</style>
+</head>
+<th:block layout:fragment="css"></th:block>
+<th:block layout:fragment="script"></th:block>
+<body class="nav-md">
+<div layout:fragment="contentMagement">
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+				<h3 style="color:black;"><i class="fa fa-leaf"></i> Oh! Nong</h3>
+			</div>
+        </div>
+        <div class="clearfix"></div>
+        
+ 		 <div class="row">
+              <div class="col-md-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                     <h2>청년 사례  <small>영상</small></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+						<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                        <li class="dropdown">
+                        	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <div class="dropdown-menu" >
+                            <a class="dropdown-item" href="#">Settings 1</a>
+                            <a class="dropdown-item" href="#">Settings 2</a>
+                        </div>
+                      	</li>
+                     </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content" id="context">
+                      <!-- /.row -->
+                  </div>
+                </div>
+              </div>
+            </div>
+    </div>
+</div>
+<!-- insert modal -->
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+	<div class="modal-dialog modal-lg modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="myModalLabel" style="float: left;">청년사례 영상</h4>
+				<button type="button" class="close" data-dismiss="modal">
+					<span>×</span>
+				</button>
+			</div>
+			<div class="modal-body" id="modalbody" style="height: 500px;">
+				<!-- <iframe width="100%" height="100%" src="${youth.bbsInfo08}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe> -->
+				<iframe id="iframe" width="100%" height="100%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"  autoplay="1" allowfullscreen></iframe>
+			</div>
+			<div class="modal-footer" style="text-align:center; margin:1px 0px">
+			</div>
+		</div>
+	</div>
+</div>
+<!-- insert modal -->
+ <script>
+        var url = 'https://rda.go.kr/young/api/youthList';
+        var query = "";
+            query += "?serviceKey=Y70LFIN25U9RD0R86238Y6ZI8H4TV80JI3FNW9J1";
+            query += "&sCode=02";
+            query += "&rowCnt=100";
+            query += "&typeDv=json";
+            //https://rda.go.kr/young/api/youthList?serviceKey=Y70LFIN25U9RD0R86238Y6ZI8H4TV80JI3FNW9J1&sCode=01
+			//https://rda.go.kr/young/api/youthList?serviceKey=Y70LFIN25U9RD0R86238Y6ZI8H4TV80JI3FNW9J1&sCode=03
+            url = url+query;
+        $.ajax({
+            url: url, // 접속주소
+            type: 'GET', //데이터전송방식
+            success: function onData (datas) {
+                youth_list = datas.youth_list;
+                youth_list.forEach(function(youth,index,array){
+                	
+                		let seq = youth.bbsSeq;
+                		let ssome = youth.bbsInfo08.substr(30);
+                		
+                		var iframeUrl = youth.bbsInfo08;
+                		var iframeUrl2 = youth.bbsInfo04;
+                		var iframeUrl3 = youth.area1Nm;
+                		var iframeUrl4 = youth.bbsInfo03;
+                		var iframeUrl5 = youth.bbsInfo07;
+                		
+                		let context =
+                			`    
+							<div class="col-md-3" >
+								<div id="area1" style="height: 400px; padding:20px;">
+									<iframe id="ifrm" style="width:100%; height:180px;" src="https://img.youtube.com/vi/${ssome}/mqdefault.jpg" frameborder="0"></iframe>
+									<div>
+										<span id="area"><i class="fa fa-map-marker"></i> ${youth.area1Nm == null ? '' : youth.area1Nm}&nbsp${youth.area2Nm == null ? '' : '' + youth.area2Nm}</span>&nbsp
+			                    		<span id="typeDv"><i class="fa fa-file-text-o"></i> ${youth.bbsInfo04 == null ? '' : youth.bbsInfo04}</span>
+			                     	</div>
+		                    	 <hr align="left"; width="320px">
+		                    	 <h2>${youth.title}</h2>
+		                    	 	<span>${youth.bbsInfo03}</span><br>
+		                    	 	<span>출처 : ${youth.bbsInfo07}</span><br>
+									<button type="button" class="btn btn-link" onclick="iframeFnc('${iframeUrl}','${iframeUrl2}','${iframeUrl3}','${iframeUrl4}','${iframeUrl5}')">자세히 보기 <i class="fa fa-long-arrow-right"></i></button>
+									<input type="hidden" value="${youth.bbsInfo08}">
+								</div>
+							</div>
+							`
+													
+						
+                	$('#context').append(context);
+                })
+            },
+            error: function onError (error) {
+                console.error(error);
+            }
+        })
+        
+      	function iframeFnc(data,data2,data3,data4,data5){
+        		$('.modal-footer').empty();
+				$('#myModal').modal("show");
+				$('#iframe').attr('src', data+'?autoplay=1&mute=1');
+				let context2=
+					`
+				<table class="table" style="text-algin:center;">
+					<tr>
+						<th>농가명(이름)</th>
+						<td>${data4}</td>
+					</tr>
+					<tr>
+						<th>품목</th>
+						<td>${data2}</td>
+					</tr>
+					<tr>
+						<th>지역</th>
+						<td>${data3}</td>
+					</tr>
+					<tr>
+						<th>출처</th>
+						<td>${data5}</td>
+					</tr>
+				</table>`
+					
+				$('.modal-footer').append(context2);
+				
+				
+        }
+</script>
+</div>
+</body>
+</html>
