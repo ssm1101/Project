@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="co.yedam.coupon.mapper.CouponMapper">
+
+	<select id="CouponList" resultType="CouponVO">
+		select *
+		from p_coupon
+	</select>
+	
+	<insert id="CouponInsert" parameterType="CouponVO">
+		insert into p_coupon (cp_id,cp_name,cp_rate,cp_publisher,cp_expire)
+		values (p_coupon_seq.nextval, #{cpName }, #{cpRate }, #{cpPublisher }, sysdate + #{cpExpire})
+	</insert>
+	
+	<insert id ="couponDistribute" parameterType="CouponVO">
+		insert into u_coupon (ucp_id,cp_id,mb_id,cp_expire,cp_status)
+		values (u_coupon_seq.nextval, #{cpId},#{mbId},,'O')
+	</insert>
+	
+	<select id="CouponSearch" resultType="CouponVO" parameterType="int" >
+		select * from p_coupon where cp_id=#{cpId}
+	</select>
+	
+	<update id = "CouponUpdate" parameterType="CouponVO">
+		update p_coupon
+		set cp_rate = #{cpRate},
+			cp_expire = sysdate + #{cpExpire} <!-- #{cpExpire} -->
+		where cp_name = #{cpName}
+	</update>
+	
+	<delete id="CouponDelete" parameterType="int">
+		delete from p_coupon
+		where cp_name = (select cp_name
+                 		 from p_coupon
+                 		 where cp_id = #{cpId})
+	</delete>
+	
+	<select id="couponListPagingTotalCnt" resultType="int" parameterType="SearchVO">
+		select count(1) from p_coupon
+		<where>
+			<choose>
+				<when test="searchCondition == 'couponRate'">
+					cp_rate like '%'||#{keyword}||'%'
+				</when>
+				<when test="searchCondition == 'couponName'">
+					cp_name like '%'||#{keyword}||'%'
+				</when>
+				<when test="searchCondition == 'couponEffective'">
+					cp_expire like '%'||#{keyword}||'%'
+				</when>
+			</choose>
+		</where>
+	</select>
+	
+	<select id="couponListPaging" parameterType="Criteria" resultType="CouponVO">
+		<![CDATA[
+		select * from
+		(select rownum rn, a.*
+		from(select p.*, u.mb_id from p_coupon p, u_coupon u
+		]]>
+		<where>
+			p.cp_id = u.cp_id
+			<choose>
+				<when test="searchCondition == 'couponRate'">
+					and cp_rate like '%'||#{keyword}||'%'
+				</when>
+				<when test="searchCondition == 'couponName'">
+					and cp_name like '%'||#{keyword}||'%'
+				</when>
+				<when test="searchCondition == 'couponEffective'">
+					and p.cp_expire like '%'||#{keyword}||'%'
+				</when>
+			</choose>
+		</where>
+		<![CDATA[
+		order by p.cp_id desc) a
+		where rownum <= (#{pageNum}*10)) b
+		where b.rn >= (#{pageNum}*10-9)
+		]]>
+	</select>
+
+	<select id="myCoupon" parameterType="map" resultType="CouponVO">
+		<![CDATA[
+		select p.cp_id, p.cp_name, p.cp_rate, p.cp_publisher, p.cp_expire, u.ucp_id, u.mb_id, u.cp_status 
+		from p_coupon p, u_coupon u where p.cp_id(+) = u.cp_id and u.mb_id = #{mbId} and cp_publisher = #{publisher}
+		]]>
+	</select>
+
+	<update id="couponUse" parameterType="int">
+		update u_coupon set
+		cp_status = 'X'
+		where ucp_id = #{ucp_id}
+	</update>
+
+	<select id="UCouponSearch" parameterType="int"
+		resultType="CouponVO">
+		select * from u_coupon u, p_coupon p where
+		u.cp_id = p.cp_id and ucp_id = #{ucpId}
+	</select>
+
+	<update id="couponSell" parameterType="int">
+		update u_coupon set
+		cp_status = 'O'
+		where ucp_id = #{ucp_id}
+	</update>	
+</mapper>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="co.yedam.mypage.mapper.PaymentMapper">
+	<insert id="paymentAdd" parameterType="PaymentVO">
+		insert into payment
+		values(payment_SEQ.NEXTVAL, #{prodId}, #{payPrice}, #{payNum},
+		#{cpId}, #{mbId}, #{payName}, #{payPhone})
+	</insert>
+
+	<update id="modMyPage" parameterType="MemberVO">
+		update member set
+		mb_pw=#{mbPw}, mb_phone =#{mbPhone},
+		mb_email=#{mbEmail} where
+		mb_id=#{mbId}
+	</update>
+
+	<select id="myPageView" parameterType="MemberVO"
+		resultType="MemberVO">
+		select * from member where mb_id=#{mbId}
+	</select>
+
+	<select id="paymentList" parameterType="String"
+		resultType="PaymentVO">
+		select pa.*, t.tp_id, t.tp_name, t.tp_text, t.tp_img,
+		t.tp_area, t.tp_theme, t.tp_date,
+		(select min(p.prod_price) from
+		product p where t.tp_id=p.tp_id group by p.tp_id) price,
+		(select
+		avg(r.review_star) from review r where t.tp_id=r.tp_id group by
+		r.tp_id) star
+		from payment pa, product pr, trip t
+		where pa.prod_id =
+		pr.prod_id and pr.tp_id = t.tp_id and pa.mb_id = #{mbId} order by
+		pa.pay_id desc
+	</select>
+
+	<select id="paymentSearch" parameterType="int"
+		resultType="PaymentVO">
+		select * from payment where pay_id = #{payId}
+	</select>
+
+	<delete id="paymentDel" parameterType="int">
+		delete from payment where
+		pay_id = #{payId}
+	</delete>
+
+	<select id="myPayList" parameterType="String" resultType="PaymentVO">
+		select t.tp_name, count(p.pay_price) count, sum(p.pay_price) price, pr.mb_id 
+		from trip t, product pr, payment p
+		where t.tp_id = pr.tp_id and pr.prod_id = p.prod_id and pr.mb_id = #{mbId}
+		group by t.tp_name, pr.mb_id
+	</select>
+	
+	<select id="sellerPayList" resultType="PaymentVO">
+		select t.tp_name, count(p.pay_price) count, sum(p.pay_price) price, m.mb_name, td.top_permiss
+		from trip t, product pr, payment p, member m, top_display td
+		where t.tp_id = pr.tp_id and pr.prod_id = p.prod_id and pr.mb_id = m.mb_id and t.tp_id = td.tp_id
+		group by t.tp_name, m.mb_name, td.top_permiss
+	</select>
+</mapper>

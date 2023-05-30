@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="co.yedam.topAd.mapper.TopAdMapper">
+
+	<select id="TopdisplayPermissList" resultType="TopAdVO">
+		select *
+		from top_display
+		where top_permiss = 'O'
+	</select>
+	
+	<select id="TopdisplayView" resultType="TopAdViewVO">
+		select top_start, top_end, tr.tp_id, tp_name, tp_text, tp_img, tp_area, tp_theme, tp_date, mb_id
+		from top_display top, trip tr
+		where top.tp_id = tr.tp_id and top_permiss = 'O'
+	</select>
+	
+	<update id="TopdisplayPermiss" parameterType="TopAdVO">
+		update top_display
+		set top_permiss = 'O'
+		where tp_id = #{tpId }
+	</update>
+
+	<delete id="TopdisplayDelete" parameterType="int">
+		delete from top_display
+		where tp_id = #{tpId }
+	</delete>
+	
+	<insert id="TopdisplayInsert" parameterType="TopAdVO">
+		insert into top_display (tp_id, top_start, top_end, top_permiss)
+		values(#{tpId }, sysdate, sysdate+7, 'X')
+	</insert>
+	
+ 	<select id="TopAdListPagingTotalCnt" resultType="int" parameterType="SearchVO">
+		select count(1) from top_display
+		<where>
+			<choose>
+				<when test="searchCondition == 'tpId'">
+					tp_id like '%'||#{keyword}||'%'
+				</when>
+				<when test="searchCondition == 'topStart'">
+					top_start like '%'||#{keyword}||'%'
+				</when>
+				<when test="searchCondition == 'topEnd'">
+					top_end like '%'||#{keyword}||'%'
+				</when>
+			</choose>
+		</where>
+	</select>
+	
+	<select id="TopAdListPaging" parameterType="Criteria" resultType="TopAdVO">
+		<![CDATA[
+		select top_start, top_end, tp_name, tp_text, tp_img, tp_area, tp_theme, tp_date, mb_id, tp_id
+		from(select rownum rn, a.*
+			from(select top_start, top_end, tp_name, tp_text, tp_img, tp_area, tp_theme, tp_date, mb_id, tr.tp_id
+				 from top_display top, trip tr
+		]]>
+		<where>
+			top.tp_id = tr.tp_id and top_permiss = 'X'
+			<choose>
+				<when test="searchCondition == 'tpId'">
+					AND tr.tp_id like '%'||#{keyword}||'%'
+				</when>
+				<when test="searchCondition == 'topStart'">
+					AND top.top_start like '%'||#{keyword}||'%'
+				</when>
+				<when test="searchCondition == 'topEnd'">
+					AND top.top_end like '%'||#{keyword}||'%'
+				</when>
+			</choose>
+		</where>
+		<![CDATA[		
+		order by tr.tp_id desc) a
+		where rownum <= (#{pageNum}*10)) b
+		where b.rn >= (#{pageNum}*10-9)
+		]]>
+	</select>
+ 
+</mapper> 

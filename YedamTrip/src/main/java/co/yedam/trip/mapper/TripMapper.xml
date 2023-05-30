@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="co.yedam.trip.mapper.TripMapper">
+	<select id="tripList" resultType="TripVO">
+		select * from trip order by tp_id desc
+	</select>
+
+	<insert id="tripAdd" parameterType="TripVO">
+		insert into trip 
+		values(TRIP_SEQ.NEXTVAL, #{tpName}, #{tpText}, #{tpImg}, #{tpArea}, #{tpTheme}, #{tpDate}, #{mbId})
+	</insert>
+
+	<select id="tripSearch" parameterType="int" resultType="TripVO">
+		select * from trip where tp_id = #{tpId}
+	</select>
+	
+	<select id="tripKeywordSearch" resultType="TripVO">
+		select t.*,
+		(select min(p.prod_price) from product p where t.tp_id=p.tp_id group by p.tp_id) price,
+		(select avg(r.review_star) from review r where t.tp_id=r.tp_id group by r.tp_id) star
+		from trip t
+		where 1=1
+		<if test="tpName!='전체'">
+			AND tp_name like '%'||#{tpName}||'%'			
+		</if>
+		<if test="tpArea!='전체'">
+			AND tp_area = #{tpArea}
+		</if>
+		<if test="tpTheme!='전체'">
+			AND tp_theme = #{tpTheme}
+		</if>	
+	</select>
+
+	<update id="tripUpdate" parameterType="TripVO">
+		update trip set
+		tp_name = #{tpName},
+		tp_text = #{tpText},
+		tp_img = #{tpImg},
+		tp_area = #{tpArea},
+		tp_theme = #{tpTheme},
+		tp_date = #{tpDate}
+		where tp_id = #{tpId}
+	</update>
+
+	<delete id="tripDel" parameterType="int">
+		delete from trip where
+		tp_id =
+		#{tpId}
+	</delete>
+
+	<select id="tripMyList" parameterType="string"
+		resultType="TripVO">
+		select * from trip where mb_id = #{mbId}
+	</select>
+	
+	<select id="packageList" resultType="TripVO">
+		select t.*,
+		<if test="mbId != null and mbId != ''">
+		  (select count(*) from heart where tp_id=t.tp_id and mb_id = #{mbId}) heart,
+		</if>
+		(select min(p.prod_price) from product p where t.tp_id=p.tp_id group by p.tp_id) price,
+		(select avg(r.review_star) from review r where t.tp_id=r.tp_id group by r.tp_id) star
+		from trip t
+	</select>
+
+	
+	<select id="packageView" parameterType="int" resultType="TripVO">
+		select t.*,
+		(select min(p.prod_price) from product p where t.tp_id=p.tp_id group by p.tp_id) price,
+		(select avg(r.review_star) from review r where t.tp_id=r.tp_id group by r.tp_id) star
+		from trip t
+		where tp_id = #{tpId}
+	</select>
+	
+	<select id="recommandList" resultType="TripVO">
+		<![CDATA[
+		select rownum, t.*,
+		(select min(p.prod_price) from product p where t.tp_id=p.tp_id group by p.tp_id) price,
+		(select avg(r.review_star) from review r where t.tp_id=r.tp_id group by r.tp_id) star
+		from trip t	
+		where rownum < 4 
+		order by star desc nulls last
+		]]>
+	</select>
+	
+	<select id="tripProductSearch" parameterType="int"
+		resultType="TripVO">
+		select product.*, trip.tp_name from product join trip on
+		product.tp_id = trip.tp_id where product.tp_id = #{tpId}
+	</select>
+	
+	<select id = "tripTheme" resultType="TripVO">
+		select tp_theme
+		from trip
+		group by tp_theme
+	</select>
+	
+	<select id = "tripArea" resultType="TripVO">
+		select tp_area
+		from trip
+		group by tp_area
+	</select>
+ </mapper>

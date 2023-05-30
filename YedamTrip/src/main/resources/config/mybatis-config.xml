@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties resource="config/db.properties"></properties>
+
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true"></setting>
+	</settings>
+
+<typeAliases>
+	<typeAlias alias="ProductVO" type="co.yedam.product.vo.ProductVO"></typeAlias>
+	<typeAlias alias="CouponVO" type="co.yedam.coupon.vo.CouponVO"></typeAlias>
+	<typeAlias alias="ReviewVO" type="co.yedam.review.vo.ReviewVO"></typeAlias>
+	<typeAlias alias="SearchVO" type="co.yedam.common.SearchVO"></typeAlias>
+	<typeAlias alias="NoticeVO" type="co.yedam.notice.vo.NoticeVO"></typeAlias>
+	<typeAlias alias="Criteria" type="co.yedam.common.Criteria"></typeAlias>
+	<typeAlias alias="TripVO" type="co.yedam.trip.vo.TripVO"></typeAlias>
+	<typeAlias alias="TopAdVO" type="co.yedam.topAd.vo.TopAdVO"></typeAlias>
+	<typeAlias alias="TopAdViewVO" type="co.yedam.topAd.vo.TopAdViewVO"></typeAlias>
+	<typeAlias alias="MemberPageInfo" type="co.yedam.common.MemberPageInfo"></typeAlias>
+	<typeAlias alias="MemberVO" type="co.yedam.login.memberVO.MemberVO"></typeAlias>
+	<typeAlias alias="PaymentVO" type="co.yedam.mypage.vo.PaymentVO"></typeAlias>
+	<typeAlias alias="PackageReportVO" type="co.yedam.report.vo.PackageReportVO"></typeAlias>
+	<typeAlias alias="LikeItVO" type="co.yedam.likeIt.vo.LikeItVO"></typeAlias>
+	<typeAlias alias="LikeItPageInfo" type="co.yedam.common.LikeItPageInfo"></typeAlias>
+	<typeAlias alias="ReviewReportVO" type="co.yedam.report.vo.ReviewReportVO"></typeAlias>
+</typeAliases>
+
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="${jdbc.driver}" />
+				<property name="url" value="${jdbc.url}" />
+				<property name="username" value="${jdbc.user}" />
+				<property name="password" value="${jdbc.password}" />
+			</dataSource>
+		</environment>
+	</environments>
+
+	<mappers>
+		<mapper class="co.yedam.notice.mapper.NoticeMapper" />
+		<mapper class="co.yedam.trip.mapper.TripMapper" />
+		<mapper class="co.yedam.product.mapper.ProductMapper" />
+		<mapper class="co.yedam.coupon.mapper.CouponMapper" />
+		<mapper class="co.yedam.topAd.mapper.TopAdMapper" />
+		<mapper resource="co/yedam/review/mapper/ReviewMapper.xml" />
+		<mapper class="co.yedam.login.memberMapper.MemberMapper" />
+		<mapper class="co.yedam.mypage.mapper.PaymentMapper" />
+		<mapper class="co.yedam.report.mapper.ReportMapper" />
+		<mapper class="co.yedam.likeIt.mapper.LikeItMapper" />
+	</mappers>
+
+</configuration>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="co.yedam.report.mapper.ReportMapper">
+	
+	<select id="tripPackageSearch" resultType="TripVO" parameterType="int">
+		select t.*,
+		(select avg(r.review_star) from review r where t.tp_id=r.tp_id group by r.tp_id) star
+		from trip t
+        where tp_id = #{tpId}
+	</select>
+	
+	<insert id="tReportAdd" parameterType="PackageReportVO">
+		insert into t_report values(#{tpId}, #{ReportCon})
+	</insert>
+	
+	<select id="tReportSearch" resultType="PackageReportVO" parameterType="int">
+		select * from t_report where tp_id = #{tpId}
+	</select>
+	
+	<select id="tReportListPagingTotalCnt" resultType="int">
+		select count(1) from t_report
+	</select>
+	
+	<select id="tReportList" parameterType="Criteria" resultType="PackageReportVO">
+		<![CDATA[
+		select * from(
+   		select rownum rn, a.* from(
+        select r.tp_id, r.report_con, t.tp_name from t_report r join trip t
+        on r.tp_id = t.tp_id
+        order by r.tp_id desc) a where rownum <= (#{pageNum}*10)) b
+		where b.rn >= (#{pageNum}*10-9)
+		]]>
+	</select>
+	
+	<delete id="tReportDelete" parameterType="int">
+		delete from t_report where tp_id=#{tpId}
+	</delete>
+	
+	<delete id="tReportTripDelete" parameterType="int">
+		delete from trip where tp_id=#{tpId}
+	</delete>
+	
+	<select id="reviewSearch" resultType="ReviewVO" parameterType="int">
+		select * from review where review_id = #{reviewId}
+	</select>
+	
+	<insert id="insertReviewReport" parameterType="ReviewReportVO">
+		insert into r_report values(#{reviewId}, #{ReportCon})
+	</insert>
+	
+	<select id="rReportSearch" resultType="ReviewReportVO" parameterType="int">
+		select * from r_report where review_id = #{reviewId}
+	</select>
+	
+	<select id="rReportListPagingTotalCnt" resultType="int">
+		select count(1) from r_report
+	</select>
+	
+	<select id="rReportList" parameterType="Criteria" resultType="ReviewReportVO">
+		<![CDATA[
+		select * from(
+   		select rownum rn, a.* from(
+        select p.review_id, p.report_con, r.review_con from r_report p join review r
+        on p.review_id = r.review_id
+        order by p.review_id desc) a where rownum <= (#{pageNum}*10)) b
+		where b.rn >= (#{pageNum}*10-9)
+		]]>
+	</select>
+	
+	<delete id="rReportDelete" parameterType="int">
+		delete from r_report where review_id = #{reviewId}
+	</delete>
+	
+	<delete id="rReportReviewDelete" parameterType="int">
+		delete from review where review_id = #{reviewId}
+	</delete>
+	
+</mapper>

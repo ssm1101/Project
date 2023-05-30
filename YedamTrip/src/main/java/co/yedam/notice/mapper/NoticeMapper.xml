@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="co.yedam.notice.mapper.NoticeMapper">
+
+	<select id="noticeListPagingTotalCnt" resultType="int">
+		select count(1) from post where ps_category='notice'
+	</select>
+	
+	<select id="qnaListPagingTotalCnt" resultType="int">
+		select count(1) from post where ps_category='qna' and mb_id=#{mbId}
+	</select>
+	
+	<select id="DashbordQnaListPagingTotalCnt" resultType="int">
+		select count(1) from post where ps_category='qna' and ps_kind=0
+	</select>
+	
+	<select id="SellerQnaListTotalCnt" parameterType="String" resultType="int">
+		select count(1) from(
+  		select pr.mb_id as seller_id from post p join product pr
+    	on p.ps_kind = pr.prod_id
+    	where p.ps_category='qna' and pr.mb_id = #{mbId})
+	</select>
+	
+	<select id="SellerQnaList" parameterType="MemberPageInfo" resultType="NoticeVO">
+		<![CDATA[
+		select * from(
+        select rownum rn, a.* from(
+        select p.ps_id, p.ps_title, p.ps_text, p.ps_date, p.ps_category, p.mb_id, p.ps_kind, pr.mb_id as seller_id
+        from post p join product pr
+        on(p.ps_kind = pr.prod_id)
+        where pr.mb_id = #{mbId}
+        order by p.ps_id desc) a where rownum <= (#{pageNum}*10)) b
+      	where b.rn >= (#{pageNum}*10-9)
+      	]]>
+	</select>
+	
+	<select id="SellerQnaListPagingTotalCnt" resultType="int">
+		select count(1) from post where ps_category='qna'
+	</select>
+	
+	<select id="noticeList" parameterType="Criteria" resultType="NoticeVO">
+		<![CDATA[
+		select * from
+		(select rownum rn, a.*
+		from (select * from post
+		where ps_category='notice'
+		order by ps_id desc) a
+		where rownum <= (#{pageNum}*10)) b
+		where b.rn >= (#{pageNum}*10-9)
+		]]>
+	</select>
+	
+	<select id="DashbordQnaList" parameterType="Criteria" resultType="NoticeVO">
+		<![CDATA[
+		select * from
+		(select rownum rn, a.*
+		from (select * from post
+		where ps_category='qna' and ps_kind=0
+		order by ps_id desc) a
+		where rownum <= (#{pageNum}*10)) b
+		where b.rn >= (#{pageNum}*10-9)
+		]]>
+	</select>
+	
+	<insert id="noticeAdd" parameterType="NoticeVO">
+		insert into post(ps_id, ps_title, ps_date, ps_text, ps_category, mb_id)
+		values(post_seq.nextval, #{psTitle}, sysdate, #{psText}, 'notice', #{mbId})
+	</insert>
+
+	<select id="noticeSearch" resultType="noticeVO" parameterType="int">
+		select * from post where ps_id = #{psId}
+	</select>
+	
+	<update id="noticeUpdate" parameterType="noticeVO">
+		update post set ps_title = #{psTitle}, ps_text = #{psText}, mb_id = #{mbId} where ps_id = #{psId}
+	</update>
+	
+	<delete id="noticeDelete" parameterType="int">
+		delete from post where ps_id=#{psId}
+	</delete>
+	
+	<insert id="qAdd" parameterType="noticeVO">
+		insert into post(ps_id, ps_title, ps_date, ps_text, ps_category, mb_id, ps_kind)
+		values(post_seq.nextval, #{psTitle}, sysdate, '답변대기중입니다.', 'qna', #{mbId}, 0)
+	</insert>
+	
+	<insert id="qAddProduct" parameterType="NoticeVO">
+		insert into post(ps_id, ps_title, ps_date, ps_text, ps_category, mb_id, ps_kind)
+		values(post_seq.nextval, #{psTitle}, sysdate, '답변대기중입니다.', 'qna', #{mbId}, #{psKind})
+	</insert>
+	
+	<select id="qnaList" parameterType="MemberPageInfo" resultType="NoticeVO">
+		<![CDATA[
+		select * from
+		(select rownum rn, a.*
+		from (select * from post
+		where ps_category='qna' and mb_id=#{mbId}
+		order by ps_id desc) a
+		where rownum <= (#{pageNum}*3)) b
+		where b.rn >= (#{pageNum}*3-2)
+		]]>
+	</select>
+	
+	<update id="qUpdate" parameterType="noticeVO">
+		update post set ps_title = #{psTitle} where ps_id = #{psId}
+	</update>
+	
+	<select id="noticeMain" resultType="NoticeVO">
+		select * from(
+    	select * from post
+   		where ps_category='notice'
+    	order by rownum desc
+		)
+		<![CDATA[
+		where rownum<=3
+		]]>
+	</select>
+	
+</mapper>

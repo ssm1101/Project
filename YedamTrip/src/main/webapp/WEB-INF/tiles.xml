@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+	<definition name="myapp.homepage" template="/WEB-INF/layout1/template.jsp">
+		<put-attribute name="header" value="/WEB-INF/layout1/header.jsp" />
+		<put-attribute name="sidebar" value="/WEB-INF/layout1/sidebar.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/layout1/footer.jsp" />
+		<put-attribute name="body" value="/WEB-INF/layout1/content.jsp" />
+	</definition>
+	<definition name="WILDCARD:user/*/*" extends="myapp.homepage">
+		<put-attribute name="body" value="/WEB-INF/views1/{1}/{2}.jsp"></put-attribute>
+	</definition>
+
+	<definition name="seller.homepage" template="/WEB-INF/layout2/template.jsp">
+		<put-attribute name="header" value="/WEB-INF/layout2/header.jsp" />
+		<put-attribute name="sidebar" value="/WEB-INF/layout2/sidebar.jsp" />
+		<put-attribute name="body" value="/WEB-INF/layout2/content.jsp" />
+	</definition>
+	<definition name="WILDCARD:seller/*/*" extends="seller.homepage">
+		<put-attribute name="body" value="/WEB-INF/views2/{1}/{2}.jsp"></put-attribute>
+	</definition>
+</tiles-definitions>

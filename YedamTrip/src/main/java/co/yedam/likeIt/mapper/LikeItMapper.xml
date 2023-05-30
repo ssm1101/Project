@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="co.yedam.likeIt.mapper.LikeItMapper">
+	
+	<insert id="likeItAdd" parameterType="LikeItVO">
+		insert into heart values(#{tpId}, #{mbId})
+	</insert>
+	
+	<select id="likeItSearch" parameterType="LikeItVO" resultType="LikeItVO">
+		select * from heart where tp_id = #{tpId} and mb_id = #{mbId}
+	</select>
+	
+	<select id="likeItListPagingTotalCnt" parameterType="String" resultType="int">
+		select count(1) from heart where mb_id = #{mbId}
+	</select>
+	
+	<select id="likeItList" parameterType="LikeItPageInfo" resultType="LikeItVO">
+		<![CDATA[
+		select * from(
+    	select rownum rn, a.* from(
+        select h.tp_id, h.mb_id, t.tp_name, t.tp_text, t.tp_img, t.tp_area, t.tp_theme, t.tp_date
+        from heart h join trip t
+        on h.tp_id = t.tp_id
+        where h.mb_id = #{mbId}
+        order by h.tp_id desc) a where rownum <= (#{pageNum}*5)) b
+		where b.rn >= (#{pageNum}*5-4)
+		]]>
+	</select>
+	
+	<delete id="likeItDelete" parameterType="LikeItVO">
+		delete from heart where tp_id = #{tpId} and mb_id = #{mbId}
+	</delete>
+	
+</mapper>
